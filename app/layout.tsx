@@ -31,25 +31,27 @@ const mono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dibumi.com"),
-  title: "dibumi.com — Software House & Cloud DevOps Partner | Surabaya, Indonesia",
+  title: "dibumi.com — Pabrik Produksi Aplikasi & Software | Lamongan, Indonesia",
   description:
-    "Perusahaan rekayasa perangkat lunak dan konsultan IT terpercaya di Surabaya, Indonesia. Melayani Custom Software Development, Company Profile Korporat, Aplikasi Android Native, Jasa WebView Android (Play Store Ready), dan Kelola Server & DevOps.",
+    "Pabrik produksi aplikasi dan software terpercaya di Lamongan, Indonesia. Melayani Custom Software Development, Company Profile Korporat, Aplikasi Android Native, Jasa WebView Android (Play Store Ready), dan Kelola Server & DevOps.",
   keywords: [
-    "software house surabaya",
+    "pabrik produksi aplikasi dan software",
+    "software lamongan",
+    "jasa pembuatan aplikasi lamongan",
     "custom software development indonesia",
     "jasa pembuatan webview android",
-    "kelola server devops surabaya",
+    "kelola server devops",
     "jasa pembuatan aplikasi android",
     "jasa company profile perusahaan",
-    "it consultant surabaya",
+    "it consultant indonesia",
     "dibumi",
     "dibumi.com",
   ],
-  authors: [{ name: "dibumi.com — Software House Surabaya" }],
+  authors: [{ name: "dibumi.com — Pabrik Produksi Aplikasi & Software" }],
   openGraph: {
-    title: "dibumi.com — Software House & Cloud DevOps Partner",
+    title: "dibumi.com — Pabrik Produksi Aplikasi & Software",
     description:
-      "Partner teknologi strategis berbasis di Surabaya, Indonesia. Menghadirkan solusi Custom Software, Android App, WebView Play Store, Website Korporat, dan Infrastruktur Server berstandar enterprise.",
+      "Partner teknologi strategis berbasis di Lamongan, Indonesia. Menghadirkan solusi Custom Software, Android App, WebView Play Store, Website Korporat, dan Infrastruktur Server berstandar enterprise.",
     url: "https://dibumi.com",
     siteName: "dibumi.com",
     locale: "id_ID",
@@ -57,7 +59,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "dibumi.com — Software House & Cloud DevOps Partner",
+    title: "dibumi.com — Pabrik Produksi Aplikasi & Software",
     description:
       "Solusi rekayasa digital terpercaya: Custom Software, Android, WebView, Website Korporat, dan Manajemen Server.",
   },

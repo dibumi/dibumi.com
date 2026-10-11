@@ -6,21 +6,21 @@ import { ArrowUpRight, Menu, X } from "lucide-react";
 import type { Locale, SiteContent } from "@/lib/i18n";
 import { localeLabels, locales } from "@/lib/i18n";
 
-export default function Navbar({ locale, content }: { locale: Locale; content: SiteContent["nav"] }) {
+export default function Navbar({ locale, content, basePath = "" }: { locale: Locale; content: SiteContent["nav"]; basePath?: string }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: content.services, href: "#services" },
-    { name: content.process, href: "#methodology" },
-    { name: content.standards, href: "#standards" },
-    { name: content.contact, href: "#contact" },
+    { name: content.services, href: `${basePath}#services` },
+    { name: content.process, href: `${basePath}#methodology` },
+    { name: content.standards, href: `${basePath}#standards` },
+    { name: content.contact, href: `${basePath}#contact` },
   ];
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-200 bg-white py-3">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 sm:px-8">
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-2.5 text-slate-900">
+        <Link href={basePath || "/"} className="flex items-center gap-2.5 text-slate-900">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-800">
             <span className="text-xs font-extrabold tracking-tight text-white">db</span>
           </span>
@@ -44,7 +44,7 @@ export default function Navbar({ locale, content }: { locale: Locale; content: S
 
         {/* Desktop CTA */}
         <Link
-          href="#contact"
+          href={`${basePath}#contact`}
           className="hidden items-center gap-1.5 whitespace-nowrap rounded-xl bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-900 active:scale-[0.98] md:inline-flex"
         >
           <span>{content.consultation}</span>
@@ -75,7 +75,7 @@ export default function Navbar({ locale, content }: { locale: Locale; content: S
             </Link>
           ))}
           <Link
-            href="#contact"
+            href={`${basePath}#contact`}
             onClick={() => setMobileMenuOpen(false)}
             className="mt-3 inline-flex w-full items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-brand-800 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-900 active:scale-[0.98]"
           >

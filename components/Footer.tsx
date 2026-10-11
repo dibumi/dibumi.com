@@ -19,8 +19,8 @@ export default function Footer({ content }: { content: SiteContent["footer"] }) 
             <p className="text-slate-600 leading-relaxed max-w-sm">
               {content.description}
             </p>
-            <p className="text-slate-500 text-xs">
-              {content.location}
+            <p className="text-slate-500 text-xs leading-relaxed max-w-sm">
+              {content.address}
             </p>
           </div>
 
@@ -99,7 +99,15 @@ export default function Footer({ content }: { content: SiteContent["footer"] }) 
           <div>
             © {new Date().getFullYear()} dibumi.com. {content.copyright}
           </div>
-          <div>Surabaya, Jawa Timur, Indonesia.</div>
+          <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-5">
+            <Link href="/id/terms" className="hover:text-brand-700 transition-colors">
+              {content.legal.terms}
+            </Link>
+            <Link href="/id/privacy" className="hover:text-brand-700 transition-colors">
+              {content.legal.privacy}
+            </Link>
+            <span>{content.location}</span>
+          </div>
         </div>
       </div>
     </footer>
