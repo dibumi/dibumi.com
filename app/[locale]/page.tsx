@@ -49,7 +49,7 @@ export default async function LocalizedHomePage({ params }: LocalePageProps) {
 
   return (
     <div lang={localeParam} dir={direction} className={localeFontClass[localeParam]}>
-      <main className="flex min-h-screen flex-col justify-between bg-slate-50 text-slate-900 selection:bg-brand-100 selection:text-brand-950">
+      <main className="flex min-h-screen flex-col justify-between bg-brand-50 text-slate-900 selection:bg-brand-100 selection:text-brand-900">
         <Navbar locale={localeParam} content={content.nav} />
         <div className="flex-grow">
           <Hero content={content.hero} />

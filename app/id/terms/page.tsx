@@ -3,7 +3,7 @@ import LegalLayout from "@/components/LegalLayout";
 import { terms } from "@/lib/legal";
 
 export const metadata: Metadata = {
-  title: "Syarat & Ketentuan — dibumi.com",
+  title: "Syarat & Ketentuan | dibumi.com",
   description:
     "Syarat dan ketentuan penggunaan layanan pengembangan aplikasi dan software oleh Dibumi Teknologi Indonesia.",
   alternates: { canonical: "/id/terms" },

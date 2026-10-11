@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    /* Navbar fixed setinggi 4rem. Tanpa ini, judul section tertutup saat klik anchor. */
+    scroll-padding-top: 5rem;
+  }
+
+  /* Satu gaya fokus untuk seluruh situs, supaya navigasi keyboard konsisten. */
+  :focus-visible {
+    outline: 2px solid #1a74b4;
+    outline-offset: 2px;
+  }
+}

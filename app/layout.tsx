@@ -70,7 +70,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0d9488",
+  themeColor: "#1A74B4",
   width: "device-width",
   initialScale: 1,
 };
@@ -85,7 +85,7 @@ export default function RootLayout({
       lang="id"
       className={`${sans.variable} ${sansArabic.variable} ${sansChinese.variable} ${mono.variable} scroll-smooth motion-reduce:scroll-auto`}
     >
-      <body className="font-sans antialiased text-slate-900 bg-slate-50">
+      <body className="font-sans antialiased text-slate-900 bg-brand-50">
         {children}
       </body>
     </html>
