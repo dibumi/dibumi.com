@@ -46,7 +46,6 @@ export type SiteContent = {
     allServices: string;
   };
   hero: {
-    eyebrow: string;
     titleTop: string;
     titleAccent: string;
     titleBottom: string;
@@ -54,25 +53,6 @@ export type SiteContent = {
     primaryCta: string;
     secondaryCta: string;
     chips: string[];
-    panel: {
-      eyebrow: string;
-      requestTitle: string;
-      requestSubtitle: string;
-      requestMethod: string;
-      requestPath: string;
-      gatewayTitle: string;
-      gatewaySubtitle: string;
-      gatewayBadge: string;
-      nodes: string[];
-      responseLabel: string;
-      responseNote: string;
-      responseText: string;
-      footnote: string[];
-      pause: string;
-      resume: string;
-      pauseLabel: string;
-      resumeLabel: string;
-    };
   };
   highlights: { tag: string; title: string; description: string }[];
   servicesSection: {
@@ -187,7 +167,6 @@ const en: SiteContent = {
     allServices: "All services",
   },
   hero: {
-    eyebrow: "Software production studio in Lamongan",
     titleTop: "Big ideas.",
     titleAccent: "Meet your",
     titleBottom: "production studio.",
@@ -196,25 +175,6 @@ const en: SiteContent = {
     primaryCta: "Start a project",
     secondaryCta: "View services",
     chips: ["Fixed scope", "Full code ownership", "24/7 SLA for servers"],
-    panel: {
-      eyebrow: "Your stack, simplified",
-      requestTitle: "Your idea",
-      requestSubtitle: "One studio. Every layer of the stack.",
-      requestMethod: "SCOPE",
-      requestPath: "/discovery → production",
-      gatewayTitle: "dibumi studio",
-      gatewaySubtitle: "Design, build, operate",
-      gatewayBadge: "One team",
-      nodes: ["Web app", "Android app", "Server"],
-      responseLabel: "Delivery preview",
-      responseNote: "Illustrated flow",
-      responseText: "Shipped. Running. Yours.",
-      footnote: ["One team", "One contract", "Full ownership"],
-      pause: "Pause",
-      resume: "Resume",
-      pauseLabel: "Pause the process animation",
-      resumeLabel: "Resume the process animation",
-    },
   },
   highlights: [
     {
@@ -486,7 +446,6 @@ const id: SiteContent = {
     allServices: "Semua layanan",
   },
   hero: {
-    eyebrow: "Studio produksi software di Lamongan",
     titleTop: "Ide besar.",
     titleAccent: "Kenali",
     titleBottom: "studio produksimu.",
@@ -495,25 +454,6 @@ const id: SiteContent = {
     primaryCta: "Mulai proyek",
     secondaryCta: "Lihat layanan",
     chips: ["Lingkup tetap", "Kode sepenuhnya milik Anda", "SLA server 24/7"],
-    panel: {
-      eyebrow: "Teknologi Anda, disederhanakan",
-      requestTitle: "Ide Anda",
-      requestSubtitle: "Satu studio. Semua lapisan teknologi.",
-      requestMethod: "LINGKUP",
-      requestPath: "/discovery → produksi",
-      gatewayTitle: "dibumi studio",
-      gatewaySubtitle: "Rancang, bangun, operasikan",
-      gatewayBadge: "Satu tim",
-      nodes: ["Web app", "Aplikasi Android", "Server"],
-      responseLabel: "Pratinjau pengiriman",
-      responseNote: "Ilustrasi alur",
-      responseText: "Rilis. Berjalan. Milik Anda.",
-      footnote: ["Satu tim", "Satu kontrak", "Kepemilikan penuh"],
-      pause: "Jeda",
-      resume: "Lanjut",
-      pauseLabel: "Jeda animasi proses",
-      resumeLabel: "Lanjutkan animasi proses",
-    },
   },
   highlights: [
     {
@@ -786,7 +726,6 @@ const ar: SiteContent = {
     allServices: "جميع الخدمات",
   },
   hero: {
-    eyebrow: "استوديو إنتاج البرمجيات في لامونجان",
     titleTop: "أفكار كبيرة.",
     titleAccent: "تعرّف على",
     titleBottom: "استوديو الإنتاج.",
@@ -795,25 +734,6 @@ const ar: SiteContent = {
     primaryCta: "ابدأ مشروعاً",
     secondaryCta: "استكشف الخدمات",
     chips: ["نطاق ثابت", "ملكية كاملة للكود", "دعم خوادم 24/7"],
-    panel: {
-      eyebrow: "بنيتك التقنية، ببساطة",
-      requestTitle: "فكرتك",
-      requestSubtitle: "استوديو واحد. كل طبقات التقنية.",
-      requestMethod: "النطاق",
-      requestPath: "/الاستكشاف ← الإنتاج",
-      gatewayTitle: "dibumi studio",
-      gatewaySubtitle: "تصميم، بناء، تشغيل",
-      gatewayBadge: "فريق واحد",
-      nodes: ["تطبيق ويب", "تطبيق Android", "خادم"],
-      responseLabel: "معاينة التسليم",
-      responseNote: "مخطط توضيحي",
-      responseText: "أُطلق. يعمل. ملكك.",
-      footnote: ["فريق واحد", "عقد واحد", "ملكية كاملة"],
-      pause: "إيقاف",
-      resume: "متابعة",
-      pauseLabel: "إيقاف حركة العملية",
-      resumeLabel: "متابعة حركة العملية",
-    },
   },
   highlights: [
     {
@@ -1081,7 +1001,6 @@ const zh: SiteContent = {
     allServices: "全部服务",
   },
   hero: {
-    eyebrow: "位于拉蒙岸的软件生产工作室",
     titleTop: "大想法。",
     titleAccent: "交给",
     titleBottom: "生产工作室。",
@@ -1090,25 +1009,6 @@ const zh: SiteContent = {
     primaryCta: "开始项目",
     secondaryCta: "查看服务",
     chips: ["范围固定", "代码完全归属你", "服务器 24/7 SLA"],
-    panel: {
-      eyebrow: "你的技术栈，更简单",
-      requestTitle: "你的想法",
-      requestSubtitle: "一个工作室，覆盖全部技术层。",
-      requestMethod: "范围",
-      requestPath: "/需求发现 → 生产环境",
-      gatewayTitle: "dibumi studio",
-      gatewaySubtitle: "设计、构建、运维",
-      gatewayBadge: "一个团队",
-      nodes: ["Web 应用", "Android 应用", "服务器"],
-      responseLabel: "交付预览",
-      responseNote: "流程示意",
-      responseText: "已上线。运行中。归你所有。",
-      footnote: ["一个团队", "一份合同", "完全所有权"],
-      pause: "暂停",
-      resume: "继续",
-      pauseLabel: "暂停流程动画",
-      resumeLabel: "继续流程动画",
-    },
   },
   highlights: [
     {
@@ -1355,7 +1255,6 @@ const pl: SiteContent = {
     allServices: "Wszystkie usługi",
   },
   hero: {
-    eyebrow: "Studio produkcji oprogramowania w Lamongan",
     titleTop: "Duże pomysły.",
     titleAccent: "Poznaj swoje",
     titleBottom: "studio produkcji.",
@@ -1364,25 +1263,6 @@ const pl: SiteContent = {
     primaryCta: "Rozpocznij projekt",
     secondaryCta: "Zobacz usługi",
     chips: ["Stały zakres", "Pełna własność kodu", "SLA serwerów 24/7"],
-    panel: {
-      eyebrow: "Twój stack, prościej",
-      requestTitle: "Twój pomysł",
-      requestSubtitle: "Jedno studio. Każda warstwa technologii.",
-      requestMethod: "ZAKRES",
-      requestPath: "/odkrywanie → produkcja",
-      gatewayTitle: "dibumi studio",
-      gatewaySubtitle: "Projekt, budowa, utrzymanie",
-      gatewayBadge: "Jeden zespół",
-      nodes: ["Aplikasi web", "Aplikasi Android", "Serwer"],
-      responseLabel: "Podgląd dostawy",
-      responseNote: "Schemat poglądowy",
-      responseText: "Wdrożone. Działa. Twoje.",
-      footnote: ["Jeden zespół", "Jedna umowa", "Pełna własność"],
-      pause: "Pauza",
-      resume: "Wznów",
-      pauseLabel: "Zatrzymaj animację procesu",
-      resumeLabel: "Wznów animację procesu",
-    },
   },
   highlights: [
     {

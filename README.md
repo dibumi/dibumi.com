@@ -23,7 +23,7 @@ Legal documents are written in English and Indonesian. Other locales render the 
 
 ## Sections
 
-1. **Hero** — headline, two CTAs, and an illustrated delivery-flow panel (pausable, respects `prefers-reduced-motion`).
+1. **Hero** — centred headline, one paragraph, a solid CTA with a text link beside it, and a single line of guarantees. No illustration, no animation.
 2. **Highlights** — three cards: discover, build, operate.
 3. **Services** — six practices, each with points and a consultation link; the navbar Services dropdown links straight to each card anchor.
 4. **Products** — three platform products owned by dibumi.com (AI Gateway, Payment Orchestration, Adserver Exchange, all `Soon` with no public site yet), then one Ngambeg Cyber Media card listing all twelve games and apps in a single list.

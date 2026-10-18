@@ -39,98 +39,25 @@
   }
 }
 
-@layer components {
-  /* Latar titik-titik di belakang panel hero. Elemen induknya perlu
-     `relative isolate overflow-hidden` supaya titik tetap di belakang konten. */
-  .hero-pattern::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background-image: radial-gradient(rgb(10 118 104 / 13%) 1px, transparent 1px);
-    background-size: 22px 22px;
-    mask-image: linear-gradient(to left, black, transparent 75%);
-    content: "";
-  }
-
-  /* Diagram alur hero: paket data bergerak dari node permintaan ke node hasil.
-     Semua animasi berhenti saat pengguna memilih reduced motion. */
-  .flow-packet {
-    animation: flow-packet 2.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-  }
-
-  .flow-packet-delayed {
-    animation-delay: 1.3s;
-  }
-
-  .response-cursor {
-    animation: response-blink 1.1s steps(1) infinite;
-  }
-
-  .response-progress {
-    animation: response-fill 4.8s ease-in-out infinite;
-    transform-origin: left center;
-  }
-
-  /* Tombol pause menambahkan kelas ini ke panel diagram. */
-  .flow-paused .flow-packet,
-  .flow-paused .flow-packet-delayed,
-  .flow-paused .response-cursor,
-  .flow-paused .response-progress {
-    animation-play-state: paused;
-  }
-}
-
-@keyframes flow-packet {
-  0% {
-    transform: translateY(-0.15rem);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  85% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(1.9rem);
-    opacity: 0;
-  }
-}
-
-@keyframes response-blink {
-  0%,
-  49% {
-    opacity: 1;
-  }
-  50%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes response-fill {
-  0% {
-    transform: scaleX(0);
-  }
-  70%,
-  100% {
-    transform: scaleX(1);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  .flow-packet,
-  .flow-packet-delayed,
-  .response-cursor,
-  .response-progress {
+  /* Satu-satunya gerak yang tersisa: hero yang masuk dan panel dropdown.
+     Keduanya cukup ditampilkan tanpa animasi. */
+  .animate-fade-up,
+  .animate-panel-in {
     animation: none;
   }
+}
 
-  .response-progress {
-    transform: scaleX(1);
-  }
+/*
+ * Huruf Arab membawa harakat di atas dan di bawah garis dasar, dengan ascent
+ * 1.085em dan descent 0.415em. Leading rapat yang enak untuk Latin membuat
+ * baris judul Arab saling menabrak, jadi judul hero dilonggarkan khusus untuk
+ * locale Arab. Spesifisitasnya mengalahkan utility `leading-*` di elemennya.
+ */
+:lang(ar) .hero-title {
+  line-height: 1.35;
 }
