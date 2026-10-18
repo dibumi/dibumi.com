@@ -1,6 +1,6 @@
 # dibumi.com
 
-Marketing site for **dibumi.com**, an app and software production studio based in Lamongan, Indonesia. The visual language is ported from the AI Party marketing site: teal tokens, thin 1px borders, Geist Mono everywhere, and a light canvas instead of a dark hero.
+Marketing site for **dibumi.com**, an app and software production studio based in Lamongan, Indonesia. The visual language is ported from the AI Gateway marketing site: teal tokens, thin 1px borders, Geist Mono everywhere, and a light canvas instead of a dark hero.
 
 Built with **Next.js 16 (App Router)** and deployed as a **Cloudflare Worker** (Workers Static Assets) via **OpenNext**.
 
@@ -26,7 +26,7 @@ Legal documents are written in English and Indonesian. Other locales render the 
 1. **Hero** — headline, two CTAs, and an illustrated delivery-flow panel (pausable, respects `prefers-reduced-motion`).
 2. **Highlights** — three cards: discover, build, operate.
 3. **Services** — six practices, each with points and a consultation link; the navbar Services dropdown links straight to each card anchor.
-4. **Products** — three platform products owned by dibumi.com (AI Party, Payment Orchestration, Adserver Exchange, all `Soon` with no public site yet), then one Ngambeg Cyber Media card listing all twelve games and apps in a single list.
+4. **Products** — three platform products owned by dibumi.com (AI Gateway, Payment Orchestration, Adserver Exchange, all `Soon` with no public site yet), then one Ngambeg Cyber Media card listing all twelve games and apps in a single list.
 5. **Clients** — UC Browser / UCWeb, BuzzCity, PropellerAds, Zeedsharia, Motmaina.com.
 6. **Process** — four steps with a progress rail.
 7. **Standards** — three standards and three commitments.

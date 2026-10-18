@@ -14,7 +14,7 @@
 export type ProductStatus = "live" | "soon";
 
 export type ProductId =
-  | "aiParty"
+  | "aiGateway"
   | "paymentOrchestration"
   | "adserverExchange"
   | "blockIqPuzzle"
@@ -52,7 +52,7 @@ export const productGroups: ProductGroup[] = [
     id: "platforms",
     items: [
       // Produk platform milik dibumi.com, situsnya belum dipublikasikan.
-      { id: "aiParty", name: "AI Party", href: null, status: "soon" },
+      { id: "aiGateway", name: "AI Gateway", href: null, status: "soon" },
       { id: "paymentOrchestration", name: "Payment Orchestration", href: null, status: "soon" },
       { id: "adserverExchange", name: "Adserver Exchange", href: null, status: "soon" },
     ],

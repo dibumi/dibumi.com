@@ -91,7 +91,7 @@ export type SiteContent = {
     hub: string;
     groups: Record<"platforms" | "ngambeg", ProductGroupCopy>;
     platforms: Record<
-      "aiParty" | "paymentOrchestration" | "adserverExchange",
+      "aiGateway" | "paymentOrchestration" | "adserverExchange",
       { description: string }
     >;
   };
@@ -304,9 +304,9 @@ const en: SiteContent = {
       },
     },
     platforms: {
-      aiParty: {
+      aiGateway: {
         description:
-          "An AI gateway: one API key, one wallet, and a catalogue of models for builders.",
+          "One API key, one wallet, and a catalogue of models for builders.",
       },
       paymentOrchestration: {
         description:
@@ -603,9 +603,9 @@ const id: SiteContent = {
       },
     },
     platforms: {
-      aiParty: {
+      aiGateway: {
         description:
-          "Gateway AI: satu API key, satu dompet, dan katalog model untuk para builder.",
+          "Satu API key, satu dompet, dan katalog model untuk para builder.",
       },
       paymentOrchestration: {
         description:
@@ -903,9 +903,9 @@ const ar: SiteContent = {
       },
     },
     platforms: {
-      aiParty: {
+      aiGateway: {
         description:
-          "بوابة ذكاء اصطناعي: مفتاح API واحد ومحفظة واحدة وكتالوج من النماذج للمطورين.",
+          "مفتاح API واحد ومحفظة واحدة وكتالوج من النماذج للمطورين.",
       },
       paymentOrchestration: {
         description:
@@ -1188,8 +1188,8 @@ const zh: SiteContent = {
       },
     },
     platforms: {
-      aiParty: {
-        description: "AI 网关：一个 API Key、一个钱包，以及面向开发者的模型目录。",
+      aiGateway: {
+        description: "一个 API Key、一个钱包，以及面向开发者的模型目录。",
       },
       paymentOrchestration: {
         description:
@@ -1472,9 +1472,9 @@ const pl: SiteContent = {
       },
     },
     platforms: {
-      aiParty: {
+      aiGateway: {
         description:
-          "Brama AI: jeden klucz API, jeden portfel i katalog modeli dla twórców.",
+          "Jeden klucz API, jeden portfel i katalog modeli dla twórców.",
       },
       paymentOrchestration: {
         description:

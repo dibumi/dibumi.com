@@ -16,7 +16,7 @@ import {
 import type { SiteContent } from "@/lib/i18n";
 
 const platformIcons: Record<string, LucideIcon> = {
-  aiParty: Sparkles,
+  aiGateway: Sparkles,
   paymentOrchestration: CreditCard,
   adserverExchange: Megaphone,
 };

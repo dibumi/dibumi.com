@@ -26,7 +26,7 @@ import type { Locale, SiteContent } from "@/lib/i18n";
 
 /** Ikon per produk platform, dipetakan lewat id dari lib/products.ts. */
 const platformIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  aiParty: Sparkles,
+  aiGateway: Sparkles,
   paymentOrchestration: CreditCard,
   adserverExchange: Megaphone,
 };
