@@ -3,14 +3,134 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
   html {
-    /* Navbar fixed setinggi 4rem. Tanpa ini, judul section tertutup saat klik anchor. */
-    scroll-padding-top: 5rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Header sticky setinggi 5rem. Tanpa ini, judul section tertutup saat klik anchor. */
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+  }
+
+  ::selection {
+    background-color: #e4f2eb;
+    color: #0b4a43;
   }
 
   /* Satu gaya fokus untuk seluruh situs, supaya navigasi keyboard konsisten. */
   :focus-visible {
-    outline: 2px solid #1a74b4;
-    outline-offset: 2px;
+    outline: 2px solid #0a7668;
+    outline-offset: 3px;
+  }
+
+  section[id] {
+    scroll-margin-top: 7rem;
+  }
+
+  /* Angka pada kartu dan tabel tetap rata walau font mono. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Latar titik-titik di belakang panel hero. Elemen induknya perlu
+     `relative isolate overflow-hidden` supaya titik tetap di belakang konten. */
+  .hero-pattern::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image: radial-gradient(rgb(10 118 104 / 13%) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(to left, black, transparent 75%);
+    content: "";
+  }
+
+  /* Diagram alur hero: paket data bergerak dari node permintaan ke node hasil.
+     Semua animasi berhenti saat pengguna memilih reduced motion. */
+  .flow-packet {
+    animation: flow-packet 2.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+
+  .flow-packet-delayed {
+    animation-delay: 1.3s;
+  }
+
+  .response-cursor {
+    animation: response-blink 1.1s steps(1) infinite;
+  }
+
+  .response-progress {
+    animation: response-fill 4.8s ease-in-out infinite;
+    transform-origin: left center;
+  }
+
+  /* Tombol pause menambahkan kelas ini ke panel diagram. */
+  .flow-paused .flow-packet,
+  .flow-paused .flow-packet-delayed,
+  .flow-paused .response-cursor,
+  .flow-paused .response-progress {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes flow-packet {
+  0% {
+    transform: translateY(-0.15rem);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(1.9rem);
+    opacity: 0;
+  }
+}
+
+@keyframes response-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes response-fill {
+  0% {
+    transform: scaleX(0);
+  }
+  70%,
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .flow-packet,
+  .flow-packet-delayed,
+  .response-cursor,
+  .response-progress {
+    animation: none;
+  }
+
+  .response-progress {
+    transform: scaleX(1);
   }
 }

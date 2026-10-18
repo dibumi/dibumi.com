@@ -1,26 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import Highlights from "@/components/Highlights";
 import Services from "@/components/Services";
-import Platforms from "@/components/Platforms";
+import Products from "@/components/Products";
+import Clients from "@/components/Clients";
 import WorkflowMethodology from "@/components/WorkflowMethodology";
 import Standards from "@/components/Standards";
 import ContactSection from "@/components/ContactSection";
-import Footer from "@/components/Footer";
-import { getDictionary, isLocale, locales, type Locale } from "@/lib/i18n";
-
-const localeFontClass: Record<Locale, string> = {
-  id: "font-sans",
-  en: "font-sans",
-  pl: "font-sans",
-  ar: "font-ar",
-  zh: "font-zh",
-};
-
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
+import { getDictionary, isLocale, locales } from "@/lib/i18n";
 
 type LocalePageProps = { params: Promise<{ locale: string }> };
 
@@ -34,33 +22,45 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
     description: content.metadata.description,
     alternates: {
       canonical: `/${locale}`,
-      languages: Object.fromEntries(locales.map((item) => [item, `/${item}`])),
+      languages: {
+        ...Object.fromEntries(locales.map((item) => [item, `/${item}`])),
+        "x-default": "/en",
+      },
     },
-    openGraph: { locale: locale === "zh" ? "zh_CN" : locale === "ar" ? "ar" : locale === "pl" ? "pl_PL" : locale === "en" ? "en_US" : "id_ID" },
+    openGraph: {
+      title: content.metadata.title,
+      description: content.metadata.description,
+      locale:
+        locale === "zh"
+          ? "zh_CN"
+          : locale === "ar"
+            ? "ar"
+            : locale === "pl"
+              ? "pl_PL"
+              : locale === "en"
+                ? "en_US"
+                : "id_ID",
+    },
   };
 }
 
 export default async function LocalizedHomePage({ params }: LocalePageProps) {
-  const { locale: localeParam } = await params;
-  if (!isLocale(localeParam)) notFound();
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
 
-  const content = getDictionary(localeParam);
-  const direction = localeParam === "ar" ? "rtl" : "ltr";
+  const content = getDictionary(locale);
+  const basePath = `/${locale}`;
 
   return (
-    <div lang={localeParam} dir={direction} className={localeFontClass[localeParam]}>
-      <main className="flex min-h-screen flex-col justify-between bg-brand-50 text-slate-900 selection:bg-brand-100 selection:text-brand-900">
-        <Navbar locale={localeParam} content={content.nav} />
-        <div className="flex-grow">
-          <Hero content={content.hero} />
-          <Services content={content} />
-          <Platforms content={content.platforms} />
-          <WorkflowMethodology content={content.workflow} />
-          <Standards content={content.standards} />
-          <ContactSection content={content.contact} />
-        </div>
-        <Footer content={content.footer} />
-      </main>
-    </div>
+    <>
+      <Hero content={content} basePath={basePath} />
+      <Highlights content={content.highlights} />
+      <Services content={content} basePath={basePath} />
+      <Products content={content} />
+      <Clients content={content.clients} />
+      <WorkflowMethodology content={content.workflow} />
+      <Standards content={content.standards} />
+      <ContactSection content={content.contact} locale={locale} />
+    </>
   );
 }

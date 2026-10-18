@@ -1,67 +1,70 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans, IBM_Plex_Sans_Arabic, IBM_Plex_Mono, Noto_Sans_SC } from "next/font/google";
+import { Geist_Mono, IBM_Plex_Sans_Arabic, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
+import { locales } from "@/lib/i18n";
 
-// Variable font: weight axis spans 100-700, so font-extrabold clamps to 700.
-const sans = IBM_Plex_Sans({
-  subsets: ["latin", "latin-ext"],
+// Geist Mono dipakai untuk seluruh teks, sama seperti situs referensi.
+const mono = Geist_Mono({
+  subsets: ["latin"],
   display: "swap",
-  variable: "--font-sans",
+  variable: "--font-geist-mono",
 });
 
-const sansArabic = IBM_Plex_Sans_Arabic({
+// Geist Mono tidak punya glyph Arab dan CJK, jadi dua locale ini memakai
+// font pendamping agar teks tetap terbaca.
+const arabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
   weight: ["300", "400", "600", "700"],
   display: "swap",
-  variable: "--font-sans-ar",
+  variable: "--font-arabic",
 });
 
-const sansChinese = Noto_Sans_SC({
+const chinese = Noto_Sans_SC({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-sans-zh",
-});
-
-const mono = IBM_Plex_Mono({
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "600"],
-  display: "swap",
-  variable: "--font-mono-plex",
+  variable: "--font-chinese",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dibumi.com"),
-  title: "dibumi.com — Pabrik Produksi Aplikasi & Software | Lamongan, Indonesia",
+  title: "dibumi.com | App & Software Production Studio in Lamongan",
   description:
-    "Pabrik produksi aplikasi dan software terpercaya di Lamongan, Indonesia. Melayani Custom Software Development, Company Profile Korporat, Aplikasi Android Native, Jasa WebView Android (Play Store Ready), dan Kelola Server & DevOps.",
+    "A software production studio in Lamongan, Indonesia. Custom software, Android apps, company websites, and server operations.",
   keywords: [
-    "pabrik produksi aplikasi dan software",
-    "software lamongan",
-    "jasa pembuatan aplikasi lamongan",
+    "software production studio",
+    "software house lamongan",
     "custom software development indonesia",
-    "jasa pembuatan webview android",
-    "kelola server devops",
-    "jasa pembuatan aplikasi android",
-    "jasa company profile perusahaan",
+    "android app development indonesia",
+    "android webview services",
+    "server and devops management",
+    "company profile website",
     "it consultant indonesia",
     "dibumi",
     "dibumi.com",
+    "ngambeg cyber media",
   ],
-  authors: [{ name: "dibumi.com — Pabrik Produksi Aplikasi & Software" }],
+  authors: [{ name: "dibumi.com — App & Software Production Studio" }],
+  alternates: {
+    canonical: "/en",
+    languages: {
+      ...Object.fromEntries(locales.map((locale) => [locale, `/${locale}`])),
+      "x-default": "/en",
+    },
+  },
   openGraph: {
-    title: "dibumi.com — Pabrik Produksi Aplikasi & Software",
+    title: "dibumi.com | App & Software Production Studio",
     description:
-      "Partner teknologi strategis berbasis di Lamongan, Indonesia. Menghadirkan solusi Custom Software, Android App, WebView Play Store, Website Korporat, dan Infrastruktur Server berstandar enterprise.",
+      "A strategic technology partner based in Lamongan, Indonesia: custom software, Android apps, WebView builds for the Play Store, corporate websites, and enterprise-grade server operations.",
     url: "https://dibumi.com",
     siteName: "dibumi.com",
-    locale: "id_ID",
+    locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "dibumi.com — Pabrik Produksi Aplikasi & Software",
+    title: "dibumi.com | App & Software Production Studio",
     description:
-      "Solusi rekayasa digital terpercaya: Custom Software, Android, WebView, Website Korporat, dan Manajemen Server.",
+      "Digital engineering you can rely on: custom software, Android, WebView, corporate websites, and server management.",
   },
   robots: {
     index: true,
@@ -70,7 +73,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1A74B4",
+  themeColor: "#0a7668",
   width: "device-width",
   initialScale: 1,
 };
@@ -82,12 +85,10 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="id"
-      className={`${sans.variable} ${sansArabic.variable} ${sansChinese.variable} ${mono.variable} scroll-smooth motion-reduce:scroll-auto`}
+      lang="en"
+      className={`${mono.variable} ${arabic.variable} ${chinese.variable} scroll-smooth motion-reduce:scroll-auto`}
     >
-      <body className="font-sans antialiased text-slate-900 bg-brand-50">
-        {children}
-      </body>
+      <body className="bg-canvas text-ink font-sans antialiased">{children}</body>
     </html>
   );
 }

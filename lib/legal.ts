@@ -1,4 +1,4 @@
-import { companyAddress } from "@/lib/i18n";
+import { companyAddress, type Locale } from "@/lib/i18n";
 
 export type LegalSection = {
   heading: string;
@@ -12,11 +12,126 @@ export type LegalContent = {
   sections: LegalSection[];
 };
 
+export type LegalDoc = "terms" | "privacy";
+
 export const legalEntity = "Dibumi Teknologi Indonesia";
 export const legalEmail = "fatkul@dibumi.com";
 export const legalWhatsapp = "+62 856-0710-0255";
 
-export const terms: LegalContent = {
+/*
+ * Dokumen legal hanya tersedia dalam bahasa Inggris dan Indonesia. Menerjemahkan
+ * teks hukum ke bahasa lain tanpa peninjauan ahli berisiko mengubah makna, jadi
+ * locale lain menampilkan versi Inggris beserta pemberitahuan di halaman.
+ */
+
+const termsEn: LegalContent = {
+  title: "Terms & Conditions",
+  updated: "October 11, 2026",
+  intro: `These Terms & Conditions govern your use of dibumi.com and the working relationship between you and ${legalEntity}. By accessing this site or signing our proposal, you confirm that you have read and agree to the terms below.`,
+  sections: [
+    {
+      heading: "1. Definitions",
+      paragraphs: [
+        `"We", "us", or "Provider" refers to ${legalEntity}, with its registered address at ${companyAddress}.`,
+        '"You" or "Client" refers to any individual or business entity using our services.',
+        '"Services" covers custom software development, Android applications, company profile websites, WebView services, server and DevOps management, and maintenance and technical support.',
+      ],
+    },
+    {
+      heading: "2. Scope of Services",
+      paragraphs: [
+        "The scope of each project is defined in the Proposal or Statement of Work (SOW) agreed by both parties. That document forms an inseparable part of these Terms & Conditions.",
+        "Work not listed in the SOW is considered out of scope and will be offered as additional work with its own cost and timeline.",
+      ],
+    },
+    {
+      heading: "3. Proposals, Estimates, and Scope Changes",
+      paragraphs: [
+        "Time and cost estimates are based on the information you provide during discovery. Changes to requirements after the SOW is agreed may affect the schedule and project value.",
+        "Every change request will be confirmed in writing before work begins, so you keep full control over any additional cost.",
+      ],
+    },
+    {
+      heading: "4. Payment and Taxes",
+      paragraphs: [
+        "Payment is usually a deposit at project start and settlement against the agreed milestone terms.",
+        "Invoices are payable by the due date stated in the proposal. Late payment may delay delivery and may incur administrative fees.",
+        "All prices exclude applicable taxes unless stated otherwise in writing.",
+      ],
+    },
+    {
+      heading: "5. Client Obligations",
+      paragraphs: [
+        "You are responsible for providing the information, access, materials, and approvals needed for the work to proceed on schedule.",
+        "You warrant that all materials you provide do not infringe the intellectual property rights of any third party.",
+      ],
+    },
+    {
+      heading: "6. Intellectual Property and Handover",
+      paragraphs: [
+        "After full payment, ownership of the source code, repositories, and project assets developed specifically for you transfers to you.",
+        "Third-party components, open-source libraries, and our internal tooling remain subject to their respective licenses and are not transferred.",
+        "We may reference the project name in general terms as part of our portfolio unless you request otherwise in writing.",
+      ],
+    },
+    {
+      heading: "7. Confidentiality",
+      paragraphs: [
+        "Both parties keep non-public information confidential, including business ideas, customer data, and software logic, during and after the project.",
+        "We can sign a separate Non-Disclosure Agreement (NDA) if you need one before the project starts.",
+      ],
+    },
+    {
+      heading: "8. Warranty, Maintenance, and SLA",
+      paragraphs: [
+        "Every project includes a bug-fix warranty period as stated in the SOW. The warranty covers functional defects, not new features.",
+        "Maintenance, monitoring, and emergency server support are governed by a separate service level agreement (SLA) for clients who need it.",
+      ],
+    },
+    {
+      heading: "9. Limitation of Liability",
+      paragraphs: [
+        "Services are provided to the best of our ability, but we do not warrant that the software will be free of all interruption or fit for any purpose outside the SOW.",
+        "To the extent permitted by law, our total liability for a claim will not exceed the amount you paid for the work that is the basis of the claim.",
+        "We are not liable for indirect losses, lost profits, or data loss arising from use outside the SOW.",
+      ],
+    },
+    {
+      heading: "10. Suspension and Termination",
+      paragraphs: [
+        "Either party may terminate the engagement in writing if the other party commits a material breach and does not remedy it within a reasonable time after notice.",
+        "If the project is terminated, you remain responsible for paying for work completed up to the termination date, and we hand over the work produced up to that point.",
+      ],
+    },
+    {
+      heading: "11. Force Majeure",
+      paragraphs: [
+        "We are not liable for delays or failures caused by events beyond our reasonable control, such as natural disasters, widespread network outages, or government policy.",
+      ],
+    },
+    {
+      heading: "12. Governing Law and Dispute Resolution",
+      paragraphs: [
+        "These Terms & Conditions are governed by the laws of the Republic of Indonesia.",
+        "Disputes will first be pursued through deliberation. If unresolved, the parties agree to settle them before a competent forum in Indonesia.",
+      ],
+    },
+    {
+      heading: "13. Changes to These Terms",
+      paragraphs: [
+        "We may update these Terms & Conditions from time to time. The latest version applies from the moment it is published on this page, with the update date shown at the top.",
+      ],
+    },
+    {
+      heading: "14. Contact",
+      paragraphs: [
+        `Questions about these Terms & Conditions can be sent to ${legalEntity} at ${legalEmail} or WhatsApp ${legalWhatsapp}, with correspondence address ${companyAddress}.`,
+      ],
+    },
+  ],
+};
+
+const termsId: LegalContent = {
   title: "Syarat & Ketentuan",
   updated: "11 Oktober 2026",
   intro: `Syarat & Ketentuan ini mengatur penggunaan situs dibumi.com dan hubungan kerja sama antara Anda dengan ${legalEntity}. Dengan mengakses situs ini atau menandatangani penawaran kami, Anda menyatakan telah membaca dan menyetujui ketentuan di bawah ini.`,
@@ -123,7 +238,99 @@ export const terms: LegalContent = {
   ],
 };
 
-export const privacy: LegalContent = {
+const privacyEn: LegalContent = {
+  title: "Privacy Policy",
+  updated: "October 11, 2026",
+  intro: `This Privacy Policy explains how ${legalEntity} collects, uses, and protects your personal data when you visit dibumi.com or communicate with us. We process personal data in line with Law No. 27 of 2022 on Personal Data Protection.`,
+  sections: [
+    {
+      heading: "1. Personal Data We Collect",
+      paragraphs: [
+        "Data you provide directly, such as your name, email address, WhatsApp number, company name, and message content when you fill in the contact form or contact us.",
+        "Data recorded automatically, such as IP address, browser type, device, pages visited, and access time, used to maintain security and improve the quality of the site.",
+      ],
+    },
+    {
+      heading: "2. How We Obtain Data",
+      paragraphs: [
+        "Through the contact form on the site, email correspondence, WhatsApp conversations, and other interactions you initiate with our team.",
+      ],
+    },
+    {
+      heading: "3. Legal Basis for Processing",
+      paragraphs: [
+        "Your consent, when you submit data through the form or contact us first.",
+        "Performance of a contract, when data is needed to prepare a proposal or deliver a project you have agreed to.",
+        "Our legitimate interests, to maintain system security, prevent misuse, and develop our services reasonably.",
+      ],
+    },
+    {
+      heading: "4. Purposes of Use",
+      paragraphs: [
+        "Responding to your questions, quotation requests, and technical consultation needs.",
+        "Delivering, managing, and maintaining the projects and services you use.",
+        "Complying with applicable legal and administrative obligations.",
+      ],
+    },
+    {
+      heading: "5. Cookies and Similar Technologies",
+      paragraphs: [
+        "This site may use cookies or local storage to remember language preferences, basic analytics, and other technical functions.",
+        "You can configure your browser to reject cookies, though some site features may not work optimally.",
+      ],
+    },
+    {
+      heading: "6. Sharing Data with Third Parties",
+      paragraphs: [
+        "We may engage service providers needed for operations, such as hosting and content delivery networks, email services, and messaging services such as WhatsApp.",
+        "Those third parties only process data as required for their service and are not permitted to use it for other purposes.",
+        "We do not sell your personal data to anyone.",
+      ],
+    },
+    {
+      heading: "7. Data Transfer and Retention",
+      paragraphs: [
+        "Where a service provider is located outside Indonesia, we seek to ensure adequate protection under the applicable rules.",
+        "Data is stored only as long as needed for the purpose of collection, for performing a contract, or to meet legal obligations. After that, data is deleted or anonymized.",
+      ],
+    },
+    {
+      heading: "8. Data Security",
+      paragraphs: [
+        "We apply reasonable technical and organizational measures, such as access restrictions, encryption in transit, and system monitoring, to protect data from unauthorized access.",
+        "No method of transmission or storage is entirely risk-free. We keep improving our security practices on a regular basis.",
+      ],
+    },
+    {
+      heading: "9. Your Rights as a Data Subject",
+      paragraphs: [
+        "You may request information about the personal data we process, and ask for a copy, update, or correction of inaccurate data.",
+        "You may request deletion, withdraw consent, object to certain processing, and request restriction of processing as provided by law.",
+        `To exercise these rights, contact us at ${legalEmail}. We will follow up on valid requests within a reasonable time.`,
+      ],
+    },
+    {
+      heading: "10. Children's Data",
+      paragraphs: [
+        "Our services are intended for business needs and do not knowingly collect personal data of children below the age set by law without parental or guardian consent.",
+      ],
+    },
+    {
+      heading: "11. Changes to This Policy",
+      paragraphs: [
+        "We may update this Privacy Policy as our services or regulations change. The latest version applies from publication, with the update date shown at the top of the page.",
+      ],
+    },
+    {
+      heading: "12. Data Controller Contact",
+      paragraphs: [
+        `The data controller under this policy is ${legalEntity}, with its address at ${companyAddress}. You can reach us at ${legalEmail} or WhatsApp ${legalWhatsapp}.`,
+      ],
+    },
+  ],
+};
+
+const privacyId: LegalContent = {
   title: "Kebijakan Privasi",
   updated: "11 Oktober 2026",
   intro: `Kebijakan Privasi ini menjelaskan bagaimana ${legalEntity} mengumpulkan, menggunakan, dan melindungi data pribadi Anda ketika Anda mengunjungi dibumi.com atau berkomunikasi dengan kami. Kami memproses data pribadi sesuai Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi.`,
@@ -214,3 +421,24 @@ export const privacy: LegalContent = {
     },
   ],
 };
+
+const documents: Record<"en" | "id", Record<LegalDoc, LegalContent>> = {
+  en: { terms: termsEn, privacy: privacyEn },
+  id: { terms: termsId, privacy: privacyId },
+};
+
+/**
+ * Mengembalikan dokumen legal untuk locale tertentu. Locale tanpa terjemahan
+ * memakai versi Inggris dan menandai `isFallback`, supaya halaman bisa
+ * menampilkan pemberitahuan bahasa.
+ */
+export function getLegal(
+  locale: Locale,
+  doc: LegalDoc,
+): { content: LegalContent; isFallback: boolean } {
+  if (locale === "en" || locale === "id") {
+    return { content: documents[locale][doc], isFallback: false };
+  }
+
+  return { content: documents.en[doc], isFallback: true };
+}

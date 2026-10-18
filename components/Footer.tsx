@@ -1,93 +1,161 @@
 import React from "react";
 import Link from "next/link";
-import type { SiteContent } from "@/lib/i18n";
+import {
+  ArrowUpRight,
+  Book,
+  Gamepad2,
+  Layers,
+  ShieldCheck,
+  Smartphone,
+  Sparkles,
+} from "lucide-react";
+import { ngambegHubUrl } from "@/lib/products";
+import type { Locale, SiteContent } from "@/lib/i18n";
 
-export default function Footer({ content }: { content: SiteContent["footer"] }) {
-  const linkClass = "text-brand-200 transition-colors hover:text-white";
+export default function Footer({
+  content,
+  locale,
+  basePath,
+}: {
+  content: SiteContent;
+  locale: Locale;
+  basePath: string;
+}) {
+  const nav = content.nav;
+  const footer = content.footer;
+
+  const companyLinks = [
+    { label: nav.services, href: `${basePath}#services` },
+    { label: nav.process, href: `${basePath}#process` },
+    { label: nav.standards, href: `${basePath}#standards` },
+    { label: nav.contact, href: `${basePath}#contact` },
+  ];
 
   return (
-    <footer className="bg-brand-950 text-sm text-brand-100">
-      <div className="h-px bg-edge-glow" aria-hidden="true" />
-      <div className="mx-auto max-w-6xl px-6 pb-10 pt-14 sm:px-8">
-        <div className="mb-14 grid grid-cols-1 gap-10 md:grid-cols-12">
-          <div className="space-y-4 md:col-span-5">
-            <Link href="/" className="flex items-center gap-2.5 text-white">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600">
-                <span className="text-xs font-extrabold tracking-tight text-white">db</span>
-              </span>
-              <span className="text-base font-bold tracking-tight">
-                dibumi<span className="text-brand-300">.com</span>
-              </span>
-            </Link>
-            <p className="max-w-sm leading-relaxed text-brand-100">{content.description}</p>
-            <p className="max-w-sm text-xs leading-relaxed text-brand-200/80">{content.address}</p>
-          </div>
+    <footer className="border-line bg-surface border-t">
+      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1fr_auto] md:py-20">
+        <div className="flex flex-col items-start gap-4">
+          <Link href={basePath} className="text-ink flex items-center gap-2.5">
+            <span className="bg-primary flex h-9 w-9 items-center justify-center rounded-lg">
+              <span className="text-[11px] font-extrabold tracking-tight text-white">db</span>
+            </span>
+            <span className="text-lg font-semibold tracking-tight">
+              dibumi<span className="text-primary">.com</span>
+            </span>
+          </Link>
 
-          <div className="space-y-3 md:col-span-3">
-            <div className="text-sm font-semibold text-white">{content.services}</div>
-            <ul className="space-y-2">
-              {content.serviceLinks.map((label) => (
-                <li key={label}>
-                  <Link href="#services" className={linkClass}>
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <p className="text-muted max-w-sm text-sm leading-7">{footer.description}</p>
+          <p className="text-muted max-w-sm text-xs leading-6">{footer.address}</p>
 
-          <div className="space-y-3 md:col-span-2">
-            <div className="text-sm font-semibold text-white">{content.company}</div>
-            <ul className="space-y-2">
-              <li>
-                <Link href="#methodology" className={linkClass}>
-                  {content.companyLinks[0]}
-                </Link>
-              </li>
-              <li>
-                <Link href="#standards" className={linkClass}>
-                  {content.companyLinks[1]}
-                </Link>
-              </li>
-              <li>
-                <Link href="#contact" className={linkClass}>
-                  {content.companyLinks[2]}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-3 md:col-span-2">
-            <div className="text-sm font-semibold text-white">{content.contact}</div>
-            <ul className="space-y-2">
-              <li>
-                <a href="mailto:fatkul@dibumi.com" className={linkClass}>
-                  fatkul@dibumi.com
-                </a>
-              </li>
-              <li>
-                <Link href="#contact" className={linkClass}>
-                  {content.whatsapp}
-                </Link>
-              </li>
-            </ul>
+          <div className="mt-1 flex gap-2" aria-hidden="true">
+            <span className="bg-primary-soft text-primary flex h-9 w-9 items-center justify-center rounded-xl">
+              <Layers className="h-4 w-4" />
+            </span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-100 text-violet-700">
+              <Sparkles className="h-4 w-4" />
+            </span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+              <Smartphone className="h-4 w-4" />
+            </span>
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-8 text-xs text-brand-200/80 sm:flex-row">
-          <div>
-            © {new Date().getFullYear()} dibumi.com. {content.copyright}
-          </div>
-          <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-5">
-            <Link href="/id/terms" className={linkClass}>
-              {content.legal.terms}
+        <div className="grid grid-cols-2 gap-10 text-sm sm:gap-16 md:grid-cols-3">
+          {/* Produk */}
+          <nav aria-label={footer.product} className="flex flex-col gap-3.5">
+            <span className="text-muted mb-1 text-xs font-semibold uppercase tracking-widest">
+              {footer.product}
+            </span>
+            <span className="text-muted inline-flex items-center gap-2">
+              <Sparkles className="text-muted h-4 w-4" aria-hidden="true" />
+              {content.products.groups.aiParty.label}
+              <span className="border-line rounded border px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wider">
+                {content.products.soon}
+              </span>
+            </span>
+            <a
+              href={ngambegHubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary inline-flex items-center gap-2 transition"
+            >
+              <Gamepad2 className="text-muted h-4 w-4" aria-hidden="true" />
+              {content.products.groups.games.label}
+            </a>
+            <a
+              href={ngambegHubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary inline-flex items-center gap-2 transition"
+            >
+              <Smartphone className="text-muted h-4 w-4" aria-hidden="true" />
+              {content.products.groups.apps.label}
+            </a>
+            <a
+              href={ngambegHubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary inline-flex items-center gap-2 transition"
+            >
+              <ArrowUpRight className="text-muted h-4 w-4" aria-hidden="true" />
+              {content.products.groups.apps.brand}
+            </a>
+          </nav>
+
+          {/* Perusahaan */}
+          <nav aria-label={footer.company} className="flex flex-col gap-3.5">
+            <span className="text-muted mb-1 text-xs font-semibold uppercase tracking-widest">
+              {footer.company}
+            </span>
+            {companyLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="hover:text-primary inline-flex items-center gap-2 transition"
+              >
+                <Layers className="text-muted h-4 w-4" aria-hidden="true" />
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Legal */}
+          <nav aria-label={footer.legal} className="flex flex-col gap-3.5">
+            <span className="text-muted mb-1 text-xs font-semibold uppercase tracking-widest">
+              {footer.legal}
+            </span>
+            <Link
+              href={`/${locale}/privacy`}
+              className="hover:text-primary inline-flex items-center gap-2 transition"
+            >
+              <ShieldCheck className="text-muted h-4 w-4" aria-hidden="true" />
+              {footer.privacy}
             </Link>
-            <Link href="/id/privacy" className={linkClass}>
-              {content.legal.privacy}
+            <Link
+              href={`/${locale}/terms`}
+              className="hover:text-primary inline-flex items-center gap-2 transition"
+            >
+              <Book className="text-muted h-4 w-4" aria-hidden="true" />
+              {footer.terms}
             </Link>
-            <span>{content.location}</span>
-          </div>
+            <a
+              href="mailto:fatkul@dibumi.com"
+              className="hover:text-primary inline-flex items-center gap-2 transition"
+            >
+              <ArrowUpRight className="text-muted h-4 w-4" aria-hidden="true" />
+              fatkul@dibumi.com
+            </a>
+          </nav>
         </div>
+      </div>
+
+      <div className="border-line-subtle mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 border-t px-5 py-6 text-xs sm:px-8">
+        <span className="text-muted">
+          © {new Date().getFullYear()} dibumi.com — {footer.copyright}
+        </span>
+        <span className="text-muted">
+          {footer.builtFor} · {footer.location}
+        </span>
       </div>
     </footer>
   );

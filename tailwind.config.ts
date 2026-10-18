@@ -8,59 +8,104 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Biru Persela Lamongan: biru langit (jersey home) turun ke biru dongker (away).
-        // brand-600 = #1A74B4 dipakai untuk semua CTA berteks putih, kontras 4.99:1 (lolos AA).
+        // Token diporting dari C:\Herd\ai-party\frontend\marketing\app\assets\css\main.css.
+        // primary #0a7668 di atas putih = 5.5:1, lolos AA untuk teks dan tombol.
+        canvas: "#f8faf9",
+        surface: "#ffffff",
+        elevated: "#f0f5f2",
+        ink: "#16332d",
+        muted: "#61716b",
+        line: {
+          DEFAULT: "#dce5df",
+          subtle: "#edf1ee",
+        },
+        primary: {
+          DEFAULT: "#0a7668",
+          hover: "#085d53",
+          soft: "#e4f2eb",
+          ring: "#0a7668",
+        },
+        accent: {
+          DEFAULT: "#256b83",
+          soft: "#e7f1f6",
+        },
+        tint: {
+          mint: "#ecf5ee",
+          violet: "#f3f0fb",
+          amber: "#faf3e6",
+        },
+        // Alias lama. Semua komponen sudah memakai token baru, alias ini hanya
+        // jaring pengaman supaya tidak ada kelas yang diam-diam hilang.
         brand: {
-          50: "#F2F9FE",
-          100: "#E1F0FB",
-          200: "#C2E0F6",
-          300: "#93C9EE",
-          400: "#5FAEE4",
-          500: "#2E90D4",
-          600: "#1A74B4",
-          700: "#175E92",
-          800: "#164E77",
-          900: "#0A2A47",
-          950: "#061A2E",
+          50: "#f8faf9",
+          100: "#e4f2eb",
+          200: "#dce5df",
+          300: "#9dc4bb",
+          400: "#5fa89b",
+          500: "#2f8c7d",
+          600: "#0a7668",
+          700: "#085d53",
+          800: "#0b4a43",
+          900: "#16332d",
+          950: "#0d211e",
         },
       },
-      backgroundImage: {
-        // 1. Scrim hero: dua lapis supaya teks tetap terbaca di atas foto.
-        "hero-scrim":
-          "linear-gradient(90deg, rgba(6,26,46,0.95) 0%, rgba(6,26,46,0.82) 46%, rgba(10,42,71,0.42) 100%), linear-gradient(0deg, rgba(6,26,46,0.92) 0%, rgba(6,26,46,0.18) 46%, rgba(6,26,46,0.55) 100%)",
-        // 2. Garis brand 1px yang memudar, pembatas section dan header halaman legal.
-        "hairline-x":
-          "linear-gradient(90deg, #2E90D4 0%, rgba(46,144,212,0) 100%)",
-        // 3. Rail progres alur kerja: memudar di ujung supaya terbaca sebagai urutan, bukan hiasan.
-        "rail-x": "linear-gradient(90deg, #2E90D4 0%, #5FAEE4 45%, #C2E0F6 100%)",
-        // 4. Cahaya lembut di sudut panel kontak dan kaki halaman.
-        "panel-glow":
-          "radial-gradient(125% 95% at 6% 0%, rgba(46,144,212,0.34) 0%, rgba(46,144,212,0) 62%)",
-        "edge-glow":
-          "linear-gradient(90deg, rgba(46,144,212,0.38) 0%, rgba(46,144,212,0) 72%)",
-        // 5. Wash satu tile unggulan di bagian layanan, supaya tidak putih-semua.
-        "tile-wash":
-          "radial-gradient(130% 115% at 0% 0%, #E1F0FB 0%, rgba(242,249,254,0) 68%)",
-      },
       fontFamily: {
-        sans: ["var(--font-sans)", "system-ui", "-apple-system", "sans-serif"],
-        ar: ["var(--font-sans-ar)", "var(--font-sans)", "system-ui", "sans-serif"],
-        zh: ["var(--font-sans-zh)", "var(--font-sans)", "system-ui", "sans-serif"],
-        mono: ["var(--font-mono-plex)", "ui-monospace", "SFMono-Regular", "monospace"],
+        // Seluruh teks memakai Geist Mono, sama seperti situs referensi.
+        sans: [
+          "var(--font-geist-mono)",
+          "ui-monospace",
+          "SFMono-Regular",
+          "Menlo",
+          "monospace",
+        ],
+        mono: [
+          "var(--font-geist-mono)",
+          "ui-monospace",
+          "SFMono-Regular",
+          "monospace",
+        ],
+        // Geist Mono tidak punya glyph Arab dan CJK, jadi dua locale ini
+        // memakai font pendamping agar teks tetap terbaca.
+        ar: ["var(--font-arabic)", "var(--font-geist-mono)", "system-ui", "sans-serif"],
+        zh: ["var(--font-chinese)", "var(--font-geist-mono)", "system-ui", "sans-serif"],
+      },
+      borderRadius: {
+        "4xl": "2rem",
+      },
+      boxShadow: {
+        card: "0 4px 20px -8px rgba(22, 51, 45, 0.04)",
+        glow: "0 6px 20px -10px rgba(10, 118, 104, 0.25)",
+        float: "0 20px 70px -45px rgba(22, 51, 45, 0.3)",
+      },
+      backgroundImage: {
+        // Garis 1px yang memudar, dipakai sebagai pembatas section.
+        "hairline-x": "linear-gradient(90deg, #0a7668 0%, rgba(10,118,104,0) 100%)",
+        // Rail progres alur kerja: memudar di ujung supaya terbaca sebagai urutan.
+        "rail-x": "linear-gradient(90deg, #0a7668 0%, #2f8c7d 45%, #dce5df 100%)",
+        // Cahaya lembut di sudut panel gelap.
+        "panel-glow": "radial-gradient(125% 95% at 6% 0%, rgba(10,118,104,0.28) 0%, rgba(10,118,104,0) 62%)",
+        // Wash satu kartu unggulan, supaya tidak putih-semua.
+        "tile-wash": "radial-gradient(130% 115% at 0% 0%, #e4f2eb 0%, rgba(248,250,249,0) 68%)",
       },
       keyframes: {
         "fade-up": {
           "0%": { opacity: "0", transform: "translateY(0.75rem)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
-        "slow-zoom": {
-          "0%, 100%": { transform: "scale(1)" },
-          "50%": { transform: "scale(1.06)" },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "panel-in": {
+          "0%": { opacity: "0", transform: "translateY(-0.35rem)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
       animation: {
         "fade-up": "fade-up 650ms cubic-bezier(0.22, 1, 0.36, 1) both",
-        "slow-zoom": "slow-zoom 24s ease-in-out infinite",
+        "fade-in": "fade-in 400ms ease-out both",
+        "panel-in": "panel-in 160ms cubic-bezier(0.22, 1, 0.36, 1) both",
       },
     },
   },
