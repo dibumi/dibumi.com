@@ -44,6 +44,20 @@ Legal documents are written in English and Indonesian. Other locales render the 
 
 ---
 
+## Brand assets
+
+The logo is a monoline `d` standing on a shallow horizon curve, reading as "di bumi". It is drawn as SVG, so it stays sharp at any size and has a transparent background by definition.
+
+- `components/BrandMark.tsx` — the mark as an inline React SVG. It uses `currentColor`, so the colour comes from the surrounding text class. Used in the navbar, the footer, and the legal pages.
+- `app/icon.svg` — favicon: teal squircle with a white `db`.
+- `app/apple-icon.png` — 180×180, opaque on purpose. iOS composites transparent PNGs onto black, so this one ships with its own teal background.
+- `public/brand/` — standalone files for anything outside the app: `logo-mark.svg` (teal, ink, and white variants), `logo-tile.svg`, and `logo-lockup.svg` (mark plus wordmark, light and dark).
+- `public/brand/png/` — transparent RGBA exports: mark at 512/256/128/64/32 and the lockup at 1200, in both colours.
+
+The wordmark inside the lockup is outlined from Geist Mono at weight 600, so the SVG carries its own glyph shapes and does not depend on a font being installed. Regenerate the PNGs from the SVGs if the mark changes; do not edit the bitmaps directly.
+
+---
+
 ## Tech stack
 
 - **Framework:** Next.js 16 (App Router, static generation per locale)

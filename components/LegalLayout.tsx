@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft, FileText } from "lucide-react";
+import BrandMark from "@/components/BrandMark";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import type { LegalContent } from "@/lib/legal";
 
@@ -22,6 +23,7 @@ export default function LegalLayout({
         className="text-muted hover:text-primary mb-8 inline-flex items-center gap-2 text-xs font-medium transition"
       >
         <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" aria-hidden="true" />
+        <BrandMark className="text-primary h-4 w-4" />
         dibumi.com
       </Link>
 

@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import BrandMark from "@/components/BrandMark";
 import {
   ngambegHubUrl,
   productGroups,
@@ -210,9 +211,7 @@ export default function Navbar({
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
         {/* Brand */}
         <Link href={basePath} className="flex min-w-0 items-center gap-2.5">
-          <span className="bg-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-lg shadow-glow">
-            <span className="text-[11px] font-extrabold tracking-tight text-white">db</span>
-          </span>
+          <BrandMark className="text-primary h-9 w-9 shrink-0" />
           <span className="text-ink truncate text-base font-semibold tracking-tight sm:text-lg">
             dibumi<span className="text-primary">.com</span>
           </span>

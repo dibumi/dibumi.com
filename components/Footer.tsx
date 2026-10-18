@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { getPlatformProducts, ngambegHubUrl } from "@/lib/products";
+import BrandMark from "@/components/BrandMark";
 import type { Locale, SiteContent } from "@/lib/i18n";
 
 /** Ikon per produk platform, dipetakan lewat id dari lib/products.ts. */
@@ -44,9 +45,7 @@ export default function Footer({
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1fr_auto] md:py-20">
         <div className="flex flex-col items-start gap-4">
           <Link href={basePath} className="text-ink flex items-center gap-2.5">
-            <span className="bg-primary flex h-9 w-9 items-center justify-center rounded-lg">
-              <span className="text-[11px] font-extrabold tracking-tight text-white">db</span>
-            </span>
+            <BrandMark className="text-primary h-9 w-9" />
             <span className="text-lg font-semibold tracking-tight">
               dibumi<span className="text-primary">.com</span>
             </span>
