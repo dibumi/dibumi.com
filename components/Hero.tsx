@@ -20,12 +20,10 @@ export default function Hero({
   return (
     <section className="mx-auto max-w-7xl px-5 pb-20 pt-20 sm:px-8 sm:pt-24 lg:pb-28 lg:pt-28">
       <div className="animate-fade-up mx-auto flex max-w-4xl flex-col items-center gap-7 text-center">
-        <h1 className="hero-title text-ink text-[2.25rem] font-medium leading-[1.08] tracking-[-0.05em] sm:text-5xl md:text-6xl lg:text-[4.5rem]">
-          {hero.titleTop}
+        <h1 className="hero-title text-ink text-[2.5rem] font-medium leading-[1.06] tracking-[-0.05em] sm:text-[3.5rem] md:text-[5rem] lg:text-[7rem]">
+          {hero.titleLead}
           <br />
-          {hero.titleAccent}
-          <br />
-          <span className="text-primary">{hero.titleBottom}</span>
+          <span className="text-primary">{hero.titleAccent}</span>
         </h1>
 
         <p className="text-muted max-w-xl text-base leading-7 sm:text-lg">

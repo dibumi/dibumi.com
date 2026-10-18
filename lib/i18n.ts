@@ -46,9 +46,8 @@ export type SiteContent = {
     allServices: string;
   };
   hero: {
-    titleTop: string;
+    titleLead: string;
     titleAccent: string;
-    titleBottom: string;
     description: string;
     primaryCta: string;
     secondaryCta: string;
@@ -167,11 +166,10 @@ const en: SiteContent = {
     allServices: "All services",
   },
   hero: {
-    titleTop: "Big ideas.",
-    titleAccent: "Meet your",
-    titleBottom: "production studio.",
+    titleLead: "We build",
+    titleAccent: "what we run.",
     description:
-      "We design, build, and run custom software, Android apps, and the servers behind them. One studio from the first sketch to production.",
+      "Custom software, Android apps, and the infrastructure behind them. One studio from the first sketch to production, and the same team on call after launch.",
     primaryCta: "Start a project",
     secondaryCta: "View services",
     chips: ["Fixed scope", "Full code ownership", "24/7 SLA for servers"],
@@ -446,11 +444,10 @@ const id: SiteContent = {
     allServices: "Semua layanan",
   },
   hero: {
-    titleTop: "Ide besar.",
-    titleAccent: "Kenali",
-    titleBottom: "studio produksimu.",
+    titleLead: "Kami bangun,",
+    titleAccent: "kami jalankan.",
     description:
-      "Kami merancang, membangun, dan mengelola software kustom, aplikasi Android, serta server di belakangnya. Satu studio dari sketsa pertama sampai produksi.",
+      "Software kustom, aplikasi Android, dan infrastruktur di belakangnya. Satu studio dari sketsa pertama sampai produksi, dengan tim yang sama berjaga setelah rilis.",
     primaryCta: "Mulai proyek",
     secondaryCta: "Lihat layanan",
     chips: ["Lingkup tetap", "Kode sepenuhnya milik Anda", "SLA server 24/7"],
@@ -726,11 +723,10 @@ const ar: SiteContent = {
     allServices: "جميع الخدمات",
   },
   hero: {
-    titleTop: "أفكار كبيرة.",
-    titleAccent: "تعرّف على",
-    titleBottom: "استوديو الإنتاج.",
+    titleLead: "نبني ما",
+    titleAccent: "نشغّله.",
     description:
-      "نصمم ونبني ونشغّل البرمجيات المخصصة وتطبيقات Android والخوادم التي تدعمها. استوديو واحد من أول رسم إلى الإنتاج.",
+      "برمجيات مخصصة وتطبيقات Android والبنية التحتية التي تدعمها. استوديو واحد من أول رسم إلى الإنتاج، والفريق نفسه يبقى في الخدمة بعد الإطلاق.",
     primaryCta: "ابدأ مشروعاً",
     secondaryCta: "استكشف الخدمات",
     chips: ["نطاق ثابت", "ملكية كاملة للكود", "دعم خوادم 24/7"],
@@ -1001,11 +997,10 @@ const zh: SiteContent = {
     allServices: "全部服务",
   },
   hero: {
-    titleTop: "大想法。",
-    titleAccent: "交给",
-    titleBottom: "生产工作室。",
+    titleLead: "我们造的，",
+    titleAccent: "我们运营。",
     description:
-      "我们设计、构建并运维定制软件、Android 应用以及背后的服务器。从第一张草图到正式上线，一个工作室全部搞定。",
+      "定制软件、Android 应用，以及支撑它们的底层设施。从第一张草图到正式上线，上线后仍是同一个团队值守。",
     primaryCta: "开始项目",
     secondaryCta: "查看服务",
     chips: ["范围固定", "代码完全归属你", "服务器 24/7 SLA"],
@@ -1255,11 +1250,10 @@ const pl: SiteContent = {
     allServices: "Wszystkie usługi",
   },
   hero: {
-    titleTop: "Duże pomysły.",
-    titleAccent: "Poznaj swoje",
-    titleBottom: "studio produkcji.",
+    titleLead: "Budujemy,",
+    titleAccent: "utrzymujemy.",
     description:
-      "Projektujemy, budujemy i utrzymujemy dedykowane oprogramowanie, aplikacje Android oraz serwery, na których działają. Jedno studio od pierwszego szkicu po produkcję.",
+      "Dedykowane oprogramowanie, aplikacje Android i infrastruktura, na której działają. Jedno studio od pierwszego szkicu po produkcję, z tym samym zespołem na dyżurze po wdrożeniu.",
     primaryCta: "Rozpocznij projekt",
     secondaryCta: "Zobacz usługi",
     chips: ["Stały zakres", "Pełna własność kodu", "SLA serwerów 24/7"],
