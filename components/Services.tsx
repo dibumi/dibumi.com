@@ -1,18 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import {
-  AppWindow,
-  ArrowUpRight,
-  Code2,
-  Globe2,
-  LifeBuoy,
-  Server,
-  Smartphone,
-} from "lucide-react";
+import { ArrowUpRight, Code2 } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
+import { serviceAnchor, serviceMeta } from "@/lib/services";
 import type { SiteContent } from "@/lib/i18n";
-
-const icons = [Code2, Smartphone, Globe2, AppWindow, Server, LifeBuoy];
 
 export default function Services({
   content,
@@ -32,12 +23,14 @@ export default function Services({
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {content.services.map((service, index) => {
-            const Icon = icons[index] ?? Code2;
+            const meta = serviceMeta[index];
+            const Icon = meta?.icon ?? Code2;
 
             return (
               <article
                 key={service.title}
-                className="border-line bg-surface hover:border-primary/30 group flex flex-col gap-5 rounded-2xl border p-7 transition"
+                id={meta ? serviceAnchor(meta.slug) : undefined}
+                className="border-line bg-surface hover:border-primary/30 group flex scroll-mt-28 flex-col gap-5 rounded-2xl border p-7 transition"
               >
                 <div className="flex items-center justify-between gap-3">
                   <span className="bg-primary-soft text-primary group-hover:bg-primary flex h-12 w-12 items-center justify-center rounded-2xl transition-colors group-hover:text-white">

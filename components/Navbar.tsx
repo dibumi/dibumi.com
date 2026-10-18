@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   ArrowUpRight,
   ChevronDown,
+  Code2,
   CreditCard,
   Gamepad2,
   Megaphone,
@@ -21,6 +22,7 @@ import {
   type ProductGroupId,
   type ProductItem,
 } from "@/lib/products";
+import { serviceAnchor, serviceMeta } from "@/lib/services";
 import type { Locale, SiteContent } from "@/lib/i18n";
 
 const groupIcons: Record<ProductGroupId, React.ComponentType<{ className?: string }>> = {
@@ -36,6 +38,8 @@ const platformIcons: Record<string, React.ComponentType<{ className?: string }>>
   adserverExchange: Megaphone,
 };
 
+type OpenMenu = "product" | "services" | null;
+
 export default function Navbar({
   locale,
   content,
@@ -46,41 +50,51 @@ export default function Navbar({
   basePath: string;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [productOpen, setProductOpen] = useState(false);
-  const productRef = useRef<HTMLDivElement>(null);
+  const [openMenu, setOpenMenu] = useState<OpenMenu>(null);
+  const menusRef = useRef<HTMLDivElement>(null);
   const productButtonRef = useRef<HTMLButtonElement>(null);
+  const servicesButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
 
   const nav = content.nav;
   const productCopy = content.products;
   const platforms = productGroups.find((group) => group.id === "platforms")!;
 
+  // Judul dan deskripsi layanan ada di i18n; slug dan ikon di lib/services.ts.
+  const serviceItems = content.services.map((service, index) => ({
+    title: service.title,
+    description: service.description,
+    slug: serviceMeta[index]?.slug ?? "",
+    Icon: serviceMeta[index]?.icon ?? Code2,
+  }));
+
   const anchorLinks = [
-    { name: nav.services, href: `${basePath}#services` },
     { name: nav.process, href: `${basePath}#process` },
     { name: nav.standards, href: `${basePath}#standards` },
     { name: nav.contact, href: `${basePath}#contact` },
   ];
 
-  // Panel produk tertutup saat rute berubah (misal setelah klik link).
+  // Semua panel tertutup saat rute berubah (misal setelah klik link).
   useEffect(() => {
-    setProductOpen(false);
+    setOpenMenu(null);
     setMobileOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    if (!productOpen) return;
+    if (!openMenu) return;
 
     function handlePointerDown(event: MouseEvent) {
-      if (!productRef.current?.contains(event.target as Node)) {
-        setProductOpen(false);
+      if (!menusRef.current?.contains(event.target as Node)) {
+        setOpenMenu(null);
       }
     }
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
-      setProductOpen(false);
-      productButtonRef.current?.focus();
+      const trigger =
+        openMenu === "product" ? productButtonRef.current : servicesButtonRef.current;
+      setOpenMenu(null);
+      trigger?.focus();
     }
 
     document.addEventListener("mousedown", handlePointerDown);
@@ -90,7 +104,16 @@ export default function Navbar({
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [productOpen]);
+  }, [openMenu]);
+
+  function toggleMenu(menu: Exclude<OpenMenu, null>) {
+    setOpenMenu((value) => (value === menu ? null : menu));
+  }
+
+  const triggerClass = (isOpen: boolean) =>
+    `inline-flex items-center gap-2 rounded-full px-3.5 py-2 transition ${
+      isOpen ? "bg-primary-soft text-primary font-semibold" : "text-muted hover:text-primary"
+    }`;
 
   function SoonBadge() {
     return (
@@ -162,6 +185,33 @@ export default function Navbar({
     );
   }
 
+  /** Baris layanan di panel dropdown Services. */
+  function ServiceRow({ item }: { item: (typeof serviceItems)[number] }) {
+    const Icon = item.Icon;
+
+    return (
+      <li>
+        <Link
+          href={`${basePath}#${serviceAnchor(item.slug)}`}
+          onClick={() => setOpenMenu(null)}
+          className="hover:bg-elevated group flex items-start gap-3 rounded-xl px-2.5 py-2.5 transition"
+        >
+          <span className="bg-primary-soft text-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
+            <Icon className="h-4 w-4" aria-hidden="true" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="text-ink group-hover:text-primary block text-sm font-semibold transition">
+              {item.title}
+            </span>
+            <span className="text-muted mt-0.5 line-clamp-1 block text-[11px] leading-4">
+              {item.description}
+            </span>
+          </span>
+        </Link>
+      </li>
+    );
+  }
+
   return (
     <header className="border-line/80 bg-canvas/95 sticky top-0 z-50 border-b backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
@@ -195,85 +245,131 @@ export default function Navbar({
             {nav.home}
           </Link>
 
-          <div ref={productRef} className="relative">
-            <button
-              ref={productButtonRef}
-              type="button"
-              onClick={() => setProductOpen((value) => !value)}
-              aria-haspopup="true"
-              aria-expanded={productOpen}
-              aria-controls="product-menu"
-              className={`inline-flex items-center gap-2 rounded-full px-3.5 py-2 transition ${
-                productOpen
-                  ? "bg-primary-soft text-primary font-semibold"
-                  : "text-muted hover:text-primary"
-              }`}
-            >
-              {nav.product}
-              <ChevronDown
-                className={`h-3.5 w-3.5 transition-transform ${productOpen ? "rotate-180" : ""}`}
-                aria-hidden="true"
-              />
-            </button>
-
-            {productOpen && (
-              <div
-                id="product-menu"
-                className="border-line bg-surface shadow-card animate-panel-in absolute start-0 top-full mt-2 w-[44rem] rounded-2xl border p-2"
+          <div ref={menusRef} className="flex items-center gap-1">
+            {/* Product */}
+            <div className="relative">
+              <button
+                ref={productButtonRef}
+                type="button"
+                onClick={() => toggleMenu("product")}
+                aria-haspopup="true"
+                aria-expanded={openMenu === "product"}
+                aria-controls="product-menu"
+                className={triggerClass(openMenu === "product")}
               >
-                {/* Platforms: produk milik dibumi.com */}
-                <p className="text-muted px-2.5 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-wider">
-                  {productCopy.groups.platforms.label}
-                </p>
-                <ul>
-                  {platforms.items.map((item) => (
-                    <li key={item.id}>
-                      <PlatformRow item={item} />
-                    </li>
-                  ))}
-                </ul>
+                {nav.product}
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform ${
+                    openMenu === "product" ? "rotate-180" : ""
+                  }`}
+                  aria-hidden="true"
+                />
+              </button>
 
-                {/* Games & Apps dari Ngambeg Cyber Media */}
-                <div className="border-line-subtle mt-2 grid grid-cols-2 gap-2 border-t pt-2">
-                  {(["games", "apps"] as const).map((id) => {
-                    const group = productGroups.find((item) => item.id === id)!;
-                    const copy = productCopy.groups[id];
-                    const GroupIcon = groupIcons[id];
+              {openMenu === "product" && (
+                <div
+                  id="product-menu"
+                  className="border-line bg-surface shadow-card animate-panel-in absolute start-0 top-full mt-2 w-[44rem] rounded-2xl border p-2"
+                >
+                  {/* Platforms: produk milik dibumi.com */}
+                  <p className="text-muted px-2.5 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-wider">
+                    {productCopy.groups.platforms.label}
+                  </p>
+                  <ul>
+                    {platforms.items.map((item) => (
+                      <li key={item.id}>
+                        <PlatformRow item={item} />
+                      </li>
+                    ))}
+                  </ul>
 
-                    return (
-                      <div key={id} className="min-w-0">
-                        <div className="flex items-start gap-2 px-2 pb-1 pt-1.5">
-                          <GroupIcon className="text-muted mt-0.5 h-3.5 w-3.5 shrink-0" />
-                          <div className="min-w-0">
-                            <p className="text-ink text-xs font-semibold">{copy.label}</p>
-                            <p className="text-muted truncate text-[10px]">{copy.brand}</p>
+                  {/* Games & Apps dari Ngambeg Cyber Media */}
+                  <div className="border-line-subtle mt-2 grid grid-cols-2 gap-2 border-t pt-2">
+                    {(["games", "apps"] as const).map((id) => {
+                      const group = productGroups.find((item) => item.id === id)!;
+                      const copy = productCopy.groups[id];
+                      const GroupIcon = groupIcons[id];
+
+                      return (
+                        <div key={id} className="min-w-0">
+                          <div className="flex items-start gap-2 px-2 pb-1 pt-1.5">
+                            <GroupIcon className="text-muted mt-0.5 h-3.5 w-3.5 shrink-0" />
+                            <div className="min-w-0">
+                              <p className="text-ink text-xs font-semibold">{copy.label}</p>
+                              <p className="text-muted truncate text-[10px]">{copy.brand}</p>
+                            </div>
                           </div>
+                          <ul>
+                            {group.items.map((item) => (
+                              <li key={item.id}>
+                                <GroupItem item={item} />
+                              </li>
+                            ))}
+                          </ul>
                         </div>
-                        <ul>
-                          {group.items.map((item) => (
-                            <li key={item.id}>
-                              <GroupItem item={item} />
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
 
-                <div className="border-line-subtle mt-2 border-t pt-2">
-                  <a
-                    href={ngambegHubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:bg-elevated flex items-center justify-between gap-2 rounded-lg px-2 py-2 text-xs font-semibold transition"
-                  >
-                    {nav.allProducts}
-                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                  </a>
+                  <div className="border-line-subtle mt-2 border-t pt-2">
+                    <a
+                      href={ngambegHubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:bg-elevated flex items-center justify-between gap-2 rounded-lg px-2 py-2 text-xs font-semibold transition"
+                    >
+                      {nav.allProducts}
+                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </a>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+
+            {/* Services */}
+            <div className="relative">
+              <button
+                ref={servicesButtonRef}
+                type="button"
+                onClick={() => toggleMenu("services")}
+                aria-haspopup="true"
+                aria-expanded={openMenu === "services"}
+                aria-controls="services-menu"
+                className={triggerClass(openMenu === "services")}
+              >
+                {nav.services}
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform ${
+                    openMenu === "services" ? "rotate-180" : ""
+                  }`}
+                  aria-hidden="true"
+                />
+              </button>
+
+              {openMenu === "services" && (
+                <div
+                  id="services-menu"
+                  className="border-line bg-surface shadow-card animate-panel-in absolute start-0 top-full mt-2 w-[26rem] rounded-2xl border p-2"
+                >
+                  <ul>
+                    {serviceItems.map((item) => (
+                      <ServiceRow key={item.slug} item={item} />
+                    ))}
+                  </ul>
+
+                  <div className="border-line-subtle mt-2 border-t pt-2">
+                    <Link
+                      href={`${basePath}#services`}
+                      onClick={() => setOpenMenu(null)}
+                      className="text-primary hover:bg-elevated flex items-center justify-between gap-2 rounded-lg px-2 py-2 text-xs font-semibold transition"
+                    >
+                      {nav.allServices}
+                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {anchorLinks.map((link) => (
@@ -371,6 +467,40 @@ export default function Navbar({
               {nav.allProducts}
               <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
             </a>
+          </div>
+
+          <p className="text-muted mt-2 px-3 pt-2 text-[10px] font-semibold uppercase tracking-wider">
+            {nav.services}
+          </p>
+
+          <div className="border-line ms-4 border-s ps-2">
+            <ul className="mt-1">
+              {serviceItems.map((item) => {
+                const Icon = item.Icon;
+
+                return (
+                  <li key={item.slug}>
+                    <Link
+                      href={`${basePath}#${serviceAnchor(item.slug)}`}
+                      onClick={() => setMobileOpen(false)}
+                      className="text-muted hover:bg-elevated hover:text-primary flex items-center gap-3 rounded-lg px-2 py-2.5 text-sm transition"
+                    >
+                      <Icon className="text-muted h-4 w-4 shrink-0" aria-hidden="true" />
+                      <span className="truncate">{item.title}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <Link
+              href={`${basePath}#services`}
+              onClick={() => setMobileOpen(false)}
+              className="text-primary hover:bg-elevated mt-2 flex items-center justify-between gap-2 rounded-lg px-2 py-2 text-xs font-semibold transition"
+            >
+              {nav.allServices}
+              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
           </div>
 
           <div className="border-line-subtle mt-2 border-t pt-2">

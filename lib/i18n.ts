@@ -43,6 +43,7 @@ export type SiteContent = {
     language: string;
     soon: string;
     allProducts: string;
+    allServices: string;
   };
   hero: {
     eyebrow: string;
@@ -183,6 +184,7 @@ const en: SiteContent = {
     language: "Language",
     soon: "Soon",
     allProducts: "All products",
+    allServices: "All services",
   },
   hero: {
     eyebrow: "Software production studio in Lamongan",
@@ -486,6 +488,7 @@ const id: SiteContent = {
     language: "Bahasa",
     soon: "Segera",
     allProducts: "Semua produk",
+    allServices: "Semua layanan",
   },
   hero: {
     eyebrow: "Studio produksi software di Lamongan",
@@ -790,6 +793,7 @@ const ar: SiteContent = {
     language: "اللغة",
     soon: "قريباً",
     allProducts: "جميع المنتجات",
+    allServices: "جميع الخدمات",
   },
   hero: {
     eyebrow: "استوديو إنتاج البرمجيات في لامونجان",
@@ -1089,6 +1093,7 @@ const zh: SiteContent = {
     language: "语言",
     soon: "即将上线",
     allProducts: "全部产品",
+    allServices: "全部服务",
   },
   hero: {
     eyebrow: "位于拉蒙岸的软件生产工作室",
@@ -1367,6 +1372,7 @@ const pl: SiteContent = {
     language: "Język",
     soon: "Wkrótce",
     allProducts: "Wszystkie produkty",
+    allServices: "Wszystkie usługi",
   },
   hero: {
     eyebrow: "Studio produkcji oprogramowania w Lamongan",
