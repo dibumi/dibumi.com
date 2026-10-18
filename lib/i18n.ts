@@ -92,7 +92,6 @@ export type SiteContent = {
     eyebrow: string;
     title: string;
     description: string;
-    names: string[];
   };
   workflow: {
     eyebrow: string;
@@ -298,13 +297,6 @@ const en: SiteContent = {
     title: "Clients we have worked with",
     description:
       "Teams and networks we have supported across software, mobile, and infrastructure work.",
-    names: [
-      "UC Browser / UCWeb",
-      "BuzzCity",
-      "PropellerAds",
-      "Zeedsharia",
-      "Motmaina.com",
-    ],
   },
   workflow: {
     eyebrow: "Process",
@@ -571,13 +563,6 @@ const id: SiteContent = {
     title: "Klien yang pernah bekerja sama",
     description:
       "Tim dan jaringan yang pernah kami dukung dalam pekerjaan software, mobile, dan infrastruktur.",
-    names: [
-      "UC Browser / UCWeb",
-      "BuzzCity",
-      "PropellerAds",
-      "Zeedsharia",
-      "Motmaina.com",
-    ],
   },
   workflow: {
     eyebrow: "Proses",
@@ -845,13 +830,6 @@ const ar: SiteContent = {
     title: "عملاء تعاملنا معهم",
     description:
       "فرق وشبكات دعمناها في أعمال البرمجيات والجوال والبنية التحتية.",
-    names: [
-      "UC Browser / UCWeb",
-      "BuzzCity",
-      "PropellerAds",
-      "Zeedsharia",
-      "Motmaina.com",
-    ],
   },
   workflow: {
     eyebrow: "المنهجية",
@@ -1101,13 +1079,6 @@ const zh: SiteContent = {
     eyebrow: "客户",
     title: "合作过的客户",
     description: "我们在软件、移动端和基础设施项目中支持过的团队与网络。",
-    names: [
-      "UC Browser / UCWeb",
-      "BuzzCity",
-      "PropellerAds",
-      "Zeedsharia",
-      "Motmaina.com",
-    ],
   },
   workflow: {
     eyebrow: "流程",
@@ -1362,13 +1333,6 @@ const pl: SiteContent = {
     title: "Klienci, z którymi pracowaliśmy",
     description:
       "Zespoły i sieci, które wspieraliśmy w projektach software, mobile i infrastrukturalnych.",
-    names: [
-      "UC Browser / UCWeb",
-      "BuzzCity",
-      "PropellerAds",
-      "Zeedsharia",
-      "Motmaina.com",
-    ],
   },
   workflow: {
     eyebrow: "Proces",

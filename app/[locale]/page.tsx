@@ -57,7 +57,7 @@ export default async function LocalizedHomePage({ params }: LocalePageProps) {
       <Highlights content={content.highlights} />
       <Services content={content} basePath={basePath} />
       <Products content={content} />
-      <Clients content={content.clients} />
+      <Clients content={content.clients} locale={locale} />
       <WorkflowMethodology content={content.workflow} />
       <Standards content={content.standards} />
       <ContactSection content={content.contact} />

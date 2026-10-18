@@ -41,6 +41,7 @@ Legal documents are written in English and Indonesian. Other locales render the 
 - `lib/products.ts` — product catalogue used by the navbar dropdown, the Products section, and the footer. Two levels: groups (`platforms`, `ngambeg`) and the items inside them. Games and apps share the `ngambeg` group because they are presented as one list pointing at ngambeg.com. Fill in `href` for a product once its site exists; `null` renders a `Soon` badge instead of a link.
 - `lib/services.ts` — service slugs and icons shared by the navbar Services dropdown and the Services section. Its order must match the `services` array in `lib/i18n.ts`; titles and descriptions stay there because they are translated.
 - `lib/team.ts` — the one team member: name, optional photo, and contact links. Set `photo` to a path under `public/` once the portrait exists; until then the page renders a monogram tile.
+- `lib/clients.ts` — the client list: name, logo path, ISO country code, and native image size. Logos live in `public/clients/`, flags in `public/flags/`. A `null` logo renders the name as a text wordmark instead of an image.
 - `lib/legal.ts` — terms and privacy content, keyed by locale.
 - `components/Clients.tsx` — client list (copy lives in `lib/i18n.ts`).
 
