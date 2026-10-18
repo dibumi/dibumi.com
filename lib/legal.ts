@@ -14,7 +14,7 @@ export type LegalContent = {
 
 export type LegalDoc = "terms" | "privacy";
 
-export const legalEntity = "Dibumi Teknologi Indonesia";
+export const legalEntity = "Dibumi Technology Indonesia";
 export const legalEmail = "fatkul@dibumi.com";
 export const legalWhatsapp = "+62 856-0710-0255";
 

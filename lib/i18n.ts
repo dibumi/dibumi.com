@@ -182,7 +182,7 @@ const en: SiteContent = {
     githubLabel: "GitHub",
     facts: [
       { label: "Based in", value: "Lamongan, East Java" },
-      { label: "Studio", value: "Dibumi Teknologi Indonesia" },
+      { label: "Studio", value: "Dibumi Technology Indonesia" },
       { label: "Focus", value: "Custom software, Android, servers" },
       { label: "Hours", value: "Monday to Saturday, 08:30-20:00 WIB" },
     ],
@@ -455,7 +455,7 @@ const id: SiteContent = {
     githubLabel: "GitHub",
     facts: [
       { label: "Berbasis di", value: "Lamongan, Jawa Timur" },
-      { label: "Studio", value: "Dibumi Teknologi Indonesia" },
+      { label: "Studio", value: "Dibumi Technology Indonesia" },
       { label: "Fokus", value: "Software kustom, Android, server" },
       { label: "Jam kerja", value: "Senin sampai Sabtu, 08.30-20.00 WIB" },
     ],
@@ -729,7 +729,7 @@ const ar: SiteContent = {
     githubLabel: "GitHub",
     facts: [
       { label: "المقر", value: "لامونجان، جاوة الشرقية" },
-      { label: "الاستوديو", value: "Dibumi Teknologi Indonesia" },
+      { label: "الاستوديو", value: "Dibumi Technology Indonesia" },
       { label: "التخصص", value: "برمجيات مخصصة، Android، خوادم" },
       { label: "ساعات العمل", value: "الاثنين إلى السبت، 08:30-20:00 بتوقيت غرب إندونيسيا" },
     ],
@@ -998,7 +998,7 @@ const zh: SiteContent = {
     githubLabel: "GitHub",
     facts: [
       { label: "所在地", value: "东爪哇省拉蒙岸" },
-      { label: "工作室", value: "Dibumi Teknologi Indonesia" },
+      { label: "工作室", value: "Dibumi Technology Indonesia" },
       { label: "方向", value: "定制软件、Android、服务器" },
       { label: "工作时间", value: "周一至周六 08:30-20:00（印尼西部时间）" },
     ],
@@ -1246,7 +1246,7 @@ const pl: SiteContent = {
     githubLabel: "GitHub",
     facts: [
       { label: "Siedziba", value: "Lamongan, Jawa Wschodnia" },
-      { label: "Studio", value: "Dibumi Teknologi Indonesia" },
+      { label: "Studio", value: "Dibumi Technology Indonesia" },
       { label: "Specjalizacja", value: "Oprogramowanie, Android, serwery" },
       { label: "Godziny", value: "Poniedziałek do soboty, 08:30-20:00 WIB" },
     ],
