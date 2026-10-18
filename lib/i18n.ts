@@ -88,7 +88,11 @@ export type SiteContent = {
     soon: string;
     visit: string;
     hub: string;
-    groups: Record<"aiParty" | "games" | "apps", ProductGroupCopy>;
+    groups: Record<"platforms" | "games" | "apps", ProductGroupCopy>;
+    platforms: Record<
+      "aiParty" | "paymentOrchestration" | "adserverExchange",
+      { description: string }
+    >;
   };
   clients: {
     eyebrow: string;
@@ -284,11 +288,11 @@ const en: SiteContent = {
     visit: "Open site",
     hub: "All products on ngambeg.com",
     groups: {
-      aiParty: {
-        label: "AI Party",
-        brand: "AI Party",
+      platforms: {
+        label: "Platforms",
+        brand: "dibumi.com",
         description:
-          "An AI gateway: one API key, one wallet, and a catalogue of models for builders.",
+          "Our own products, built and operated by the team that ships client work.",
       },
       games: {
         label: "Games",
@@ -300,6 +304,20 @@ const en: SiteContent = {
         label: "Apps",
         brand: "Ngambeg Cyber Media",
         description: "Everyday Android utilities, published on Google Play.",
+      },
+    },
+    platforms: {
+      aiParty: {
+        description:
+          "An AI gateway: one API key, one wallet, and a catalogue of models for builders.",
+      },
+      paymentOrchestration: {
+        description:
+          "One API for every payment gateway: automatic routing, fallback, idempotency, and normalized webhooks.",
+      },
+      adserverExchange: {
+        description:
+          "Campaigns, placements, creatives, targeting rules, and daily stats in a single ad server.",
       },
     },
   },
@@ -573,11 +591,11 @@ const id: SiteContent = {
     visit: "Buka situs",
     hub: "Semua produk di ngambeg.com",
     groups: {
-      aiParty: {
-        label: "AI Party",
-        brand: "AI Party",
+      platforms: {
+        label: "Platform",
+        brand: "dibumi.com",
         description:
-          "Gateway AI: satu API key, satu dompet, dan katalog model untuk para builder.",
+          "Produk kami sendiri, dibangun dan dikelola oleh tim yang sama dengan pekerjaan klien.",
       },
       games: {
         label: "Game",
@@ -589,6 +607,20 @@ const id: SiteContent = {
         label: "Aplikasi",
         brand: "Ngambeg Cyber Media",
         description: "Utilitas Android sehari-hari, terbit di Google Play.",
+      },
+    },
+    platforms: {
+      aiParty: {
+        description:
+          "Gateway AI: satu API key, satu dompet, dan katalog model untuk para builder.",
+      },
+      paymentOrchestration: {
+        description:
+          "Satu API untuk semua payment gateway: routing otomatis, fallback, idempotency, dan webhook ternormalisasi.",
+      },
+      adserverExchange: {
+        description:
+          "Kampanye, placement, creative, aturan penargetan, dan statistik harian dalam satu ad server.",
       },
     },
   },
@@ -863,11 +895,11 @@ const ar: SiteContent = {
     visit: "افتح الموقع",
     hub: "جميع المنتجات على ngambeg.com",
     groups: {
-      aiParty: {
-        label: "AI Party",
-        brand: "AI Party",
+      platforms: {
+        label: "المنصات",
+        brand: "dibumi.com",
         description:
-          "بوابة ذكاء اصطناعي: مفتاح API واحد ومحفظة واحدة وكتالوج من النماذج للمطورين.",
+          "منتجاتنا الخاصة، نبنيها ونديرها بالفريق نفسه الذي ينفذ أعمال العملاء.",
       },
       games: {
         label: "الألعاب",
@@ -879,6 +911,20 @@ const ar: SiteContent = {
         label: "التطبيقات",
         brand: "Ngambeg Cyber Media",
         description: "أدوات Android يومية منشورة على Google Play.",
+      },
+    },
+    platforms: {
+      aiParty: {
+        description:
+          "بوابة ذكاء اصطناعي: مفتاح API واحد ومحفظة واحدة وكتالوج من النماذج للمطورين.",
+      },
+      paymentOrchestration: {
+        description:
+          "واجهة API واحدة لكل بوابات الدفع: توجيه تلقائي وبديل احتياطي ومنع تكرار الطلبات وتوحيد الـ webhooks.",
+      },
+      adserverExchange: {
+        description:
+          "الحملات والمواضع والتصاميم وقواعد الاستهداف والإحصاءات اليومية في خادم إعلانات واحد.",
       },
     },
   },
@@ -1140,11 +1186,10 @@ const zh: SiteContent = {
     visit: "打开网站",
     hub: "ngambeg.com 上的全部产品",
     groups: {
-      aiParty: {
-        label: "AI Party",
-        brand: "AI Party",
-        description:
-          "AI 网关：一个 API Key、一个钱包，以及面向开发者的模型目录。",
+      platforms: {
+        label: "平台",
+        brand: "dibumi.com",
+        description: "我们自研并运营的产品，与客户项目由同一个团队打造。",
       },
       games: {
         label: "游戏",
@@ -1155,6 +1200,18 @@ const zh: SiteContent = {
         label: "应用",
         brand: "Ngambeg Cyber Media",
         description: "日常 Android 工具，已发布到 Google Play。",
+      },
+    },
+    platforms: {
+      aiParty: {
+        description: "AI 网关：一个 API Key、一个钱包，以及面向开发者的模型目录。",
+      },
+      paymentOrchestration: {
+        description:
+          "一个 API 覆盖所有支付网关：自动路由、故障回退、幂等处理与统一 Webhook。",
+      },
+      adserverExchange: {
+        description: "广告系列、广告位、创意、定向规则与每日统计，集中在一个广告服务器。",
       },
     },
   },
@@ -1415,11 +1472,11 @@ const pl: SiteContent = {
     visit: "Otwórz stronę",
     hub: "Wszystkie produkty na ngambeg.com",
     groups: {
-      aiParty: {
-        label: "AI Party",
-        brand: "AI Party",
+      platforms: {
+        label: "Platformy",
+        brand: "dibumi.com",
         description:
-          "Brama AI: jeden klucz API, jeden portfel i katalog modeli dla twórców.",
+          "Nasze własne produkty, budowane i utrzymywane przez ten sam zespół, który realizuje projekty klientów.",
       },
       games: {
         label: "Gry",
@@ -1431,6 +1488,20 @@ const pl: SiteContent = {
         label: "Aplikacje",
         brand: "Ngambeg Cyber Media",
         description: "Codzienne narzędzia Android opublikowane w Google Play.",
+      },
+    },
+    platforms: {
+      aiParty: {
+        description:
+          "Brama AI: jeden klucz API, jeden portfel i katalog modeli dla twórców.",
+      },
+      paymentOrchestration: {
+        description:
+          "Jedno API do wszystkich bramek płatności: automatyczny routing, fallback, idempotencja i znormalizowane webhooki.",
+      },
+      adserverExchange: {
+        description:
+          "Kampanie, miejsca emisji, kreacje, reguły targetowania i dzienne statystyki w jednym serwerze reklam.",
       },
     },
   },

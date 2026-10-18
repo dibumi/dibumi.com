@@ -6,20 +6,34 @@ import { usePathname } from "next/navigation";
 import {
   ArrowUpRight,
   ChevronDown,
+  CreditCard,
   Gamepad2,
+  Megaphone,
   Menu,
   Smartphone,
   Sparkles,
   X,
 } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { ngambegHubUrl, productGroups, type ProductGroupId } from "@/lib/products";
+import {
+  ngambegHubUrl,
+  productGroups,
+  type ProductGroupId,
+  type ProductItem,
+} from "@/lib/products";
 import type { Locale, SiteContent } from "@/lib/i18n";
 
 const groupIcons: Record<ProductGroupId, React.ComponentType<{ className?: string }>> = {
-  aiParty: Sparkles,
+  platforms: Sparkles,
   games: Gamepad2,
   apps: Smartphone,
+};
+
+/** Ikon per produk platform, dipetakan lewat id dari lib/products.ts. */
+const platformIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  aiParty: Sparkles,
+  paymentOrchestration: CreditCard,
+  adserverExchange: Megaphone,
 };
 
 export default function Navbar({
@@ -39,6 +53,7 @@ export default function Navbar({
 
   const nav = content.nav;
   const productCopy = content.products;
+  const platforms = productGroups.find((group) => group.id === "platforms")!;
 
   const anchorLinks = [
     { name: nav.services, href: `${basePath}#services` },
@@ -77,46 +92,72 @@ export default function Navbar({
     };
   }, [productOpen]);
 
-  const aiParty = productGroups.find((group) => group.id === "aiParty")!;
-  const aiPartyItem = aiParty.items[0];
-  const AiPartyIcon = groupIcons.aiParty;
+  function SoonBadge() {
+    return (
+      <span className="border-line text-muted shrink-0 rounded-md border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider">
+        {productCopy.soon}
+      </span>
+    );
+  }
 
-  function ProductItem({
-    name,
-    href,
-    status,
-  }: {
-    name: string;
-    href: string | null;
-    status: "live" | "soon";
-  }) {
-    const badge =
-      status === "soon" ? (
-        <span className="border-line text-muted shrink-0 rounded-md border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider">
-          {productCopy.soon}
-        </span>
-      ) : (
-        <ArrowUpRight className="text-muted h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-      );
-
-    if (!href) {
+  /** Baris produk Ngambeg (Games/Apps): link aktif atau label Soon. */
+  function GroupItem({ item }: { item: ProductItem }) {
+    if (!item.href) {
       return (
         <span className="text-muted flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-sm">
-          <span className="truncate">{name}</span>
-          {badge}
+          <span className="truncate">{item.name}</span>
+          <SoonBadge />
         </span>
       );
     }
 
     return (
       <a
-        href={href}
+        href={item.href}
         target="_blank"
         rel="noopener noreferrer"
         className="text-ink hover:bg-elevated hover:text-primary flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-sm transition"
       >
-        <span className="truncate">{name}</span>
-        {badge}
+        <span className="truncate">{item.name}</span>
+        <ArrowUpRight className="text-muted h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      </a>
+    );
+  }
+
+  /** Baris produk platform: ikon, nama, deskripsi, dan badge Soon. */
+  function PlatformRow({ item }: { item: ProductItem }) {
+    const Icon = platformIcons[item.id] ?? Sparkles;
+    const description =
+      (productCopy.platforms as Record<string, { description: string }>)[item.id]?.description ??
+      "";
+
+    const body = (
+      <>
+        <span className="bg-primary-soft text-primary mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
+          <Icon className="h-4 w-4" aria-hidden="true" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="flex flex-wrap items-center gap-2">
+            <span className="text-ink text-sm font-semibold">{item.name}</span>
+            {item.status === "soon" && <SoonBadge />}
+          </span>
+          <span className="text-muted mt-0.5 block text-[11px] leading-4">{description}</span>
+        </span>
+      </>
+    );
+
+    if (!item.href) {
+      return <div className="flex items-start gap-3 rounded-xl px-2.5 py-2.5">{body}</div>;
+    }
+
+    return (
+      <a
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:bg-elevated flex items-start gap-3 rounded-xl px-2.5 py-2.5 transition"
+      >
+        {body}
       </a>
     );
   }
@@ -178,34 +219,22 @@ export default function Navbar({
             {productOpen && (
               <div
                 id="product-menu"
-                className="border-line bg-surface shadow-card animate-panel-in absolute start-0 top-full mt-2 w-[32rem] rounded-2xl border p-2"
+                className="border-line bg-surface shadow-card animate-panel-in absolute start-0 top-full mt-2 w-[44rem] rounded-2xl border p-2"
               >
-                {/* Produk internal */}
-                <div className="bg-primary-soft rounded-xl p-3">
-                  <div className="flex items-start gap-3">
-                    <span className="bg-surface text-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-lg shadow-sm">
-                      <AiPartyIcon className="h-4 w-4" />
-                    </span>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-ink text-sm font-semibold">
-                          {productCopy.groups.aiParty.label}
-                        </span>
-                        {aiPartyItem.status === "soon" && (
-                          <span className="border-primary/20 text-primary bg-surface/70 rounded-md border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider">
-                            {productCopy.soon}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-muted mt-1 text-[11px] leading-4">
-                        {productCopy.groups.aiParty.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                {/* Platforms: produk milik dibumi.com */}
+                <p className="text-muted px-2.5 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-wider">
+                  {productCopy.groups.platforms.label}
+                </p>
+                <ul>
+                  {platforms.items.map((item) => (
+                    <li key={item.id}>
+                      <PlatformRow item={item} />
+                    </li>
+                  ))}
+                </ul>
 
                 {/* Games & Apps dari Ngambeg Cyber Media */}
-                <div className="mt-2 grid grid-cols-2 gap-2">
+                <div className="border-line-subtle mt-2 grid grid-cols-2 gap-2 border-t pt-2">
                   {(["games", "apps"] as const).map((id) => {
                     const group = productGroups.find((item) => item.id === id)!;
                     const copy = productCopy.groups[id];
@@ -222,12 +251,8 @@ export default function Navbar({
                         </div>
                         <ul>
                           {group.items.map((item) => (
-                            <li key={item.name}>
-                              <ProductItem
-                                name={item.name}
-                                href={item.href}
-                                status={item.status}
-                              />
+                            <li key={item.id}>
+                              <GroupItem item={item} />
                             </li>
                           ))}
                         </ul>
@@ -306,26 +331,17 @@ export default function Navbar({
           </p>
 
           <div className="border-line ms-4 border-s ps-2">
-            <div className="bg-primary-soft mt-1 rounded-xl p-3">
-              <div className="flex items-start gap-3">
-                <span className="bg-surface text-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm">
-                  <AiPartyIcon className="h-4 w-4" />
-                </span>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-ink text-sm font-semibold">
-                      {productCopy.groups.aiParty.label}
-                    </span>
-                    <span className="border-primary/20 text-primary bg-surface/70 rounded-md border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider">
-                      {productCopy.soon}
-                    </span>
-                  </div>
-                  <p className="text-muted mt-1 text-[11px] leading-4">
-                    {productCopy.groups.aiParty.description}
-                  </p>
-                </div>
-              </div>
-            </div>
+            <p className="text-ink px-2 pt-1 text-xs font-semibold">
+              {productCopy.groups.platforms.label}
+            </p>
+            <p className="text-muted px-2 text-[10px]">{productCopy.groups.platforms.brand}</p>
+            <ul className="mt-1">
+              {platforms.items.map((item) => (
+                <li key={item.id}>
+                  <PlatformRow item={item} />
+                </li>
+              ))}
+            </ul>
 
             {(["games", "apps"] as const).map((id) => {
               const group = productGroups.find((item) => item.id === id)!;
@@ -337,8 +353,8 @@ export default function Navbar({
                   <p className="text-muted px-2 text-[10px]">{copy.brand}</p>
                   <ul className="mt-1">
                     {group.items.map((item) => (
-                      <li key={item.name}>
-                        <ProductItem name={item.name} href={item.href} status={item.status} />
+                      <li key={item.id}>
+                        <GroupItem item={item} />
                       </li>
                     ))}
                   </ul>

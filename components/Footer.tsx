@@ -3,14 +3,23 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   Book,
+  CreditCard,
   Gamepad2,
   Layers,
+  Megaphone,
   ShieldCheck,
   Smartphone,
   Sparkles,
 } from "lucide-react";
-import { ngambegHubUrl } from "@/lib/products";
+import { getPlatformProducts, ngambegHubUrl } from "@/lib/products";
 import type { Locale, SiteContent } from "@/lib/i18n";
+
+/** Ikon per produk platform, dipetakan lewat id dari lib/products.ts. */
+const platformIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  aiParty: Sparkles,
+  paymentOrchestration: CreditCard,
+  adserverExchange: Megaphone,
+};
 
 export default function Footer({
   content,
@@ -66,13 +75,34 @@ export default function Footer({
             <span className="text-muted mb-1 text-xs font-semibold uppercase tracking-widest">
               {footer.product}
             </span>
-            <span className="text-muted inline-flex items-center gap-2">
-              <Sparkles className="text-muted h-4 w-4" aria-hidden="true" />
-              {content.products.groups.aiParty.label}
-              <span className="border-line rounded border px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wider">
-                {content.products.soon}
-              </span>
-            </span>
+            {getPlatformProducts().map((item) => {
+              const Icon = platformIcons[item.id] ?? Sparkles;
+
+              if (!item.href) {
+                return (
+                  <span key={item.id} className="text-muted inline-flex items-center gap-2">
+                    <Icon className="text-muted h-4 w-4" aria-hidden="true" />
+                    {item.name}
+                    <span className="border-line rounded border px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wider">
+                      {content.products.soon}
+                    </span>
+                  </span>
+                );
+              }
+
+              return (
+                <a
+                  key={item.id}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary inline-flex items-center gap-2 transition"
+                >
+                  <Icon className="text-muted h-4 w-4" aria-hidden="true" />
+                  {item.name}
+                </a>
+              );
+            })}
             <a
               href={ngambegHubUrl}
               target="_blank"

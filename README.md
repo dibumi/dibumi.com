@@ -26,7 +26,7 @@ Legal documents are written in English and Indonesian. Other locales render the 
 1. **Hero** — headline, two CTAs, and an illustrated delivery-flow panel (pausable, respects `prefers-reduced-motion`).
 2. **Highlights** — three cards: discover, build, operate.
 3. **Services** — six practices, each with points and a consultation link.
-4. **Products** — AI Party (`Soon`, no public site yet) plus Games and Apps from Ngambeg Cyber Media.
+4. **Products** — three platform products owned by dibumi.com (AI Party, Payment Orchestration, Adserver Exchange, all `Soon` with no public site yet), then Games and Apps from Ngambeg Cyber Media.
 5. **Clients** — UC Browser / UCWeb, BuzzCity, PropellerAds, Zeedsharia, Motmaina.com.
 6. **Process** — four steps with a progress rail.
 7. **Standards** — three standards and three commitments.
@@ -37,7 +37,7 @@ Legal documents are written in English and Indonesian. Other locales render the 
 ## Data sources
 
 - `lib/i18n.ts` — every visible string, for all five locales.
-- `lib/products.ts` — product catalogue used by the navbar dropdown, the Products section, and the footer. Fill in `href` for a product once its site exists; `null` renders a `Soon` badge instead of a link.
+- `lib/products.ts` — product catalogue used by the navbar dropdown, the Products section, and the footer. Two levels: groups (`platforms`, `games`, `apps`) and the items inside them. Fill in `href` for a product once its site exists; `null` renders a `Soon` badge instead of a link.
 - `lib/legal.ts` — terms and privacy content, keyed by locale.
 - `components/Clients.tsx` — client list (copy lives in `lib/i18n.ts`).
 
