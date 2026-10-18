@@ -37,6 +37,7 @@ export default function Footer({
     { label: nav.services, href: `${basePath}#services` },
     { label: nav.process, href: `${basePath}#process` },
     { label: nav.standards, href: `${basePath}#standards` },
+    { label: nav.team, href: `${basePath}/teams` },
     { label: nav.contact, href: `${basePath}#contact` },
   ];
 

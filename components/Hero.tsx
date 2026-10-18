@@ -20,7 +20,14 @@ export default function Hero({
   return (
     <section className="mx-auto max-w-7xl px-5 pb-20 pt-20 sm:px-8 sm:pt-24 lg:pb-28 lg:pt-28">
       <div className="animate-fade-up mx-auto flex max-w-4xl flex-col items-center gap-7 text-center">
-        <h1 className="hero-title text-ink text-[2.5rem] font-medium leading-[1.06] tracking-[-0.05em] sm:text-[3.5rem] md:text-[5rem] lg:text-[7rem]">
+        {/*
+          Skala judul dibatasi oleh panjang baris terpanjang, bukan oleh selera.
+          Geist Mono berlebar 0.6em per karakter, dan tracking -0.05em membuat
+          lebar efektifnya 0.55em. Baris terpanjang, "We keep it running.",
+          berisi 19 karakter. Di lg wadahnya 56rem, jadi batas atasnya 84px.
+          Di mobile baris itu patah dua, dan itu wajar untuk layar sempit.
+        */}
+        <h1 className="hero-title text-ink text-[2.5rem] font-medium leading-[1.06] tracking-[-0.05em] sm:text-[3.25rem] md:text-[4rem] lg:text-[5.25rem]">
           {hero.titleLead}
           <br />
           <span className="text-primary">{hero.titleAccent}</span>

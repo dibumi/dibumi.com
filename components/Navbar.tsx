@@ -84,6 +84,9 @@ export default function Navbar({
     { name: nav.standards, href: `${basePath}#standards`, hash: "#standards" },
   ];
 
+  const teamHref = `${basePath}/teams`;
+  const teamActive = pathname === teamHref;
+
   const productCount =
     getProductGroup("platforms").items.length + getProductGroup("ngambeg").items.length;
 
@@ -319,6 +322,16 @@ export default function Navbar({
                 </Link>
               );
             })}
+
+            <Link
+              href={teamHref}
+              onClick={() => setOpenPanel(null)}
+              aria-current={teamActive ? "page" : undefined}
+              className={`${desktopItem} ${teamActive ? "text-ink" : "text-muted hover:text-ink"}`}
+            >
+              {nav.team}
+              <Underline active={teamActive} />
+            </Link>
           </nav>
 
           {/* Right cluster */}
@@ -416,12 +429,22 @@ export default function Navbar({
                 key={link.href}
                 href={link.href}
                 onClick={closeMobile}
-                className="text-ink border-line flex items-center justify-between gap-3 border-b py-4 text-sm font-semibold last:border-b-0"
+                className="text-ink border-line flex items-center justify-between gap-3 border-b py-4 text-sm font-semibold"
               >
                 {link.name}
                 <ArrowRight className="text-muted h-4 w-4 rtl:rotate-180" aria-hidden="true" />
               </Link>
             ))}
+
+            <Link
+              href={teamHref}
+              onClick={closeMobile}
+              aria-current={teamActive ? "page" : undefined}
+              className="text-ink border-line flex items-center justify-between gap-3 border-b py-4 text-sm font-semibold last:border-b-0"
+            >
+              {nav.team}
+              <ArrowRight className="text-muted h-4 w-4 rtl:rotate-180" aria-hidden="true" />
+            </Link>
           </div>
 
           <div className="border-line bg-canvas border-t px-5 py-3">

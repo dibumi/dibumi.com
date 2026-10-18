@@ -5,7 +5,7 @@ const baseUrl = "https://dibumi.com";
 
 /** Semua rute statis untuk setiap locale, lengkap dengan hreflang. */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = ["", "/privacy", "/terms"] as const;
+  const paths = ["", "/teams", "/privacy", "/terms"] as const;
   const languages = Object.fromEntries(locales.map((locale) => [locale, locale]));
 
   return locales.flatMap((locale) =>
@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/${locale}${path}`,
       lastModified: new Date(),
       changeFrequency: path === "" ? ("monthly" as const) : ("yearly" as const),
-      priority: path === "" ? 1 : 0.4,
+      priority: path === "" ? 1 : path === "/teams" ? 0.6 : 0.4,
       alternates: {
         languages: {
           ...Object.fromEntries(

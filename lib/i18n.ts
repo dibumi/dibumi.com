@@ -37,6 +37,7 @@ export type SiteContent = {
     process: string;
     standards: string;
     contact: string;
+    team: string;
     cta: string;
     menu: string;
     closeMenu: string;
@@ -52,6 +53,19 @@ export type SiteContent = {
     primaryCta: string;
     secondaryCta: string;
     chips: string[];
+  };
+  teamPage: {
+    eyebrow: string;
+    role: string;
+    bio: string[];
+    linksLabel: string;
+    emailLabel: string;
+    whatsappLabel: string;
+    githubLabel: string;
+    facts: { label: string; value: string }[];
+    cta: string;
+    metaTitle: string;
+    metaDescription: string;
   };
   highlights: { tag: string; title: string; description: string }[];
   servicesSection: {
@@ -137,6 +151,7 @@ const en: SiteContent = {
     process: "Process",
     standards: "Standards",
     contact: "Contact",
+    team: "Team",
     cta: "Start a project",
     menu: "Open navigation",
     closeMenu: "Close navigation",
@@ -146,13 +161,35 @@ const en: SiteContent = {
     allServices: "All services",
   },
   hero: {
-    titleLead: "We build",
-    titleAccent: "what we run.",
+    titleLead: "We build it.",
+    titleAccent: "We keep it running.",
     description:
-      "Custom software, Android apps, and the infrastructure behind them. One studio from the first sketch to production, and the same team on call after launch.",
+      "Custom software, Android apps, and the servers they run on. One team ships it and stays on call.",
     primaryCta: "Start a project",
     secondaryCta: "View services",
     chips: ["Fixed scope", "Full code ownership", "24/7 SLA for servers"],
+  },
+  teamPage: {
+    eyebrow: "Team",
+    role: "Founder & Lead Engineer",
+    bio: [
+      "Fatkul runs dibumi.com from Lamongan, East Java. He writes the custom software, ships the Android apps, and handles the servers when something breaks.",
+      "The studio's own products are his too: AI Gateway, Payment Orchestration, Adserver Exchange, and the apps and games published under Ngambeg Cyber Media.",
+    ],
+    linksLabel: "Reach him directly",
+    emailLabel: "Email",
+    whatsappLabel: "WhatsApp",
+    githubLabel: "GitHub",
+    facts: [
+      { label: "Based in", value: "Lamongan, East Java" },
+      { label: "Studio", value: "Dibumi Teknologi Indonesia" },
+      { label: "Focus", value: "Custom software, Android, servers" },
+      { label: "Hours", value: "Monday to Saturday, 08:30-20:00 WIB" },
+    ],
+    cta: "Start a project",
+    metaTitle: "Fatkul Nur Koirudin | dibumi.com",
+    metaDescription:
+      "Founder and lead engineer at dibumi.com in Lamongan, East Java. Custom software, Android apps, and the servers they run on.",
   },
   highlights: [
     {
@@ -221,7 +258,7 @@ const en: SiteContent = {
   ],
   products: {
     eyebrow: "Products",
-    title: "Products we build and run",
+    title: "Our own products",
     description:
       "Alongside client work, we design, ship, and maintain our own apps and games.",
     soon: "Soon",
@@ -387,6 +424,7 @@ const id: SiteContent = {
     process: "Proses",
     standards: "Standar",
     contact: "Kontak",
+    team: "Tim",
     cta: "Mulai proyek",
     menu: "Buka navigasi",
     closeMenu: "Tutup navigasi",
@@ -396,13 +434,35 @@ const id: SiteContent = {
     allServices: "Semua layanan",
   },
   hero: {
-    titleLead: "Kami bangun,",
-    titleAccent: "kami jalankan.",
+    titleLead: "Kami yang bangun.",
+    titleAccent: "Kami yang jaga.",
     description:
-      "Software kustom, aplikasi Android, dan infrastruktur di belakangnya. Satu studio dari sketsa pertama sampai produksi, dengan tim yang sama berjaga setelah rilis.",
+      "Software kustom, aplikasi Android, dan server yang menjalankannya. Satu tim yang sama merilis dan berjaga setelahnya.",
     primaryCta: "Mulai proyek",
     secondaryCta: "Lihat layanan",
     chips: ["Lingkup tetap", "Kode sepenuhnya milik Anda", "SLA server 24/7"],
+  },
+  teamPage: {
+    eyebrow: "Tim",
+    role: "Pendiri & Lead Engineer",
+    bio: [
+      "Fatkul menjalankan dibumi.com dari Lamongan, Jawa Timur. Ia menulis software kustom, merilis aplikasi Android, dan menangani server saat ada yang bermasalah.",
+      "Produk milik studio juga dia yang urus: AI Gateway, Payment Orchestration, Adserver Exchange, dan aplikasi serta game yang terbit di bawah Ngambeg Cyber Media.",
+    ],
+    linksLabel: "Hubungi langsung",
+    emailLabel: "Email",
+    whatsappLabel: "WhatsApp",
+    githubLabel: "GitHub",
+    facts: [
+      { label: "Berbasis di", value: "Lamongan, Jawa Timur" },
+      { label: "Studio", value: "Dibumi Teknologi Indonesia" },
+      { label: "Fokus", value: "Software kustom, Android, server" },
+      { label: "Jam kerja", value: "Senin sampai Sabtu, 08.30-20.00 WIB" },
+    ],
+    cta: "Mulai proyek",
+    metaTitle: "Fatkul Nur Koirudin | dibumi.com",
+    metaDescription:
+      "Pendiri dan lead engineer dibumi.com di Lamongan, Jawa Timur. Software kustom, aplikasi Android, dan server yang menjalankannya.",
   },
   highlights: [
     {
@@ -471,7 +531,7 @@ const id: SiteContent = {
   ],
   products: {
     eyebrow: "Produk",
-    title: "Produk yang kami bangun dan kelola",
+    title: "Produk milik kami sendiri",
     description:
       "Selain pekerjaan klien, kami merancang, merilis, dan merawat aplikasi serta game kami sendiri.",
     soon: "Segera",
@@ -638,6 +698,7 @@ const ar: SiteContent = {
     process: "المنهجية",
     standards: "المعايير",
     contact: "تواصل معنا",
+    team: "الفريق",
     cta: "ابدأ مشروعك",
     menu: "افتح القائمة",
     closeMenu: "أغلق القائمة",
@@ -647,13 +708,35 @@ const ar: SiteContent = {
     allServices: "جميع الخدمات",
   },
   hero: {
-    titleLead: "نبني ما",
-    titleAccent: "نشغّله.",
+    titleLead: "نبنيها.",
+    titleAccent: "ونواصل تشغيلها.",
     description:
-      "برمجيات مخصصة وتطبيقات Android والبنية التحتية التي تدعمها. استوديو واحد من أول رسم إلى الإنتاج، والفريق نفسه يبقى في الخدمة بعد الإطلاق.",
+      "برمجيات مخصصة وتطبيقات Android والخوادم التي تعمل عليها. فريق واحد يسلّمها ويبقى في الخدمة بعد الإطلاق.",
     primaryCta: "ابدأ مشروعاً",
     secondaryCta: "استكشف الخدمات",
     chips: ["نطاق ثابت", "ملكية كاملة للكود", "دعم خوادم 24/7"],
+  },
+  teamPage: {
+    eyebrow: "الفريق",
+    role: "المؤسس وكبير المهندسين",
+    bio: [
+      "يدير فتكُل موقع dibumi.com من لامونجان، جاوة الشرقية. يكتب البرمجيات المخصصة، ويطلق تطبيقات Android، ويتولى الخوادم عند حدوث عطل.",
+      "منتجات الاستوديو الخاصة به أيضاً: AI Gateway وPayment Orchestration وAdserver Exchange، والتطبيقات والألعاب المنشورة تحت Ngambeg Cyber Media.",
+    ],
+    linksLabel: "تواصل معه مباشرة",
+    emailLabel: "البريد الإلكتروني",
+    whatsappLabel: "واتساب",
+    githubLabel: "GitHub",
+    facts: [
+      { label: "المقر", value: "لامونجان، جاوة الشرقية" },
+      { label: "الاستوديو", value: "Dibumi Teknologi Indonesia" },
+      { label: "التخصص", value: "برمجيات مخصصة، Android، خوادم" },
+      { label: "ساعات العمل", value: "الاثنين إلى السبت، 08:30-20:00 بتوقيت غرب إندونيسيا" },
+    ],
+    cta: "ابدأ مشروعك",
+    metaTitle: "Fatkul Nur Koirudin | dibumi.com",
+    metaDescription:
+      "المؤسس وكبير المهندسين في dibumi.com بلامونجان، جاوة الشرقية. برمجيات مخصصة وتطبيقات Android والخوادم التي تعمل عليها.",
   },
   highlights: [
     {
@@ -722,7 +805,7 @@ const ar: SiteContent = {
   ],
   products: {
     eyebrow: "المنتجات",
-    title: "منتجات نبنيها ونديرها",
+    title: "منتجاتنا الخاصة",
     description:
       "إلى جانب أعمال العملاء، نصمم ونطلق ونصون تطبيقاتنا وألعابنا.",
     soon: "قريباً",
@@ -884,6 +967,7 @@ const zh: SiteContent = {
     process: "流程",
     standards: "标准",
     contact: "联系我们",
+    team: "团队",
     cta: "开始项目",
     menu: "打开菜单",
     closeMenu: "关闭菜单",
@@ -893,13 +977,35 @@ const zh: SiteContent = {
     allServices: "全部服务",
   },
   hero: {
-    titleLead: "我们造的，",
-    titleAccent: "我们运营。",
+    titleLead: "我们造出来。",
+    titleAccent: "我们继续运营。",
     description:
-      "定制软件、Android 应用，以及支撑它们的底层设施。从第一张草图到正式上线，上线后仍是同一个团队值守。",
+      "定制软件、Android 应用，以及运行它们的服务器。同一个团队交付，并在上线后继续值守。",
     primaryCta: "开始项目",
     secondaryCta: "查看服务",
     chips: ["范围固定", "代码完全归属你", "服务器 24/7 SLA"],
+  },
+  teamPage: {
+    eyebrow: "团队",
+    role: "创始人兼首席工程师",
+    bio: [
+      "Fatkul 在印尼东爪哇省拉蒙岸运营 dibumi.com。他编写定制软件、发布 Android 应用，服务器出问题时也由他处理。",
+      "工作室的自有产品同样由他负责：AI Gateway、Payment Orchestration、Adserver Exchange，以及以 Ngambeg Cyber Media 名义发布的应用和游戏。",
+    ],
+    linksLabel: "直接联系",
+    emailLabel: "邮箱",
+    whatsappLabel: "WhatsApp",
+    githubLabel: "GitHub",
+    facts: [
+      { label: "所在地", value: "东爪哇省拉蒙岸" },
+      { label: "工作室", value: "Dibumi Teknologi Indonesia" },
+      { label: "方向", value: "定制软件、Android、服务器" },
+      { label: "工作时间", value: "周一至周六 08:30-20:00（印尼西部时间）" },
+    ],
+    cta: "开始项目",
+    metaTitle: "Fatkul Nur Koirudin | dibumi.com",
+    metaDescription:
+      "dibumi.com 创始人兼首席工程师，常驻印尼东爪哇省拉蒙岸。定制软件、Android 应用，以及运行它们的服务器。",
   },
   highlights: [
     {
@@ -961,7 +1067,7 @@ const zh: SiteContent = {
   ],
   products: {
     eyebrow: "产品",
-    title: "我们自研并运营的产品",
+    title: "我们自有的产品",
     description: "在客户项目之外，我们设计、发布并维护自己的应用与游戏。",
     soon: "即将上线",
     visit: "打开网站",
@@ -1109,6 +1215,7 @@ const pl: SiteContent = {
     process: "Proces",
     standards: "Standardy",
     contact: "Kontakt",
+    team: "Zespół",
     cta: "Rozpocznij projekt",
     menu: "Otwórz nawigację",
     closeMenu: "Zamknij nawigację",
@@ -1118,13 +1225,35 @@ const pl: SiteContent = {
     allServices: "Wszystkie usługi",
   },
   hero: {
-    titleLead: "Budujemy,",
-    titleAccent: "utrzymujemy.",
+    titleLead: "Budujemy go.",
+    titleAccent: "Utrzymujemy go.",
     description:
-      "Dedykowane oprogramowanie, aplikacje Android i infrastruktura, na której działają. Jedno studio od pierwszego szkicu po produkcję, z tym samym zespołem na dyżurze po wdrożeniu.",
+      "Dedykowane oprogramowanie, aplikacje Android i serwery, na których działają. Jeden zespół wdraża je i pozostaje w gotowości po premierze.",
     primaryCta: "Rozpocznij projekt",
     secondaryCta: "Zobacz usługi",
     chips: ["Stały zakres", "Pełna własność kodu", "SLA serwerów 24/7"],
+  },
+  teamPage: {
+    eyebrow: "Zespół",
+    role: "Założyciel i główny inżynier",
+    bio: [
+      "Fatkul prowadzi dibumi.com z Lamongan we wschodniej Jawie. Pisze dedykowane oprogramowanie, wdraża aplikacje Android i zajmuje się serwerami, gdy coś zawiedzie.",
+      "Produkty własne studia też są jego: AI Gateway, Payment Orchestration, Adserver Exchange oraz aplikacje i gry wydawane pod szyldem Ngambeg Cyber Media.",
+    ],
+    linksLabel: "Napisz bezpośrednio",
+    emailLabel: "E-mail",
+    whatsappLabel: "WhatsApp",
+    githubLabel: "GitHub",
+    facts: [
+      { label: "Siedziba", value: "Lamongan, Jawa Wschodnia" },
+      { label: "Studio", value: "Dibumi Teknologi Indonesia" },
+      { label: "Specjalizacja", value: "Oprogramowanie, Android, serwery" },
+      { label: "Godziny", value: "Poniedziałek do soboty, 08:30-20:00 WIB" },
+    ],
+    cta: "Rozpocznij projekt",
+    metaTitle: "Fatkul Nur Koirudin | dibumi.com",
+    metaDescription:
+      "Założyciel i główny inżynier dibumi.com w Lamongan we wschodniej Jawie. Dedykowane oprogramowanie, aplikacje Android i serwery, na których działają.",
   },
   highlights: [
     {
@@ -1193,7 +1322,7 @@ const pl: SiteContent = {
   ],
   products: {
     eyebrow: "Produkty",
-    title: "Produkty, które budujemy i prowadzimy",
+    title: "Nasze własne produkty",
     description:
       "Obok pracy dla klientów projektujemy, wydajemy i utrzymujemy własne aplikacje i gry.",
     soon: "Wkrótce",
