@@ -13,10 +13,13 @@ export default function LanguageSwitcher({
   locale,
   label,
   compact = false,
+  variant = "outline",
 }: {
   locale: Locale;
   label: string;
   compact?: boolean;
+  /** `bare` dipakai di navbar: tanpa border, hanya latar saat hover. */
+  variant?: "outline" | "bare";
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -68,7 +71,11 @@ export default function LanguageSwitcher({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={label}
-        className="border-line text-muted hover:border-primary/40 hover:text-ink inline-flex min-h-10 items-center gap-1.5 rounded-lg border bg-surface px-2.5 text-xs font-medium transition"
+        className={
+          variant === "bare"
+            ? "text-muted hover:bg-elevated hover:text-ink inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium transition"
+            : "border-line text-muted hover:border-primary/40 hover:text-ink inline-flex min-h-10 items-center gap-1.5 rounded-lg border bg-surface px-2.5 text-xs font-medium transition"
+        }
       >
         <Languages className="h-4 w-4" aria-hidden="true" />
         <span className={compact ? "sr-only sm:not-sr-only" : ""}>{localeLabels[locale]}</span>

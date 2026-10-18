@@ -3,35 +3,49 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  ArrowUpRight,
-  ChevronDown,
-  Code2,
-  CreditCard,
-  Layers,
-  Megaphone,
-  Menu,
-  Sparkles,
-  X,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, ChevronDown, Code2, Menu, X } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import BrandMark from "@/components/BrandMark";
+import { ProductMenu, ProductMenuList } from "@/components/nav/ProductMenu";
 import {
-  ngambegHubUrl,
-  productGroups,
-  type ProductItem,
-} from "@/lib/products";
-import { serviceAnchor, serviceMeta } from "@/lib/services";
+  ServicesMenu,
+  ServicesMenuList,
+  type ServiceItem,
+} from "@/components/nav/ServicesMenu";
+import { getProductGroup } from "@/lib/products";
+import { serviceMeta } from "@/lib/services";
 import type { Locale, SiteContent } from "@/lib/i18n";
 
-/** Ikon per produk platform, dipetakan lewat id dari lib/products.ts. */
-const platformIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  aiGateway: Sparkles,
-  paymentOrchestration: CreditCard,
-  adserverExchange: Megaphone,
-};
+/**
+ * Navigasi utama: satu bar datar tanpa pill pembungkus.
+ *
+ * Aturan yang dijaga di sini:
+ * - Tinggi bar 64px di bawah lg dan 72px mulai lg. Offset anchor di globals.css
+ *   mengikuti angka ini, jadi ubah keduanya bersamaan.
+ * - Panel menempel langsung ke bawah bar (tanpa jarak), supaya kursor tidak
+ *   pernah melewati celah yang menutup menu.
+ * - Radius: kontrol 8px, popover 12px, panel 0 karena penuh ke tepi layar.
+ * - Semua posisi memakai properti logis (ms/me/start/end) agar locale Arab
+ *   otomatis tercermin.
+ */
 
-type OpenMenu = "product" | "services" | null;
+type OpenPanel = "product" | "services" | null;
+type OpenSection = "product" | "services" | null;
+
+/** Garis bawah penanda item aktif, tumbuh dari sisi awal teks. */
+function Underline({ active }: { active: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`pointer-events-none absolute inset-x-2.5 bottom-0.5 h-[2px] origin-left rounded-full transition-transform duration-200 ease-out group-hover:scale-x-100 rtl:origin-right ${
+        active ? "bg-primary scale-x-100" : "bg-line scale-x-0"
+      }`}
+    />
+  );
+}
+
+const desktopItem =
+  "group relative inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium transition-colors";
 
 export default function Navbar({
   locale,
@@ -42,20 +56,23 @@ export default function Navbar({
   content: SiteContent;
   basePath: string;
 }) {
+  const [openPanel, setOpenPanel] = useState<OpenPanel>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openMenu, setOpenMenu] = useState<OpenMenu>(null);
-  const menusRef = useRef<HTMLDivElement>(null);
+  const [openSection, setOpenSection] = useState<OpenSection>(null);
+  const [activeHash, setActiveHash] = useState<string | null>(null);
+
+  const navRef = useRef<HTMLElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLElement>(null);
   const productButtonRef = useRef<HTMLButtonElement>(null);
   const servicesButtonRef = useRef<HTMLButtonElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
 
   const nav = content.nav;
-  const productCopy = content.products;
-  const platforms = productGroups.find((group) => group.id === "platforms")!;
-  const ngambeg = productGroups.find((group) => group.id === "ngambeg")!;
 
   // Judul dan deskripsi layanan ada di i18n; slug dan ikon di lib/services.ts.
-  const serviceItems = content.services.map((service, index) => ({
+  const serviceItems: ServiceItem[] = content.services.map((service, index) => ({
     title: service.title,
     description: service.description,
     slug: serviceMeta[index]?.slug ?? "",
@@ -63,31 +80,66 @@ export default function Navbar({
   }));
 
   const anchorLinks = [
-    { name: nav.process, href: `${basePath}#process` },
-    { name: nav.standards, href: `${basePath}#standards` },
-    { name: nav.contact, href: `${basePath}#contact` },
+    { name: nav.process, href: `${basePath}#process`, hash: "#process" },
+    { name: nav.standards, href: `${basePath}#standards`, hash: "#standards" },
   ];
 
-  // Semua panel tertutup saat rute berubah (misal setelah klik link).
+  const productCount =
+    getProductGroup("platforms").items.length + getProductGroup("ngambeg").items.length;
+
+  // Rute berubah: semua panel dan sheet ditutup.
   useEffect(() => {
-    setOpenMenu(null);
+    setOpenPanel(null);
     setMobileOpen(false);
+    setOpenSection(null);
   }, [pathname]);
 
+  // Sorot Process/Standards sesuai posisi baca. IntersectionObserver, bukan
+  // listener scroll, supaya tidak ada kerja di setiap frame.
   useEffect(() => {
-    if (!openMenu) return;
+    const ids = ["process", "standards"];
+    const targets = ids
+      .map((id) => document.getElementById(id))
+      .filter((element): element is HTMLElement => element !== null);
+
+    if (targets.length === 0) {
+      setActiveHash(null);
+      return;
+    }
+
+    const visible = new Set<string>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
+        }
+        const next = ids.find((id) => visible.has(id)) ?? null;
+        setActiveHash(next ? `#${next}` : null);
+      },
+      { rootMargin: "-88px 0px -55% 0px" },
+    );
+
+    targets.forEach((target) => observer.observe(target));
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  // Panel desktop: tutup saat klik di luar, saat Escape, dan kembalikan fokus
+  // ke tombol pemicunya.
+  useEffect(() => {
+    if (!openPanel) return;
 
     function handlePointerDown(event: MouseEvent) {
-      if (!menusRef.current?.contains(event.target as Node)) {
-        setOpenMenu(null);
-      }
+      const target = event.target as Node;
+      if (navRef.current?.contains(target) || panelRef.current?.contains(target)) return;
+      setOpenPanel(null);
     }
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
       const trigger =
-        openMenu === "product" ? productButtonRef.current : servicesButtonRef.current;
-      setOpenMenu(null);
+        openPanel === "product" ? productButtonRef.current : servicesButtonRef.current;
+      setOpenPanel(null);
       trigger?.focus();
     }
 
@@ -98,415 +150,338 @@ export default function Navbar({
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [openMenu]);
+  }, [openPanel]);
 
-  function toggleMenu(menu: Exclude<OpenMenu, null>) {
-    setOpenMenu((value) => (value === menu ? null : menu));
-  }
+  // Sheet mobile: kunci scroll halaman, jebak fokus, Escape menutup, fokus
+  // kembali ke tombol menu.
+  useEffect(() => {
+    if (!mobileOpen) return;
 
-  const triggerClass = (isOpen: boolean) =>
-    `inline-flex items-center gap-2 rounded-full px-3.5 py-2 transition ${
-      isOpen ? "bg-primary-soft text-primary font-semibold" : "text-muted hover:text-primary"
-    }`;
+    const previousOverflow = document.body.style.overflow;
+    const menuButton = menuButtonRef.current;
+    const sheet = sheetRef.current;
+    document.body.style.overflow = "hidden";
 
-  function SoonBadge() {
-    return (
-      <span className="border-line text-muted shrink-0 rounded-md border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider">
-        {productCopy.soon}
-      </span>
-    );
-  }
+    const focusables = () =>
+      [
+        menuButton,
+        ...(sheet
+          ? Array.from(
+              sheet.querySelectorAll<HTMLElement>(
+                'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+              ),
+            )
+          : []),
+      ].filter((node): node is HTMLElement => node !== null);
 
-  /** Baris produk Ngambeg (Games/Apps): link aktif atau label Soon. */
-  function GroupItem({ item }: { item: ProductItem }) {
-    if (!item.href) {
-      return (
-        <span className="text-muted flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-[13px] leading-snug">
-          <span className="min-w-0 break-words">{item.name}</span>
-          <SoonBadge />
-        </span>
-      );
+    focusables()[0]?.focus();
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setMobileOpen(false);
+        setOpenSection(null);
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const items = focusables();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
 
-    return (
-      <a
-        href={item.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-ink hover:bg-elevated hover:text-primary flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition"
-      >
-        <span className="min-w-0 break-words">{item.name}</span>
-        <ArrowUpRight className="text-muted h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-      </a>
-    );
-  }
+    document.addEventListener("keydown", handleKeyDown);
 
-  /** Baris produk platform: ikon, nama, deskripsi, dan badge Soon. */
-  function PlatformRow({ item }: { item: ProductItem }) {
-    const Icon = platformIcons[item.id] ?? Sparkles;
-    const description =
-      (productCopy.platforms as Record<string, { description: string }>)[item.id]?.description ??
-      "";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      menuButton?.focus();
+    };
+  }, [mobileOpen]);
 
-    const body = (
-      <>
-        <span className="bg-primary-soft text-primary mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
-          <Icon className="h-4 w-4" aria-hidden="true" />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="flex flex-wrap items-center gap-2">
-            <span className="text-ink text-sm font-semibold">{item.name}</span>
-            {item.status === "soon" && <SoonBadge />}
-          </span>
-          <span className="text-muted mt-0.5 block text-[11px] leading-4">{description}</span>
-        </span>
-      </>
-    );
+  // Kalau layar melebar ke desktop saat sheet terbuka, tutup sheet agar scroll
+  // halaman tidak tertinggal dalam keadaan terkunci.
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 1024px)");
 
-    if (!item.href) {
-      return <div className="flex items-start gap-3 rounded-xl px-2.5 py-2.5">{body}</div>;
+    function handleChange(event: MediaQueryListEvent) {
+      if (!event.matches) return;
+      setMobileOpen(false);
+      setOpenSection(null);
     }
 
-    return (
-      <a
-        href={item.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:bg-elevated flex items-start gap-3 rounded-xl px-2.5 py-2.5 transition"
-      >
-        {body}
-      </a>
-    );
+    query.addEventListener("change", handleChange);
+    return () => query.removeEventListener("change", handleChange);
+  }, []);
+
+  function closeMobile() {
+    setMobileOpen(false);
+    setOpenSection(null);
   }
 
-  /** Baris layanan di panel dropdown Services. */
-  function ServiceRow({ item }: { item: (typeof serviceItems)[number] }) {
-    const Icon = item.Icon;
-
-    return (
-      <li>
-        <Link
-          href={`${basePath}#${serviceAnchor(item.slug)}`}
-          onClick={() => setOpenMenu(null)}
-          className="hover:bg-elevated group flex items-start gap-3 rounded-xl px-2.5 py-2.5 transition"
-        >
-          <span className="bg-primary-soft text-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
-            <Icon className="h-4 w-4" aria-hidden="true" />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="text-ink group-hover:text-primary block text-sm font-semibold transition">
-              {item.title}
-            </span>
-            <span className="text-muted mt-0.5 line-clamp-1 block text-[11px] leading-4">
-              {item.description}
-            </span>
-          </span>
-        </Link>
-      </li>
-    );
+  function togglePanel(panel: Exclude<OpenPanel, null>) {
+    setOpenPanel((value) => (value === panel ? null : panel));
   }
 
   return (
-    <header className="border-line/80 bg-canvas/95 sticky top-0 z-50 border-b backdrop-blur-xl">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
-        {/* Brand */}
-        <Link href={basePath} className="flex min-w-0 items-center gap-2.5">
-          <BrandMark className="text-primary h-9 w-9 shrink-0" />
-          <span className="text-ink truncate text-base font-semibold tracking-tight sm:text-lg">
-            dibumi<span className="text-primary">.com</span>
-          </span>
-          <span className="border-line text-muted hidden rounded-md border px-1.5 py-0.5 text-[9px] font-semibold tracking-wider sm:inline">
-            STUDIO
-          </span>
-        </Link>
-
-        {/* Desktop navigation */}
-        <nav
-          aria-label="Main navigation"
-          className="border-line bg-surface hidden items-center gap-1 rounded-full border p-1 text-[13px] lg:flex"
-        >
+    <>
+      <header className="border-line/70 bg-canvas/90 sticky top-0 z-50 border-b backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-5 sm:px-8 lg:h-[4.5rem]">
+          {/* Brand: sekaligus link ke beranda, jadi tidak ada item "Home". */}
           <Link
             href={basePath}
-            aria-current={pathname === basePath ? "page" : undefined}
-            className={`inline-flex items-center gap-2 rounded-full px-3.5 py-2 transition ${
-              pathname === basePath
-                ? "bg-primary-soft text-primary font-semibold"
-                : "text-muted hover:text-primary"
-            }`}
+            className="text-ink flex shrink-0 items-center gap-2.5"
           >
-            {nav.home}
+            <BrandMark className="text-primary h-8 w-8 shrink-0" />
+            <span className="truncate text-base font-semibold tracking-tight">
+              dibumi<span className="text-primary">.com</span>
+            </span>
           </Link>
 
-          <div ref={menusRef} className="flex items-center gap-1">
-            {/* Product */}
+          {/* Desktop navigation */}
+          <nav
+            ref={navRef}
+            aria-label="Main navigation"
+            className="ms-6 hidden items-center gap-0.5 lg:flex"
+          >
             <div className="relative">
               <button
                 ref={productButtonRef}
                 type="button"
-                onClick={() => toggleMenu("product")}
-                aria-haspopup="true"
-                aria-expanded={openMenu === "product"}
+                onClick={() => togglePanel("product")}
+                onMouseEnter={() => {
+                  if (openPanel) setOpenPanel("product");
+                }}
+                aria-expanded={openPanel === "product"}
                 aria-controls="product-menu"
-                className={triggerClass(openMenu === "product")}
+                className={`${desktopItem} ${
+                  openPanel === "product" ? "text-ink" : "text-muted hover:text-ink"
+                }`}
               >
                 {nav.product}
                 <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform ${
-                    openMenu === "product" ? "rotate-180" : ""
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                    openPanel === "product" ? "rotate-180" : ""
                   }`}
                   aria-hidden="true"
                 />
+                <Underline active={openPanel === "product"} />
               </button>
-
-              {openMenu === "product" && (
-                <div
-                  id="product-menu"
-                  className="border-line bg-surface shadow-card animate-panel-in absolute start-0 top-full mt-2 w-[38rem] rounded-2xl border p-2"
-                >
-                  {/* Platforms: produk milik dibumi.com */}
-                  <p className="text-muted px-2.5 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-wider">
-                    {productCopy.groups.platforms.label}
-                  </p>
-                  <ul>
-                    {platforms.items.map((item) => (
-                      <li key={item.id}>
-                        <PlatformRow item={item} />
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Ngambeg Cyber Media: game dan aplikasi dalam satu daftar */}
-                  <div className="border-line-subtle mt-2 border-t pt-2">
-                    <div className="flex items-start gap-2 px-2 pb-1 pt-1.5">
-                      <Layers className="text-muted mt-0.5 h-3.5 w-3.5 shrink-0" />
-                      <div className="min-w-0">
-                        <p className="text-ink text-xs font-semibold">
-                          {productCopy.groups.ngambeg.label}
-                        </p>
-                        <p className="text-muted truncate text-[10px]">
-                          {productCopy.groups.ngambeg.brand}
-                        </p>
-                      </div>
-                    </div>
-                    <ul className="grid grid-cols-2 gap-x-2">
-                      {ngambeg.items.map((item) => (
-                        <li key={item.id}>
-                          <GroupItem item={item} />
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="border-line-subtle mt-2 border-t pt-2">
-                    <a
-                      href={ngambegHubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:bg-elevated flex items-center justify-between gap-2 rounded-lg px-2 py-2 text-xs font-semibold transition"
-                    >
-                      {nav.allProducts}
-                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                    </a>
-                  </div>
-                </div>
-              )}
             </div>
 
-            {/* Services */}
             <div className="relative">
               <button
                 ref={servicesButtonRef}
                 type="button"
-                onClick={() => toggleMenu("services")}
-                aria-haspopup="true"
-                aria-expanded={openMenu === "services"}
+                onClick={() => togglePanel("services")}
+                onMouseEnter={() => {
+                  if (openPanel) setOpenPanel("services");
+                }}
+                aria-expanded={openPanel === "services"}
                 aria-controls="services-menu"
-                className={triggerClass(openMenu === "services")}
+                className={`${desktopItem} ${
+                  openPanel === "services" ? "text-ink" : "text-muted hover:text-ink"
+                }`}
               >
                 {nav.services}
                 <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform ${
-                    openMenu === "services" ? "rotate-180" : ""
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                    openPanel === "services" ? "rotate-180" : ""
                   }`}
                   aria-hidden="true"
                 />
+                <Underline active={openPanel === "services"} />
               </button>
+            </div>
 
-              {openMenu === "services" && (
-                <div
-                  id="services-menu"
-                  className="border-line bg-surface shadow-card animate-panel-in absolute start-0 top-full mt-2 w-[26rem] rounded-2xl border p-2"
+            {anchorLinks.map((link) => {
+              const active = activeHash === link.hash;
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpenPanel(null)}
+                  aria-current={active ? "location" : undefined}
+                  className={`${desktopItem} ${active ? "text-ink" : "text-muted hover:text-ink"}`}
                 >
-                  <ul>
-                    {serviceItems.map((item) => (
-                      <ServiceRow key={item.slug} item={item} />
-                    ))}
-                  </ul>
+                  {link.name}
+                  <Underline active={active} />
+                </Link>
+              );
+            })}
+          </nav>
 
-                  <div className="border-line-subtle mt-2 border-t pt-2">
-                    <Link
-                      href={`${basePath}#services`}
-                      onClick={() => setOpenMenu(null)}
-                      className="text-primary hover:bg-elevated flex items-center justify-between gap-2 rounded-lg px-2 py-2 text-xs font-semibold transition"
-                    >
-                      {nav.allServices}
-                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                    </Link>
-                  </div>
-                </div>
+          {/* Right cluster */}
+          <div className="ms-auto flex items-center gap-1 sm:gap-2">
+            <LanguageSwitcher locale={locale} label={nav.language} variant="bare" />
+
+            <Link
+              href={`${basePath}#contact`}
+              className="bg-primary hover:bg-primary-hover ms-1 hidden min-h-10 items-center justify-center gap-2 rounded-lg px-4 text-[13px] font-semibold text-white transition lg:inline-flex"
+            >
+              {nav.cta}
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+
+            <button
+              ref={menuButtonRef}
+              type="button"
+              onClick={() => {
+                setMobileOpen((value) => !value);
+                setOpenSection(null);
+              }}
+              aria-label={mobileOpen ? nav.closeMenu : nav.menu}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-navigation"
+              className="text-ink hover:bg-elevated inline-flex h-10 w-10 items-center justify-center rounded-lg transition lg:hidden"
+            >
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mega panel: selebar viewport, menempel ke bawah bar. */}
+        {openPanel && (
+          <div
+            ref={panelRef}
+            id={`${openPanel}-menu`}
+            className="border-line bg-surface shadow-float animate-panel-in absolute inset-x-0 top-full hidden max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain border-b lg:block"
+          >
+            <div className="mx-auto max-w-7xl px-8 py-7">
+              {openPanel === "product" ? (
+                <ProductMenu content={content} />
+              ) : (
+                <ServicesMenu
+                  content={content}
+                  basePath={basePath}
+                  items={serviceItems}
+                />
               )}
             </div>
           </div>
+        )}
+      </header>
 
-          {anchorLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-muted hover:text-primary rounded-full px-3.5 py-2 transition"
-            >
-              {link.name}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Right cluster */}
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          <LanguageSwitcher locale={locale} label={nav.language} />
-
-          <Link
-            href={`${basePath}#contact`}
-            className="bg-primary hover:bg-primary-hover hidden min-h-10 items-center justify-center gap-2 rounded-lg px-4 text-xs font-semibold text-white transition sm:inline-flex sm:text-sm"
-          >
-            {nav.cta}
-            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
-
-          <button
-            type="button"
-            onClick={() => setMobileOpen((value) => !value)}
-            aria-label={mobileOpen ? nav.closeMenu : nav.menu}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-navigation"
-            className="border-line text-ink flex h-10 w-10 items-center justify-center rounded-lg border lg:hidden"
-          >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile navigation */}
+      {/* Mobile sheet: di luar header karena backdrop-blur membuat header jadi
+          containing block untuk elemen fixed. */}
       {mobileOpen && (
         <nav
           id="mobile-navigation"
+          ref={sheetRef}
           aria-label="Mobile navigation"
-          className="border-line bg-surface max-h-[calc(100dvh-5rem)] overflow-y-auto border-t px-5 py-3 lg:hidden"
+          className="bg-canvas fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col lg:hidden"
         >
-          <Link
-            href={basePath}
-            className="text-muted hover:bg-elevated flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition"
-          >
-            {nav.home}
-          </Link>
-
-          <p className="text-muted mt-2 px-3 pt-2 text-[10px] font-semibold uppercase tracking-wider">
-            {nav.product}
-          </p>
-
-          <div className="border-line ms-4 border-s ps-2">
-            <p className="text-ink px-2 pt-1 text-xs font-semibold">
-              {productCopy.groups.platforms.label}
-            </p>
-            <p className="text-muted px-2 text-[10px]">{productCopy.groups.platforms.brand}</p>
-            <ul className="mt-1">
-              {platforms.items.map((item) => (
-                <li key={item.id}>
-                  <PlatformRow item={item} />
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-3">
-              <p className="text-ink px-2 text-xs font-semibold">
-                {productCopy.groups.ngambeg.label}
-              </p>
-              <p className="text-muted px-2 text-[10px]">{productCopy.groups.ngambeg.brand}</p>
-              <ul className="mt-1">
-                {ngambeg.items.map((item) => (
-                  <li key={item.id}>
-                    <GroupItem item={item} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <a
-              href={ngambegHubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:bg-elevated mt-2 flex items-center justify-between gap-2 rounded-lg px-2 py-2 text-xs font-semibold transition"
+          <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-1">
+            <MobileSection
+              id="product"
+              label={nav.product}
+              meta={String(productCount)}
+              open={openSection === "product"}
+              onToggle={() =>
+                setOpenSection((value) => (value === "product" ? null : "product"))
+              }
             >
-              {nav.allProducts}
-              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </a>
-          </div>
+              <ProductMenuList content={content} onNavigate={closeMobile} />
+            </MobileSection>
 
-          <p className="text-muted mt-2 px-3 pt-2 text-[10px] font-semibold uppercase tracking-wider">
-            {nav.services}
-          </p>
-
-          <div className="border-line ms-4 border-s ps-2">
-            <ul className="mt-1">
-              {serviceItems.map((item) => {
-                const Icon = item.Icon;
-
-                return (
-                  <li key={item.slug}>
-                    <Link
-                      href={`${basePath}#${serviceAnchor(item.slug)}`}
-                      onClick={() => setMobileOpen(false)}
-                      className="text-muted hover:bg-elevated hover:text-primary flex items-center gap-3 rounded-lg px-2 py-2.5 text-sm transition"
-                    >
-                      <Icon className="text-muted h-4 w-4 shrink-0" aria-hidden="true" />
-                      <span className="truncate">{item.title}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-
-            <Link
-              href={`${basePath}#services`}
-              onClick={() => setMobileOpen(false)}
-              className="text-primary hover:bg-elevated mt-2 flex items-center justify-between gap-2 rounded-lg px-2 py-2 text-xs font-semibold transition"
+            <MobileSection
+              id="services"
+              label={nav.services}
+              meta={String(serviceItems.length)}
+              open={openSection === "services"}
+              onToggle={() =>
+                setOpenSection((value) => (value === "services" ? null : "services"))
+              }
             >
-              {nav.allServices}
-              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </Link>
-          </div>
+              <ServicesMenuList
+                content={content}
+                basePath={basePath}
+                items={serviceItems}
+                onNavigate={closeMobile}
+              />
+            </MobileSection>
 
-          <div className="border-line-subtle mt-2 border-t pt-2">
             {anchorLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="text-muted hover:bg-elevated hover:text-primary flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition"
+                onClick={closeMobile}
+                className="text-ink border-line flex items-center justify-between gap-3 border-b py-4 text-sm font-semibold last:border-b-0"
               >
                 {link.name}
+                <ArrowRight className="text-muted h-4 w-4 rtl:rotate-180" aria-hidden="true" />
               </Link>
             ))}
           </div>
 
-          <Link
-            href={`${basePath}#contact`}
-            onClick={() => setMobileOpen(false)}
-            className="bg-primary hover:bg-primary-hover mt-2 mb-2 flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white transition"
-          >
-            {nav.cta}
-            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+          <div className="border-line bg-canvas border-t px-5 py-3">
+            <Link
+              href={`${basePath}#contact`}
+              onClick={closeMobile}
+              className="bg-primary hover:bg-primary-hover flex min-h-11 w-full items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white transition"
+            >
+              {nav.cta}
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
         </nav>
       )}
-    </header>
+    </>
+  );
+}
+
+/** Satu bagian akordeon di dalam sheet mobile. */
+function MobileSection({
+  id,
+  label,
+  meta,
+  open,
+  onToggle,
+  children,
+}: {
+  id: string;
+  label: string;
+  meta: string;
+  open: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="border-line border-b">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        aria-controls={`mobile-${id}`}
+        className="text-ink flex w-full items-center justify-between gap-3 py-4 text-start text-sm font-semibold"
+      >
+        <span>{label}</span>
+        <span className="flex items-center gap-2">
+          <span className="text-muted tabular text-[10px] font-medium">{meta}</span>
+          <ChevronDown
+            className={`text-muted h-4 w-4 transition-transform duration-200 ${
+              open ? "rotate-180" : ""
+            }`}
+            aria-hidden="true"
+          />
+        </span>
+      </button>
+
+      {open && (
+        <div id={`mobile-${id}`} className="animate-panel-in pb-3">
+          {children}
+        </div>
+      )}
+    </div>
   );
 }

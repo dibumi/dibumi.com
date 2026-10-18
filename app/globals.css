@@ -10,8 +10,12 @@
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Header sticky setinggi 5rem. Tanpa ini, judul section tertutup saat klik anchor. */
-    scroll-padding-top: 6rem;
+    /* Header sticky setinggi 4.5rem di desktop dan 4rem di mobile. Nilai di
+       bawah menyisakan jarak 1rem di bawah bar. Tanpa ini, judul section
+       tertutup saat klik anchor. Ubah bersama tinggi bar di Navbar.
+       Jangan menambahkan scroll-margin-top di section: keduanya dijumlahkan
+       dan target mendarat 88px lebih rendah dari yang dimaksud. */
+    scroll-padding-top: 5.5rem;
   }
 
   body {
@@ -27,10 +31,6 @@
   :focus-visible {
     outline: 2px solid #0a7668;
     outline-offset: 3px;
-  }
-
-  section[id] {
-    scroll-margin-top: 7rem;
   }
 
   /* Angka pada kartu dan tabel tetap rata walau font mono. */
