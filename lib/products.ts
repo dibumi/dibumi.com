@@ -1,11 +1,14 @@
 /**
  * Satu sumber data untuk produk yang tampil di navbar, section Products, dan footer.
  *
- * Dua tingkat: grup (platforms, games, apps) dan item di dalamnya. Nama produk
+ * Dua tingkat: grup (platforms, ngambeg) dan item di dalamnya. Nama produk
  * tidak diterjemahkan (nama merek), sedangkan label grup dan deskripsi tiap
  * produk ada di lib/i18n.ts dan dicari lewat `id`. Kalau situs sebuah produk
  * sudah terbit, cukup isi `href` di bawah dan seluruh link ikut aktif tanpa
  * menyentuh komponen.
+ *
+ * Semua produk Ngambeg Cyber Media (game maupun aplikasi) berada dalam satu
+ * grup karena tampil sebagai satu daftar di bawah ngambeg.com.
  */
 
 export type ProductStatus = "live" | "soon";
@@ -34,7 +37,7 @@ export type ProductItem = {
   status: ProductStatus;
 };
 
-export type ProductGroupId = "platforms" | "games" | "apps";
+export type ProductGroupId = "platforms" | "ngambeg";
 
 export type ProductGroup = {
   id: ProductGroupId;
@@ -55,7 +58,7 @@ export const productGroups: ProductGroup[] = [
     ],
   },
   {
-    id: "games",
+    id: "ngambeg",
     items: [
       {
         id: "blockIqPuzzle",
@@ -65,11 +68,6 @@ export const productGroups: ProductGroup[] = [
       },
       { id: "smashFest", name: "SmashFest", href: "https://smashfest.ngambeg.com", status: "live" },
       { id: "bounce", name: "Bounce", href: null, status: "soon" },
-    ],
-  },
-  {
-    id: "apps",
-    items: [
       { id: "bangun", name: "Bangun!", href: "https://alarm.ngambeg.com", status: "live" },
       {
         id: "financialToolkit",
@@ -109,4 +107,9 @@ export function getProductGroup(id: ProductGroupId): ProductGroup {
 /** Produk platform yang tampil di kartu besar section Products. */
 export function getPlatformProducts(): ProductItem[] {
   return getProductGroup("platforms").items;
+}
+
+/** Seluruh produk Ngambeg Cyber Media: game dan aplikasi dalam satu daftar. */
+export function getNgambegProducts(): ProductItem[] {
+  return getProductGroup("ngambeg").items;
 }

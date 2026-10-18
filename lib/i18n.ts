@@ -89,7 +89,7 @@ export type SiteContent = {
     soon: string;
     visit: string;
     hub: string;
-    groups: Record<"platforms" | "games" | "apps", ProductGroupCopy>;
+    groups: Record<"platforms" | "ngambeg", ProductGroupCopy>;
     platforms: Record<
       "aiParty" | "paymentOrchestration" | "adserverExchange",
       { description: string }
@@ -296,16 +296,11 @@ const en: SiteContent = {
         description:
           "Our own products, built and operated by the team that ships client work.",
       },
-      games: {
-        label: "Games",
-        brand: "Ngambeg Cyber Media",
+      ngambeg: {
+        label: "Ngambeg Cyber Media",
+        brand: "ngambeg.com",
         description:
-          "Offline-first Android games, built and published under our own label.",
-      },
-      apps: {
-        label: "Apps",
-        brand: "Ngambeg Cyber Media",
-        description: "Everyday Android utilities, published on Google Play.",
+          "Games and everyday Android utilities, built and published under our own label.",
       },
     },
     platforms: {
@@ -600,16 +595,11 @@ const id: SiteContent = {
         description:
           "Produk kami sendiri, dibangun dan dikelola oleh tim yang sama dengan pekerjaan klien.",
       },
-      games: {
-        label: "Game",
-        brand: "Ngambeg Cyber Media",
+      ngambeg: {
+        label: "Ngambeg Cyber Media",
+        brand: "ngambeg.com",
         description:
-          "Game Android offline-first, dibangun dan diterbitkan dengan label kami sendiri.",
-      },
-      apps: {
-        label: "Aplikasi",
-        brand: "Ngambeg Cyber Media",
-        description: "Utilitas Android sehari-hari, terbit di Google Play.",
+          "Game dan utilitas Android sehari-hari, dibangun dan diterbitkan dengan label kami sendiri.",
       },
     },
     platforms: {
@@ -905,16 +895,11 @@ const ar: SiteContent = {
         description:
           "منتجاتنا الخاصة، نبنيها ونديرها بالفريق نفسه الذي ينفذ أعمال العملاء.",
       },
-      games: {
-        label: "الألعاب",
-        brand: "Ngambeg Cyber Media",
+      ngambeg: {
+        label: "Ngambeg Cyber Media",
+        brand: "ngambeg.com",
         description:
-          "ألعاب Android تعمل دون اتصال، نطورها وننشرها بعلامتنا الخاصة.",
-      },
-      apps: {
-        label: "التطبيقات",
-        brand: "Ngambeg Cyber Media",
-        description: "أدوات Android يومية منشورة على Google Play.",
+          "ألعاب وأدوات Android يومية، نطورها وننشرها بعلامتنا الخاصة.",
       },
     },
     platforms: {
@@ -1196,15 +1181,10 @@ const zh: SiteContent = {
         brand: "dibumi.com",
         description: "我们自研并运营的产品，与客户项目由同一个团队打造。",
       },
-      games: {
-        label: "游戏",
-        brand: "Ngambeg Cyber Media",
-        description: "离线优先的 Android 游戏，由我们自有品牌开发与发行。",
-      },
-      apps: {
-        label: "应用",
-        brand: "Ngambeg Cyber Media",
-        description: "日常 Android 工具，已发布到 Google Play。",
+      ngambeg: {
+        label: "Ngambeg Cyber Media",
+        brand: "ngambeg.com",
+        description: "游戏与日常 Android 工具，由我们自有品牌开发与发行。",
       },
     },
     platforms: {
@@ -1484,16 +1464,11 @@ const pl: SiteContent = {
         description:
           "Nasze własne produkty, budowane i utrzymywane przez ten sam zespół, który realizuje projekty klientów.",
       },
-      games: {
-        label: "Gry",
-        brand: "Ngambeg Cyber Media",
+      ngambeg: {
+        label: "Ngambeg Cyber Media",
+        brand: "ngambeg.com",
         description:
-          "Gry Android działające offline, tworzone i wydawane pod własną marką.",
-      },
-      apps: {
-        label: "Aplikacje",
-        brand: "Ngambeg Cyber Media",
-        description: "Codzienne narzędzia Android opublikowane w Google Play.",
+          "Gry i codzienne narzędzia Android, tworzone i wydawane pod własną marką.",
       },
     },
     platforms: {

@@ -8,10 +8,9 @@ import {
   ChevronDown,
   Code2,
   CreditCard,
-  Gamepad2,
+  Layers,
   Megaphone,
   Menu,
-  Smartphone,
   Sparkles,
   X,
 } from "lucide-react";
@@ -19,17 +18,10 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import {
   ngambegHubUrl,
   productGroups,
-  type ProductGroupId,
   type ProductItem,
 } from "@/lib/products";
 import { serviceAnchor, serviceMeta } from "@/lib/services";
 import type { Locale, SiteContent } from "@/lib/i18n";
-
-const groupIcons: Record<ProductGroupId, React.ComponentType<{ className?: string }>> = {
-  platforms: Sparkles,
-  games: Gamepad2,
-  apps: Smartphone,
-};
 
 /** Ikon per produk platform, dipetakan lewat id dari lib/products.ts. */
 const platformIcons: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -59,6 +51,7 @@ export default function Navbar({
   const nav = content.nav;
   const productCopy = content.products;
   const platforms = productGroups.find((group) => group.id === "platforms")!;
+  const ngambeg = productGroups.find((group) => group.id === "ngambeg")!;
 
   // Judul dan deskripsi layanan ada di i18n; slug dan ikon di lib/services.ts.
   const serviceItems = content.services.map((service, index) => ({
@@ -127,8 +120,8 @@ export default function Navbar({
   function GroupItem({ item }: { item: ProductItem }) {
     if (!item.href) {
       return (
-        <span className="text-muted flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-sm">
-          <span className="truncate">{item.name}</span>
+        <span className="text-muted flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-[13px] leading-snug">
+          <span className="min-w-0 break-words">{item.name}</span>
           <SoonBadge />
         </span>
       );
@@ -139,9 +132,9 @@ export default function Navbar({
         href={item.href}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-ink hover:bg-elevated hover:text-primary flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-sm transition"
+        className="text-ink hover:bg-elevated hover:text-primary flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition"
       >
-        <span className="truncate">{item.name}</span>
+        <span className="min-w-0 break-words">{item.name}</span>
         <ArrowUpRight className="text-muted h-3.5 w-3.5 shrink-0" aria-hidden="true" />
       </a>
     );
@@ -269,7 +262,7 @@ export default function Navbar({
               {openMenu === "product" && (
                 <div
                   id="product-menu"
-                  className="border-line bg-surface shadow-card animate-panel-in absolute start-0 top-full mt-2 w-[44rem] rounded-2xl border p-2"
+                  className="border-line bg-surface shadow-card animate-panel-in absolute start-0 top-full mt-2 w-[38rem] rounded-2xl border p-2"
                 >
                   {/* Platforms: produk milik dibumi.com */}
                   <p className="text-muted px-2.5 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-wider">
@@ -283,32 +276,26 @@ export default function Navbar({
                     ))}
                   </ul>
 
-                  {/* Games & Apps dari Ngambeg Cyber Media */}
-                  <div className="border-line-subtle mt-2 grid grid-cols-2 gap-2 border-t pt-2">
-                    {(["games", "apps"] as const).map((id) => {
-                      const group = productGroups.find((item) => item.id === id)!;
-                      const copy = productCopy.groups[id];
-                      const GroupIcon = groupIcons[id];
-
-                      return (
-                        <div key={id} className="min-w-0">
-                          <div className="flex items-start gap-2 px-2 pb-1 pt-1.5">
-                            <GroupIcon className="text-muted mt-0.5 h-3.5 w-3.5 shrink-0" />
-                            <div className="min-w-0">
-                              <p className="text-ink text-xs font-semibold">{copy.label}</p>
-                              <p className="text-muted truncate text-[10px]">{copy.brand}</p>
-                            </div>
-                          </div>
-                          <ul>
-                            {group.items.map((item) => (
-                              <li key={item.id}>
-                                <GroupItem item={item} />
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      );
-                    })}
+                  {/* Ngambeg Cyber Media: game dan aplikasi dalam satu daftar */}
+                  <div className="border-line-subtle mt-2 border-t pt-2">
+                    <div className="flex items-start gap-2 px-2 pb-1 pt-1.5">
+                      <Layers className="text-muted mt-0.5 h-3.5 w-3.5 shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-ink text-xs font-semibold">
+                          {productCopy.groups.ngambeg.label}
+                        </p>
+                        <p className="text-muted truncate text-[10px]">
+                          {productCopy.groups.ngambeg.brand}
+                        </p>
+                      </div>
+                    </div>
+                    <ul className="grid grid-cols-2 gap-x-2">
+                      {ngambeg.items.map((item) => (
+                        <li key={item.id}>
+                          <GroupItem item={item} />
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
                   <div className="border-line-subtle mt-2 border-t pt-2">
@@ -439,24 +426,19 @@ export default function Navbar({
               ))}
             </ul>
 
-            {(["games", "apps"] as const).map((id) => {
-              const group = productGroups.find((item) => item.id === id)!;
-              const copy = productCopy.groups[id];
-
-              return (
-                <div key={id} className="mt-3">
-                  <p className="text-ink px-2 text-xs font-semibold">{copy.label}</p>
-                  <p className="text-muted px-2 text-[10px]">{copy.brand}</p>
-                  <ul className="mt-1">
-                    {group.items.map((item) => (
-                      <li key={item.id}>
-                        <GroupItem item={item} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
+            <div className="mt-3">
+              <p className="text-ink px-2 text-xs font-semibold">
+                {productCopy.groups.ngambeg.label}
+              </p>
+              <p className="text-muted px-2 text-[10px]">{productCopy.groups.ngambeg.brand}</p>
+              <ul className="mt-1">
+                {ngambeg.items.map((item) => (
+                  <li key={item.id}>
+                    <GroupItem item={item} />
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             <a
               href={ngambegHubUrl}

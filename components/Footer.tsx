@@ -4,7 +4,6 @@ import {
   ArrowUpRight,
   Book,
   CreditCard,
-  Gamepad2,
   Layers,
   Megaphone,
   ShieldCheck,
@@ -109,26 +108,8 @@ export default function Footer({
               rel="noopener noreferrer"
               className="hover:text-primary inline-flex items-center gap-2 transition"
             >
-              <Gamepad2 className="text-muted h-4 w-4" aria-hidden="true" />
-              {content.products.groups.games.label}
-            </a>
-            <a
-              href={ngambegHubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-primary inline-flex items-center gap-2 transition"
-            >
-              <Smartphone className="text-muted h-4 w-4" aria-hidden="true" />
-              {content.products.groups.apps.label}
-            </a>
-            <a
-              href={ngambegHubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-primary inline-flex items-center gap-2 transition"
-            >
-              <ArrowUpRight className="text-muted h-4 w-4" aria-hidden="true" />
-              {content.products.groups.apps.brand}
+              <Layers className="text-muted h-4 w-4" aria-hidden="true" />
+              {content.products.groups.ngambeg.label}
             </a>
           </nav>
 
