@@ -60,7 +60,7 @@ export default async function LocalizedHomePage({ params }: LocalePageProps) {
       <Clients content={content.clients} />
       <WorkflowMethodology content={content.workflow} />
       <Standards content={content.standards} />
-      <ContactSection content={content.contact} locale={locale} />
+      <ContactSection content={content.contact} />
     </>
   );
 }

@@ -30,7 +30,7 @@ Legal documents are written in English and Indonesian. Other locales render the 
 5. **Clients** — UC Browser / UCWeb, BuzzCity, PropellerAds, Zeedsharia, Motmaina.com.
 6. **Process** — four steps with a progress rail.
 7. **Standards** — three standards and three commitments.
-8. **Contact** — office details, WhatsApp CTA, and a working contact form.
+8. **Contact** — one panel of four channels (WhatsApp, email, hours, office). No form: WhatsApp and email are direct links, and the WhatsApp link arrives with the opening message already written.
 
 ---
 

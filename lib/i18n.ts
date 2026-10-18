@@ -97,36 +97,16 @@ export type SiteContent = {
     eyebrow: string;
     title: string;
     description: string;
-    office: string;
     locationLabel: string;
     location: string;
     locationNote: string;
     emailLabel: string;
+    emailHint: string;
     hoursLabel: string;
     hours: string;
     hoursNote: string;
-    ideaTitle: string;
-    ideaDescription: string;
-    whatsapp: string;
+    whatsappHint: string;
     whatsappMessage: string;
-    form: {
-      title: string;
-      name: string;
-      namePlaceholder: string;
-      email: string;
-      emailPlaceholder: string;
-      service: string;
-      servicePlaceholder: string;
-      message: string;
-      messagePlaceholder: string;
-      submit: string;
-      sending: string;
-      success: string;
-      successNote: string;
-      error: string;
-      required: string;
-      services: string[];
-    };
   };
   footer: {
     description: string;
@@ -361,45 +341,17 @@ const en: SiteContent = {
     title: "Start building your system",
     description:
       "Contact our technical desk in Lamongan for a quick response and technical discovery.",
-    office: "Office & technical desk",
     locationLabel: "Office location",
     location: companyAddress,
     locationNote: "Serving clients across Indonesia",
     emailLabel: "Correspondence email",
+    emailHint: "For briefs, documents, and anything long.",
     hoursLabel: "Business hours",
     hours: "Monday-Saturday (08:30-20:00 WIB)",
     hoursNote: "24/7 emergency server service for SLA clients",
-    ideaTitle: "Have a project in mind?",
-    ideaDescription:
-      "Tell us about your business challenge. Our technical team will help find a practical, secure, and scalable solution.",
-    whatsapp: "Chat on WhatsApp",
+    whatsappHint: "The fastest route. No form, no queue.",
     whatsappMessage:
       "Hello dibumi.com Lamongan team,\n\nI would like to discuss my project needs. Thank you!",
-    form: {
-      title: "Tell us about the project",
-      name: "Name",
-      namePlaceholder: "Your name",
-      email: "Email",
-      emailPlaceholder: "you@company.com",
-      service: "Service",
-      servicePlaceholder: "Choose a service",
-      message: "Project details",
-      messagePlaceholder: "What are you building, and by when?",
-      submit: "Send message",
-      sending: "Sending…",
-      success: "Message received",
-      successNote: "We usually reply within one business day.",
-      error: "Something went wrong. Please try again or email us directly.",
-      required: "Please fill in your name, email, and message.",
-      services: [
-        "Custom Software Development",
-        "Android WebView Services",
-        "Modern Company Profiles",
-        "Custom Android Apps",
-        "Server & DevOps Management",
-        "Maintenance & SLA",
-      ],
-    },
   },
   footer: {
     description:
@@ -640,45 +592,17 @@ const id: SiteContent = {
     title: "Mulai bangun sistem Anda",
     description:
       "Hubungi technical desk kami di Lamongan untuk respons cepat dan analisis kebutuhan teknis.",
-    office: "Kantor & technical desk",
     locationLabel: "Domisili kantor",
     location: companyAddress,
     locationNote: "Melayani klien di seluruh Indonesia",
     emailLabel: "Email korespondensi",
+    emailHint: "Untuk brief, dokumen, dan hal yang butuh penjelasan panjang.",
     hoursLabel: "Jam operasional",
     hours: "Senin-Sabtu (08.30-20.00 WIB)",
     hoursNote: "Layanan darurat server aktif 24/7 bagi klien SLA",
-    ideaTitle: "Punya kebutuhan proyek?",
-    ideaDescription:
-      "Ceritakan tantangan bisnis Anda. Tim teknis kami siap membantu menemukan solusi yang tepat, aman, dan bisa berkembang.",
-    whatsapp: "Chat WhatsApp",
+    whatsappHint: "Jalur tercepat. Tanpa formulir, tanpa antre.",
     whatsappMessage:
       "Halo tim dibumi.com Lamongan,\n\nSaya ingin berkonsultasi mengenai kebutuhan proyek. Terima kasih!",
-    form: {
-      title: "Ceritakan proyek Anda",
-      name: "Nama",
-      namePlaceholder: "Nama Anda",
-      email: "Email",
-      emailPlaceholder: "anda@perusahaan.com",
-      service: "Layanan",
-      servicePlaceholder: "Pilih layanan",
-      message: "Detail proyek",
-      messagePlaceholder: "Apa yang ingin dibangun, dan kapan targetnya?",
-      submit: "Kirim pesan",
-      sending: "Mengirim…",
-      success: "Pesan diterima",
-      successNote: "Kami biasanya membalas dalam satu hari kerja.",
-      error: "Terjadi kesalahan. Coba lagi atau kirim email langsung.",
-      required: "Mohon isi nama, email, dan pesan Anda.",
-      services: [
-        "Custom Software Development",
-        "Jasa WebView Android",
-        "Company Profile Modern",
-        "Custom Android Apps",
-        "Kelola Server & DevOps",
-        "Maintenance & SLA",
-      ],
-    },
   },
   footer: {
     description:
@@ -914,45 +838,17 @@ const ar: SiteContent = {
     title: "ابدأ بناء نظامك",
     description:
       "تواصل مع مكتبنا التقني في لامونجان للحصول على رد سريع وتحليل تقني.",
-    office: "المكتب والمكتب التقني",
     locationLabel: "موقع المكتب",
     location: companyAddress,
     locationNote: "نخدم العملاء في جميع أنحاء إندونيسيا",
     emailLabel: "البريد الإلكتروني",
+    emailHint: "للرسائل والملفات وكل ما يحتاج تفصيلاً.",
     hoursLabel: "ساعات العمل",
     hours: "الإثنين-السبت (08:30-20:00 WIB)",
     hoursNote: "خدمة طوارئ الخوادم متاحة 24/7 لعملاء SLA",
-    ideaTitle: "لديك مشروع؟",
-    ideaDescription:
-      "شاركنا تحدي عملك. سيساعدك فريقنا التقني في إيجاد حل عملي وآمن وقابل للتوسع.",
-    whatsapp: "تحدث عبر WhatsApp",
+    whatsappHint: "أسرع طريق. بلا نموذج وبلا انتظار.",
     whatsappMessage:
       "مرحباً فريق dibumi.com في لامونجان،\n\nأرغب في مناقشة احتياجات مشروعي. شكراً!",
-    form: {
-      title: "أخبرنا عن مشروعك",
-      name: "الاسم",
-      namePlaceholder: "اسمك",
-      email: "البريد الإلكتروني",
-      emailPlaceholder: "you@company.com",
-      service: "الخدمة",
-      servicePlaceholder: "اختر خدمة",
-      message: "تفاصيل المشروع",
-      messagePlaceholder: "ماذا تبني، ومتى تحتاجه؟",
-      submit: "أرسل الرسالة",
-      sending: "جارٍ الإرسال…",
-      success: "تم استلام الرسالة",
-      successNote: "نرد عادة خلال يوم عمل واحد.",
-      error: "حدث خطأ. حاول مرة أخرى أو راسلنا مباشرة.",
-      required: "يرجى إدخال الاسم والبريد والرسالة.",
-      services: [
-        "تطوير برمجيات مخصصة",
-        "خدمات Android WebView",
-        "موقع شركة عصري",
-        "تطبيقات Android مخصصة",
-        "إدارة الخوادم وDevOps",
-        "الصيانة وSLA",
-      ],
-    },
   },
   footer: {
     description:
@@ -1168,44 +1064,16 @@ const zh: SiteContent = {
     title: "开始构建您的系统",
     description:
       "联系我们位于拉蒙岸的技术团队，快速获得响应和技术需求分析。",
-    office: "办公室与技术团队",
     locationLabel: "办公地点",
     location: companyAddress,
     locationNote: "服务印度尼西亚各地客户",
     emailLabel: "联系邮箱",
+    emailHint: "适合详细需求、文档和任何长内容。",
     hoursLabel: "工作时间",
     hours: "周一至周六（08:30-20:00 WIB）",
     hoursNote: "SLA 客户享有 24/7 服务器紧急服务",
-    ideaTitle: "有项目需求？",
-    ideaDescription:
-      "告诉我们您的业务挑战。我们的技术团队将帮助您找到实用、安全且可扩展的方案。",
-    whatsapp: "通过 WhatsApp 联系",
+    whatsappHint: "最快的渠道。没有表单，不用排队。",
     whatsappMessage: "您好，dibumi.com 拉蒙岸团队：\n\n我想咨询项目需求。谢谢！",
-    form: {
-      title: "介绍你的项目",
-      name: "姓名",
-      namePlaceholder: "你的姓名",
-      email: "邮箱",
-      emailPlaceholder: "you@company.com",
-      service: "服务",
-      servicePlaceholder: "选择服务",
-      message: "项目详情",
-      messagePlaceholder: "你要构建什么？希望何时上线？",
-      submit: "发送消息",
-      sending: "发送中…",
-      success: "已收到消息",
-      successNote: "我们通常在一个工作日内回复。",
-      error: "出现问题，请重试或直接发邮件。",
-      required: "请填写姓名、邮箱和项目详情。",
-      services: [
-        "定制软件开发",
-        "Android WebView 服务",
-        "现代企业官网",
-        "定制 Android 应用",
-        "服务器与 DevOps 管理",
-        "维护与 SLA",
-      ],
-    },
   },
   footer: {
     description:
@@ -1446,45 +1314,17 @@ const pl: SiteContent = {
     title: "Zacznijmy budować Twój system",
     description:
       "Skontaktuj się z naszym zespołem technicznym w Lamongan, aby szybko omówić potrzeby projektu.",
-    office: "Biuro i zespół techniczny",
     locationLabel: "Lokalizacja biura",
     location: companyAddress,
     locationNote: "Obsługujemy klientów w całej Indonezji",
     emailLabel: "Adres e-mail",
+    emailHint: "Do briefów, dokumentów i dłuższych opisów.",
     hoursLabel: "Godziny pracy",
     hours: "Poniedziałek-sobota (08:30-20:00 WIB)",
     hoursNote: "Awaryjna obsługa serwerów 24/7 dla klientów SLA",
-    ideaTitle: "Masz pomysł na projekt?",
-    ideaDescription:
-      "Opowiedz nam o wyzwaniu biznesowym. Pomożemy znaleźć praktyczne, bezpieczne i skalowalne rozwiązanie.",
-    whatsapp: "Napisz na WhatsApp",
+    whatsappHint: "Najszybsza droga. Bez formularza i bez kolejki.",
     whatsappMessage:
       "Dzień dobry, zespole dibumi.com Lamongan,\n\nChcę porozmawiać o potrzebach mojego projektu. Dziękuję!",
-    form: {
-      title: "Opowiedz o projekcie",
-      name: "Imię i nazwisko",
-      namePlaceholder: "Twoje imię",
-      email: "E-mail",
-      emailPlaceholder: "ty@firma.pl",
-      service: "Usługa",
-      servicePlaceholder: "Wybierz usługę",
-      message: "Szczegóły projektu",
-      messagePlaceholder: "Co budujesz i na kiedy?",
-      submit: "Wyślij wiadomość",
-      sending: "Wysyłanie…",
-      success: "Wiadomość otrzymana",
-      successNote: "Zwykle odpowiadamy w ciągu jednego dnia roboczego.",
-      error: "Coś poszło nie tak. Spróbuj ponownie lub napisz e-mail.",
-      required: "Uzupełnij imię, e-mail i treść wiadomości.",
-      services: [
-        "Dedykowane oprogramowanie",
-        "Usługi Android WebView",
-        "Nowoczesne strony firmowe",
-        "Dedykowane aplikacje Android",
-        "Serwery i DevOps",
-        "Maintenance i SLA",
-      ],
-    },
   },
   footer: {
     description:
