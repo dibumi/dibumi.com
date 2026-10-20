@@ -1,4 +1,5 @@
 import { companyAddress, type Locale } from "@/lib/i18n";
+import { contactEmail, contactPhone } from "@/lib/contact";
 
 export type LegalSection = {
   heading: string;
@@ -15,8 +16,8 @@ export type LegalContent = {
 export type LegalDoc = "terms" | "privacy";
 
 export const legalEntity = "Dibumi Technology Indonesia";
-export const legalEmail = "fatkul@dibumi.com";
-export const legalWhatsapp = "+62 856-0710-0255";
+export const legalEmail = contactEmail;
+export const legalWhatsapp = contactPhone.display;
 
 /*
  * Dokumen legal hanya tersedia dalam bahasa Inggris dan Indonesia. Menerjemahkan

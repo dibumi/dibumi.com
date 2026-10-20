@@ -1,16 +1,18 @@
 import React from "react";
 import Link from "next/link";
 import {
-  ArrowUpRight,
   Book,
   CreditCard,
   Layers,
+  Mail,
   Megaphone,
+  Phone,
   ShieldCheck,
   Smartphone,
   Sparkles,
 } from "lucide-react";
 import { getPlatformProducts, ngambegHubUrl } from "@/lib/products";
+import { contactEmail, contactPhone } from "@/lib/contact";
 import BrandMark from "@/components/BrandMark";
 import type { Locale, SiteContent } from "@/lib/i18n";
 
@@ -20,6 +22,13 @@ const platformIcons: Record<string, React.ComponentType<{ className?: string }>>
   paymentOrchestration: CreditCard,
   adserverExchange: Megaphone,
 };
+
+/**
+ * Tahun studio mulai berkarya, dipakai untuk rentang copyright.
+ * Angka yang sama muncul sebagai teks di `footer.since` pada tiap locale,
+ * jadi ubah keduanya bersamaan bila perlu.
+ */
+const foundedYear = 2013;
 
 export default function Footer({
   content,
@@ -53,7 +62,6 @@ export default function Footer({
           </Link>
 
           <p className="text-muted max-w-sm text-sm leading-7">{footer.description}</p>
-          <p className="text-muted max-w-sm text-xs leading-6">{footer.address}</p>
 
           <div className="mt-1 flex gap-2" aria-hidden="true">
             <span className="bg-primary-soft text-primary flex h-9 w-9 items-center justify-center rounded-xl">
@@ -149,20 +157,49 @@ export default function Footer({
               <Book className="text-muted h-4 w-4" aria-hidden="true" />
               {footer.terms}
             </Link>
-            <a
-              href="mailto:fatkul@dibumi.com"
-              className="hover:text-primary inline-flex items-center gap-2 transition"
-            >
-              <ArrowUpRight className="text-muted h-4 w-4" aria-hidden="true" />
-              fatkul@dibumi.com
-            </a>
           </nav>
+        </div>
+      </div>
+
+      {/* Kontak: alamat lengkap, telepon, dan email dalam satu blok terpusat.
+          Alamatnya terlalu panjang untuk kolom grid, jadi ia mendapat barisnya
+          sendiri. Nomor dan email dikunci ltr supaya tidak terbalik di locale
+          Arab, sementara perataan tetap di tengah. */}
+      <div className="border-line-subtle mx-auto max-w-7xl border-t px-5 py-10 sm:px-8">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <h2 className="text-muted text-xs font-semibold uppercase tracking-widest">
+            {footer.contact}
+          </h2>
+
+          <p className="text-muted max-w-md text-xs leading-6">{footer.address}</p>
+
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
+            <a
+              href={`tel:${contactPhone.href}`}
+              className="text-ink hover:text-primary inline-flex items-center gap-2 font-medium transition"
+            >
+              <Phone className="text-muted h-4 w-4" aria-hidden="true" />
+              <span dir="ltr">{contactPhone.display}</span>
+            </a>
+
+            <span aria-hidden="true" className="bg-line hidden h-4 w-px sm:block" />
+
+            <a
+              href={`mailto:${contactEmail}`}
+              className="text-ink hover:text-primary inline-flex items-center gap-2 font-medium transition"
+            >
+              <Mail className="text-muted h-4 w-4" aria-hidden="true" />
+              <span dir="ltr">{contactEmail}</span>
+            </a>
+          </div>
+
+          <p className="text-muted text-[11px] uppercase tracking-widest">{footer.since}</p>
         </div>
       </div>
 
       <div className="border-line-subtle mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 border-t px-5 py-6 text-xs sm:px-8">
         <span className="text-muted">
-          © {new Date().getFullYear()} dibumi.com — {footer.copyright}
+          © {foundedYear}–{new Date().getFullYear()} dibumi.com — {footer.copyright}
         </span>
         <span className="text-muted">
           {footer.builtFor} · {footer.location}
