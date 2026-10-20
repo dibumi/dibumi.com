@@ -45,6 +45,9 @@ export type SiteContent = {
     soon: string;
     allServices: string;
   };
+  common: {
+    learnMore: string;
+  };
   hero: {
     titleLead: string;
     titleAccent: string;
@@ -152,6 +155,9 @@ export type SiteContent = {
 };
 
 const en: SiteContent = {
+  common: {
+    learnMore: "Learn more",
+  },
   nav: {
     home: "Home",
     product: "Product",
@@ -434,6 +440,9 @@ const en: SiteContent = {
 };
 
 const id: SiteContent = {
+  common: {
+    learnMore: "Pelajari lebih lanjut",
+  },
   nav: {
     home: "Beranda",
     product: "Produk",
@@ -717,6 +726,9 @@ const id: SiteContent = {
 };
 
 const ar: SiteContent = {
+  common: {
+    learnMore: "اعرف المزيد",
+  },
   nav: {
     home: "الرئيسية",
     product: "المنتجات",
@@ -994,6 +1006,9 @@ const ar: SiteContent = {
 };
 
 const zh: SiteContent = {
+  common: {
+    learnMore: "了解更多",
+  },
   nav: {
     home: "首页",
     product: "产品",
@@ -1248,6 +1263,9 @@ const zh: SiteContent = {
 };
 
 const pl: SiteContent = {
+  common: {
+    learnMore: "Dowiedz się więcej",
+  },
   nav: {
     home: "Start",
     product: "Produkty",

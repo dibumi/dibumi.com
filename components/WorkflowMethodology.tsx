@@ -30,8 +30,8 @@ export default function WorkflowMethodology({
   const lastIndex = content.steps.length - 1;
 
   return (
-    <section id="process" className="py-20 lg:py-28">
-      <div className="mx-auto max-w-page px-5 sm:px-8">
+    <section id="process" className="py-20 lg:py-36">
+      <div className="column-guides mx-auto max-w-page px-5 sm:px-8">
         <Reveal>
           <SectionHeading
             eyebrow={content.eyebrow}

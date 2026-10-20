@@ -61,7 +61,7 @@ export default function Clients({
   const columns = [clients.slice(0, midpoint), clients.slice(midpoint)];
 
   return (
-    <section id="clients" className="bg-blush-peach py-20 lg:py-28">
+    <section id="clients" className="bg-blush-peach py-20 lg:py-40">
       <div className="mx-auto max-w-page px-5 sm:px-8">
         {/* Judul masuk lebih dulu, dua kolom menyusul dengan jeda: band ini
             panjang, dan tanpa jeda semuanya muncul sekaligus seperti gambar. */}

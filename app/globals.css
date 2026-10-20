@@ -105,10 +105,14 @@
     scroll-behavior: auto;
   }
 
-  /* Satu-satunya gerak yang tersisa: hero yang masuk dan panel dropdown.
-     Keduanya cukup ditampilkan tanpa animasi. */
+  /* Semua gerak dimatikan di sini. Yang tersisa hanya transisi opacity dan
+     transform sepele, dan itu cukup: isinya harus terbaca, bukan bergerak. */
   .animate-fade-up,
-  .animate-panel-in {
+  .animate-panel-in,
+  .animate-marquee,
+  .animate-float,
+  .animate-float-slow,
+  .hero-atmosphere {
     animation: none;
   }
 }
@@ -118,24 +122,90 @@
  *
  * Referensinya memakai video gradient mesh (steep.app/videos/door.mp4) di balik
  * judul, ditutup noise halus dan gradien putih di tepi bawah. Video tidak bisa
- * disalin, jadi wash-nya dibangun ulang dengan lima radial-gradient bertumpuk:
- * rose di tengah, lavender di kiri, peach di kanan, krem di kanan bawah, dan
- * biru pucat di kiri bawah. Saturasinya sengaja rendah supaya tetap terbaca
- * sebagai kertas berwarna, bukan sebagai ilustrasi.
+ * disalin, jadi wash-nya dibangun ulang dengan tujuh radial-gradient bertumpuk:
+ * putih di inti, salmon di tengah atas, rose di sudut kanan atas, lavendel di
+ * kiri, peach di kanan, krem di kanan bawah, dan biru dingin di kiri bawah.
  *
- * Ini satu-satunya tempat di sistem yang memakai warna di luar pasangan
- * peach/sienna, dan hanya sebagai wash latar — tidak pernah sebagai permukaan
- * komponen. Kartu peach di section kontak tetap satu-satunya bidang berwarna.
+ * Saturasinya sengaja LEBIH kuat dari padanan yang pertama. Wash reference-nya
+ * jelas berwarna — itu bagian dari tenor visualnya, bukan aksesori. Di sini
+ * warna hanya ada di lapisan wash, tidak pernah di permukaan komponen, dan
+ * peach tetap satu-satunya warna "solid" di halaman.
+ *
+ * Lapisan-lapisan itu punya background-size 120% agar ada ruang untuk meluncur.
+ * Drift 26 detik ke arah berlawanan meniru gerakan video: wash tidak pernah
+ * diam, tapi perubahannya tidak akan pernah terasa sebagai animasi.
  */
 .hero-atmosphere {
   background-color: var(--color-paper-white);
+  background-size:
+    120% 120%, 120% 120%, 120% 120%, 120% 120%, 120% 120%, 120% 120%, 120% 120%;
   background-image:
-    radial-gradient(38% 34% at 50% 44%, #ffffff 0%, rgba(255, 255, 255, 0) 72%),
-    radial-gradient(62% 48% at 50% 26%, #f8ded5 0%, rgba(248, 222, 213, 0) 68%),
-    radial-gradient(44% 40% at 6% 46%, #e6edfc 0%, rgba(230, 237, 252, 0) 70%),
-    radial-gradient(50% 44% at 94% 34%, #fbe7da 0%, rgba(251, 231, 218, 0) 68%),
-    radial-gradient(44% 34% at 84% 88%, #f8eed6 0%, rgba(248, 238, 214, 0) 70%),
-    radial-gradient(40% 30% at 16% 86%, #eff3ff 0%, rgba(239, 243, 255, 0) 72%);
+    radial-gradient(30% 26% at 50% 46%, #ffffff 0%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(58% 44% at 48% 24%, #f7cdbe 0%, rgba(247, 205, 190, 0) 70%),
+    radial-gradient(38% 30% at 74% 6%, #f6d5d9 0%, rgba(246, 213, 217, 0) 72%),
+    radial-gradient(44% 40% at 4% 44%, #d7e0f8 0%, rgba(215, 224, 248, 0) 72%),
+    radial-gradient(50% 44% at 96% 32%, #f8dcc6 0%, rgba(248, 220, 198, 0) 70%),
+    radial-gradient(46% 36% at 86% 90%, #f6e8c4 0%, rgba(246, 232, 196, 0) 72%),
+    radial-gradient(42% 32% at 12% 88%, #e3ebfd 0%, rgba(227, 235, 253, 0) 72%);
+  animation: hero-drift 26s ease-in-out infinite alternate;
+}
+
+/* Drift wash: layer-lapisan meluncur pelan ke arah berlawanan tiap putaran.
+   Bukan gerak yang disadari, tapi halaman berhenti terasa seperti cetak
+   diam ketika wash-nya membeku. */
+@keyframes hero-drift {
+  0% {
+    background-position:
+      34% 42%, 46% 26%, 68% 8%, 10% 46%, 94% 30%, 84% 88%, 14% 86%;
+  }
+  100% {
+    background-position:
+      40% 48%, 54% 34%, 78% 14%, 18% 56%, 86% 38%, 76% 94%, 24% 76%;
+  }
+}
+
+/*
+ * Guide kolom.
+ *
+ * Referensi menarik tiga garis hairline vertikal di sepanjang section putih,
+ * membagi lebar kontainer menjadi empat kolom. Garis-garis itu bukan tipografi:
+ * mereka adalah grid editorial, dan itulah yang membuat section putih
+ * terasa disusun, bukan sekadar kosong.
+ *
+ * Garis dibuat eksplisit di 25%, 50%, dan 75% supaya tepi kontainer tidak
+ * ikut bergaris. `isolation: isolate` menjaga garis tetap di belakang isi
+ * section: tanpa itu, garis akan melintasi teks.
+ */
+.column-guides {
+  position: relative;
+  isolation: isolate;
+}
+
+.column-guides::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      to right,
+      transparent calc(25% - 0.5px),
+      #ececec calc(25% - 0.5px) calc(25% + 0.5px),
+      transparent calc(25% + 0.5px)
+    ),
+    linear-gradient(
+      to right,
+      transparent calc(50% - 0.5px),
+      #ececec calc(50% - 0.5px) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    ),
+    linear-gradient(
+      to right,
+      transparent calc(75% - 0.5px),
+      #ececec calc(75% - 0.5px) calc(75% + 0.5px),
+      transparent calc(75% + 0.5px)
+    );
 }
 
 /* Noise halus di atas wash, supaya gradient tidak terbaca sebagai pita digital.

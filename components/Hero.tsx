@@ -166,11 +166,14 @@ export default function Hero({
 
       <div className="mx-auto w-full max-w-page px-5 py-24 sm:px-8 lg:py-28">
         <motion.div
-          className="mx-auto flex max-w-3xl flex-col items-center gap-7 text-center"
+          className="mx-auto flex max-w-4xl flex-col items-center gap-7 text-center"
           style={reduce ? undefined : { y: titleY, opacity: titleOpacity }}
         >
+          {/* Pil abu penuh, tanpa border dan tanpa blur. Referensi memakai
+              permukaan abu solid di atas wash; border hairline bikin pil itu
+              terbaca sebagai kotak, bukan sebagai label. */}
           <motion.p
-            className="border-hairline bg-paper-white/70 text-slate-gray rounded-buttons inline-flex flex-wrap items-center justify-center gap-x-2 border px-4 py-1.5 text-caption backdrop-blur-sm"
+            className="bg-mist-gray text-slate-gray rounded-buttons inline-flex flex-wrap items-center justify-center gap-x-2 px-4 py-1.5 text-caption"
             initial={reduce ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease }}
@@ -187,10 +190,12 @@ export default function Hero({
             ))}
           </motion.p>
 
-          {/* 76px, bukan 100px seperti referensi: baris di sini lebih panjang
-              daripada headline referensi, dan 100px memecahnya jadi empat baris. */}
+          {/* 92px, bukan 100px seperti referensi: baris "We keep it running."
+              lebih panjang daripada headline referensi, dan 100px memecahnya
+              jadi tiga baris. Kontainer diperlebar ke max-w-4xl supaya ukuran
+              itu muat tanpa wrap. */}
           <motion.h1
-            className="hero-title text-ink-black font-display text-heading font-normal md:text-heading-lg xl:text-[76px] xl:leading-[1.1] xl:tracking-[-1.6px]"
+            className="hero-title text-ink-black font-display text-heading font-normal md:text-heading-lg xl:text-[92px] xl:leading-[1.08] xl:tracking-[-2px]"
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.08, ease }}
@@ -224,9 +229,10 @@ export default function Hero({
             </Link>
             <Link
               href={`${basePath}#services`}
-              className="border-ink-black text-ink-black rounded-buttons hover:bg-paper-white/60 inline-flex h-12 w-full items-center justify-center border px-6 text-body transition sm:w-auto"
+              className="text-ink-black group inline-flex h-12 w-full items-center justify-center gap-2 px-2 text-body transition hover:underline sm:w-auto"
             >
               {hero.secondaryCta}
+              <ArrowGlyph />
             </Link>
           </motion.div>
         </motion.div>

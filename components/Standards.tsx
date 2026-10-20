@@ -21,8 +21,8 @@ import type { SiteContent } from "@/lib/i18n";
  */
 export default function Standards({ content }: { content: SiteContent["standards"] }) {
   return (
-    <section id="standards" className="py-20 lg:py-28">
-      <div className="mx-auto max-w-page px-5 sm:px-8">
+    <section id="standards" className="py-20 lg:py-36">
+      <div className="column-guides mx-auto max-w-page px-5 sm:px-8">
         <Reveal>
           <SectionHeading
             eyebrow={content.eyebrow}
