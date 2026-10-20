@@ -69,6 +69,10 @@ export type SiteContent = {
     metaTitle: string;
     metaDescription: string;
   };
+  highlightsSection: {
+    eyebrow: string;
+    title: string;
+  };
   highlights: { tag: string; title: string; description: string }[];
   servicesSection: {
     eyebrow: string;
@@ -217,6 +221,10 @@ const en: SiteContent = {
     metaTitle: "Fatkul Nur Koirudin | dibumi.com",
     metaDescription:
       "Founder and lead engineer at dibumi.com in Lamongan, East Java. Custom software, Android apps, and the servers they run on.",
+  },
+  highlightsSection: {
+    eyebrow: "Delivery",
+    title: "From first scope to full ownership",
   },
   highlights: [
     {
@@ -512,6 +520,10 @@ const id: SiteContent = {
     metaTitle: "Fatkul Nur Koirudin | dibumi.com",
     metaDescription:
       "Pendiri dan lead engineer dibumi.com di Lamongan, Jawa Timur. Software kustom, aplikasi Android, dan server yang menjalankannya.",
+  },
+  highlightsSection: {
+    eyebrow: "Pengerjaan",
+    title: "Dari lingkup pertama sampai sepenuhnya milik Anda",
   },
   highlights: [
     {
@@ -809,6 +821,10 @@ const ar: SiteContent = {
     metaDescription:
       "المؤسس وكبير المهندسين في dibumi.com بلامونجان، جاوة الشرقية. برمجيات مخصصة وتطبيقات Android والخوادم التي تعمل عليها.",
   },
+  highlightsSection: {
+    eyebrow: "التنفيذ",
+    title: "من أول نطاق عمل إلى ملكية كاملة",
+  },
   highlights: [
     {
       tag: "01 / DISCOVER",
@@ -1099,6 +1115,10 @@ const zh: SiteContent = {
     metaDescription:
       "dibumi.com 创始人兼首席工程师，常驻印尼东爪哇省拉蒙岸。定制软件、Android 应用，以及运行它们的服务器。",
   },
+  highlightsSection: {
+    eyebrow: "交付",
+    title: "从最初的范围界定到完全归您所有",
+  },
   highlights: [
     {
       tag: "01 / DISCOVER",
@@ -1365,6 +1385,10 @@ const pl: SiteContent = {
     metaTitle: "Fatkul Nur Koirudin | dibumi.com",
     metaDescription:
       "Założyciel i główny inżynier dibumi.com w Lamongan we wschodniej Jawie. Dedykowane oprogramowanie, aplikacje Android i serwery, na których działają.",
+  },
+  highlightsSection: {
+    eyebrow: "Realizacja",
+    title: "Od pierwszego zakresu po pełną własność",
   },
   highlights: [
     {
