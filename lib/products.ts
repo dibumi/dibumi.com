@@ -20,7 +20,8 @@ export type ProductId =
   | "paymentOrchestration"
   | "adserverExchange"
   | "cloudHostingBilling"
-  | "trafficAnalytics";
+  | "trafficAnalytics"
+  | "selfHostedOnlineStore";
 
 export type ProductItem = {
   id: ProductId;
@@ -48,6 +49,12 @@ export const platformProducts: ProductItem[] = [
   { id: "adserverExchange", name: "Adserver Exchange", href: null, status: "soon" },
   { id: "cloudHostingBilling", name: "Cloud Hosting Billing", href: null, status: "soon" },
   { id: "trafficAnalytics", name: "Traffic Analytics", href: null, status: "soon" },
+  {
+    id: "selfHostedOnlineStore",
+    name: "Self Hosted Online Store",
+    href: null,
+    status: "soon",
+  },
 ];
 
 /** Produk platform yang tampil di kartu besar section Products. */

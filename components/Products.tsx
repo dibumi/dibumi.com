@@ -7,6 +7,7 @@ import {
   Megaphone,
   Receipt,
   Sparkles,
+  Store,
   type LucideIcon,
 } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
@@ -19,6 +20,7 @@ const platformIcons: Record<string, LucideIcon> = {
   adserverExchange: Megaphone,
   cloudHostingBilling: Receipt,
   trafficAnalytics: ChartLine,
+  selfHostedOnlineStore: Store,
 };
 
 export default function Products({ content }: { content: SiteContent }) {

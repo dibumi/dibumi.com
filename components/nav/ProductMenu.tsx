@@ -8,6 +8,7 @@ import {
   Receipt,
   Smartphone,
   Sparkles,
+  Store,
 } from "lucide-react";
 import {
   getPlatformProducts,
@@ -39,6 +40,7 @@ const platformIcons: Record<string, React.ComponentType<{ className?: string }>>
   adserverExchange: Megaphone,
   cloudHostingBilling: Receipt,
   trafficAnalytics: ChartLine,
+  selfHostedOnlineStore: Store,
 };
 
 type MenuProps = {
@@ -57,7 +59,7 @@ function SoonBadge({ label }: { label: string }) {
 
 function GroupLabel({ children, note }: { children: React.ReactNode; note?: string }) {
   return (
-    <p className="text-muted flex flex-wrap items-baseline gap-x-2 px-2.5 text-[10px] font-semibold uppercase tracking-wider">
+    <p className="text-muted flex flex-wrap items-baseline gap-x-2 text-[10px] font-semibold uppercase tracking-wider">
       <span>{children}</span>
       {note && (
         <span className="text-muted/70 text-[10px] font-normal normal-case tracking-normal">
@@ -141,7 +143,7 @@ function NgambegTile({
       target="_blank"
       rel="noopener noreferrer"
       onClick={onNavigate}
-      className={`group flex h-full items-start gap-3 rounded-xl border px-4 py-4 transition ${rowTints[tint]}`}
+      className={`group flex items-start gap-3 rounded-xl border px-4 py-4 transition ${rowTints[tint]}`}
     >
       <span className="bg-surface mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm">
         <img
@@ -155,14 +157,19 @@ function NgambegTile({
         />
       </span>
       <span className="min-w-0 flex-1">
+        {/* Domain menempel di baris judul, bukan barisnya sendiri: tile ini
+            duduk di samping baris produk, jadi tinggi barisnya harus sama.
+            Tiga baris teks membuatnya lebih jangkung dari tetangganya. */}
         <span className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
           <span className="text-ink group-hover:text-primary text-sm font-semibold transition">
             {group.label}
           </span>
+          <span className="text-muted text-[11px]">{group.brand}</span>
           <ArrowUpRight className="text-muted h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         </span>
-        <span className="text-muted mt-0.5 block text-xs leading-5">{group.brand}</span>
-        <span className="text-muted mt-1.5 block text-xs leading-5">{group.description}</span>
+        <span className="text-muted mt-0.5 line-clamp-2 block text-xs leading-5">
+          {group.description}
+        </span>
       </span>
     </a>
   );
@@ -207,7 +214,16 @@ function CatalogCell({
  * Dua pintu ke katalog Ngambeg: game dan aplikasi, masing-masing ke halaman
  * kategorinya sendiri di ngambeg.com.
  */
-function NgambegCatalog({ content, onNavigate }: { content: SiteContent; onNavigate?: () => void }) {
+function NgambegCatalog({
+  content,
+  onNavigate,
+  tint,
+}: {
+  content: SiteContent;
+  onNavigate?: () => void;
+  /** Indeks warna tile Ngambeg; dua sel di bawahnya melanjutkan deret itu. */
+  tint: number;
+}) {
   const catalog = content.products.catalog;
 
   return (
@@ -219,7 +235,7 @@ function NgambegCatalog({ content, onNavigate }: { content: SiteContent; onNavig
             href={ngambegCatalogUrl.games}
             label={catalog.games}
             Icon={Gamepad2}
-            tint={tintAt(6)}
+            tint={tintAt(tint + 1)}
             onNavigate={onNavigate}
           />
         </li>
@@ -228,7 +244,7 @@ function NgambegCatalog({ content, onNavigate }: { content: SiteContent; onNavig
             href={ngambegCatalogUrl.apps}
             label={catalog.apps}
             Icon={Smartphone}
-            tint={tintAt(7)}
+            tint={tintAt(tint + 2)}
             onNavigate={onNavigate}
           />
         </li>
@@ -256,15 +272,24 @@ export function ProductMenu({ content, onNavigate }: MenuProps) {
         </ul>
       </div>
 
-      <div className="border-line-subtle space-y-2.5 border-t pt-6 md:border-s md:border-t-0 md:ps-8 md:pt-0">
-        {/* Siklus melanjutkan deret kolom kiri, jadi dua kolom terbaca sebagai
-            satu urutan warna, bukan dua deret yang mulai dari nol. */}
-        <NgambegTile
-          content={content}
-          onNavigate={onNavigate}
-          tint={tintAt(platforms.length)}
-        />
-        <NgambegCatalog content={content} onNavigate={onNavigate} />
+      <div className="border-line-subtle border-t pt-6 md:border-s md:border-t-0 md:ps-8 md:pt-0">
+        {/* Label di sini bukan hiasan: kolom kiri didahului label PLATFORMS, jadi
+            tanpa label yang setara, tile Ngambeg akan sejajar dengan label itu
+            dan bukan dengan baris AI Gateway. Siklus warna melanjutkan deret
+            kolom kiri, sehingga dua kolom terbaca sebagai satu urutan. */}
+        <GroupLabel>{content.products.groups.ngambeg.label}</GroupLabel>
+        <div className="mt-2 space-y-2.5">
+          <NgambegTile
+            content={content}
+            onNavigate={onNavigate}
+            tint={tintAt(platforms.length)}
+          />
+          <NgambegCatalog
+            content={content}
+            onNavigate={onNavigate}
+            tint={tintAt(platforms.length)}
+          />
+        </div>
       </div>
     </div>
   );
@@ -295,7 +320,11 @@ export function ProductMenuList({ content, onNavigate }: MenuProps) {
           onNavigate={onNavigate}
           tint={tintAt(platforms.length)}
         />
-        <NgambegCatalog content={content} onNavigate={onNavigate} />
+        <NgambegCatalog
+          content={content}
+          onNavigate={onNavigate}
+          tint={tintAt(platforms.length)}
+        />
       </div>
     </div>
   );

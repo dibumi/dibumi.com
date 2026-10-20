@@ -87,7 +87,8 @@ export type SiteContent = {
       | "paymentOrchestration"
       | "adserverExchange"
       | "cloudHostingBilling"
-      | "trafficAnalytics",
+      | "trafficAnalytics"
+      | "selfHostedOnlineStore",
       { description: string }
     >;
     catalog: {
@@ -304,6 +305,10 @@ const en: SiteContent = {
       trafficAnalytics: {
         description:
           "Visits, referrers, and conversion funnels in a single dashboard.",
+      },
+      selfHostedOnlineStore: {
+        description:
+          "A storefront you install and own: catalogue, cart, checkout, and orders on your own server.",
       },
     },
     catalog: {
@@ -583,6 +588,10 @@ const id: SiteContent = {
         description:
           "Kunjungan, referrer, dan funnel konversi dalam satu dashboard.",
       },
+      selfHostedOnlineStore: {
+        description:
+          "Toko online yang Anda pasang dan miliki sendiri: katalog, keranjang, checkout, dan pesanan di server Anda.",
+      },
     },
     catalog: {
       heading: "Game & Aplikasi",
@@ -861,6 +870,10 @@ const ar: SiteContent = {
       trafficAnalytics: {
         description: "الزيارات والمصادر ومسارات التحويل في لوحة واحدة.",
       },
+      selfHostedOnlineStore: {
+        description:
+          "متجر إلكتروني تملكه وتثبّته بنفسك: الكتالوج والسلة والدفع والطلبات على خادمك.",
+      },
     },
     catalog: {
       heading: "الألعاب والتطبيقات",
@@ -1120,6 +1133,9 @@ const zh: SiteContent = {
       },
       trafficAnalytics: {
         description: "访问量、来源与转化漏斗，集中在一个面板。",
+      },
+      selfHostedOnlineStore: {
+        description: "自托管的在线商店：目录、购物车、结账与订单，全部运行在您自己的服务器上。",
       },
     },
     catalog: {
@@ -1384,6 +1400,10 @@ const pl: SiteContent = {
       },
       trafficAnalytics: {
         description: "Odwiedziny, źródła i lejki konwersji w jednym panelu.",
+      },
+      selfHostedOnlineStore: {
+        description:
+          "Sklep internetowy, który instalujesz i posiadasz: katalog, koszyk, zamówienia na własnym serwerze.",
       },
     },
     catalog: {

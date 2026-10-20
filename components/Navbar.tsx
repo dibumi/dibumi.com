@@ -375,7 +375,7 @@ export default function Navbar({
             id={`${openPanel}-menu`}
             className="border-line bg-surface shadow-float animate-panel-in absolute inset-x-0 top-full hidden max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain border-b lg:block"
           >
-            <div className="mx-auto max-w-7xl px-8 py-10">
+            <div className="mx-auto max-w-7xl px-8 py-6">
               {openPanel === "product" ? (
                 <ProductMenu content={content} onNavigate={() => setOpenPanel(null)} />
               ) : (

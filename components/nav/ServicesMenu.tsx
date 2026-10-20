@@ -76,7 +76,7 @@ function AllServicesLink({
     <Link
       href={`${basePath}#services`}
       onClick={onNavigate}
-      className="text-primary hover:bg-elevated inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition"
+      className="text-primary hover:bg-elevated -me-2.5 inline-flex items-center gap-1 rounded-lg py-1.5 ps-2.5 text-[11px] font-semibold transition"
     >
       {content.nav.allServices}
       <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -88,7 +88,7 @@ export function ServicesMenu({ content, basePath, items, onNavigate }: MenuProps
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-        <p className="text-muted px-2.5 text-[10px] font-semibold uppercase tracking-wider">
+        <p className="text-muted text-[10px] font-semibold uppercase tracking-wider">
           {content.nav.services}
         </p>
         <AllServicesLink content={content} basePath={basePath} onNavigate={onNavigate} />
