@@ -19,22 +19,29 @@ import type { SiteContent } from "@/lib/i18n";
  * Tidak ada ikon di sini. Ikon dekoratif sudah dihapus dari seluruh situs, jadi
  * judulnya yang memikul hierarki, bukan chip di atasnya.
  */
-export default function Standards({ content }: { content: SiteContent["standards"] }) {
+export default function Standards({
+  content,
+  basePath,
+}: {
+  content: SiteContent;
+  basePath: string;
+}) {
   return (
     <section id="standards" className="py-20 lg:py-36">
       <div className="column-guides mx-auto max-w-page px-5 sm:px-8">
         <Reveal>
           <SectionHeading
-            eyebrow={content.eyebrow}
-            title={content.title}
-            description={content.description}
+            eyebrow={content.standards.eyebrow}
+            title={content.standards.title}
+            description={content.standards.description}
+            cta={{ label: content.common.learnMore, href: `${basePath}#contact` }}
           />
         </Reveal>
 
         {/* Baris standar. Wadahnya sendiri yang menyimpan garis atas, jadi
             baris pertama tidak perlu border-t ganda. */}
         <Reveal className="border-hairline mt-16 border-t">
-          {content.items.map((item, index) => (
+          {content.standards.items.map((item, index) => (
             // 0.07s per baris: ritmenya lebih rapat daripada rail proses,
             // karena baris-baris ini dibaca sebagai satu tabel, bukan urutan.
             <Reveal
@@ -59,7 +66,7 @@ export default function Standards({ content }: { content: SiteContent["standards
             border-t sendiri — kalau ditumpuk dengan border tiap kolom, garisnya
             jadi dobel di baris pertama. */}
         <Reveal delay={0.15} className="mt-16 grid gap-8 sm:grid-cols-3">
-          {content.commitments.map((item) => (
+          {content.standards.commitments.map((item) => (
             <div key={item.title} className="border-hairline border-t pt-5">
               <h3 className="text-ink-black text-body font-medium">{item.title}</h3>
               <p className="text-slate-gray mt-2 text-caption">{item.description}</p>

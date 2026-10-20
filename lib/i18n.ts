@@ -75,6 +75,12 @@ export type SiteContent = {
     title: string;
     description: string;
     consult: string;
+    /** Label kotak tengah diagram di pita gelap. */
+    oneTeam: string;
+    /** Keterangan satu baris di bawah label itu. */
+    oneTeamNote: string;
+    /** Tiga keluaran model kerja kami. */
+    outputs: string[];
   };
   services: { title: string; description: string; points: string[] }[];
   products: {
@@ -230,6 +236,10 @@ const en: SiteContent = {
     description:
       "Six practices, one team. From core business systems to the server room.",
     consult: "Discuss a project",
+    oneTeam: "One team",
+    oneTeamNote:
+      "The code, the servers, and the guarantee ship together, from the same people.",
+    outputs: ["Code", "Infrastructure", "SLA"],
   },
   services: [
     {
@@ -515,6 +525,10 @@ const id: SiteContent = {
     description:
       "Enam praktik, satu tim. Dari sistem inti bisnis sampai ruang server.",
     consult: "Konsultasikan",
+    oneTeam: "Satu tim",
+    oneTeamNote:
+      "Kode, server, dan jaminan dikirim bersama, dari orang yang sama.",
+    outputs: ["Kode", "Infrastruktur", "SLA"],
   },
   services: [
     {
@@ -801,6 +815,10 @@ const ar: SiteContent = {
     description:
       "ست ممارسات وفريق واحد. من أنظمة الأعمال الأساسية إلى غرفة الخوادم.",
     consult: "ناقش مشروعك",
+    oneTeam: "فريق واحد",
+    oneTeamNote:
+      "الشيفرة والخوادم والضمان تُسلَّم معًا، من الفريق نفسه.",
+    outputs: ["الشيفرة", "البنية التحتية", "اتفاقية الخدمة"],
   },
   services: [
     {
@@ -1077,6 +1095,10 @@ const zh: SiteContent = {
     title: "我们构建什么",
     description: "六项能力，一个团队。从核心业务系统到服务器机房。",
     consult: "讨论项目",
+    oneTeam: "同一个团队",
+    oneTeamNote:
+      "代码、服务器和保障由同一批人一起交付。",
+    outputs: ["代码", "基础设施", "SLA"],
   },
   services: [
     {
@@ -1338,6 +1360,10 @@ const pl: SiteContent = {
     description:
       "Sześć praktyk, jeden zespół. Od systemów biznesowych po serwerownię.",
     consult: "Porozmawiaj o projekcie",
+    oneTeam: "Jeden zespół",
+    oneTeamNote:
+      "Kod, serwery i gwarancja powstają razem, u tych samych ludzi.",
+    outputs: ["Kod", "Infrastruktura", "SLA"],
   },
   services: [
     {

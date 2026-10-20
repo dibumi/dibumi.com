@@ -24,19 +24,22 @@ import type { SiteContent } from "@/lib/i18n";
  */
 export default function WorkflowMethodology({
   content,
+  basePath,
 }: {
-  content: SiteContent["workflow"];
+  content: SiteContent;
+  basePath: string;
 }) {
-  const lastIndex = content.steps.length - 1;
+  const lastIndex = content.workflow.steps.length - 1;
 
   return (
     <section id="process" className="py-20 lg:py-36">
       <div className="column-guides mx-auto max-w-page px-5 sm:px-8">
         <Reveal>
           <SectionHeading
-            eyebrow={content.eyebrow}
-            title={content.title}
-            description={content.description}
+            eyebrow={content.workflow.eyebrow}
+            title={content.workflow.title}
+            description={content.workflow.description}
+            cta={{ label: content.common.learnMore, href: `${basePath}#standards` }}
           />
         </Reveal>
 
@@ -65,7 +68,7 @@ export default function WorkflowMethodology({
           </Reveal>
 
           <ol className="grid grid-cols-1 gap-x-8 gap-y-12 lg:grid-cols-4">
-            {content.steps.map((step, index) => (
+            {content.workflow.steps.map((step, index) => (
               // Jeda 0.09s per langkah: cukup untuk membaca 01→04 sebagai
               // urutan, tidak cukup lambat untuk terasa seperti loading.
               <Reveal
