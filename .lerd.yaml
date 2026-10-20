@@ -1,0 +1,43 @@
+node_version: "22"
+js_runtime: bun
+secured: true
+
+# lerd selalu menempelkan TLD global (.test), jadi `dibumi.com` di sini
+# menjadi `dibumi.com.test`. Yang didaftarkan: dibumi.test (primary) dan
+# www.dibumi.test. Subdomain lain tetap dilayani wildcard *.dibumi.test.
+domains:
+  - dibumi
+  - www.dibumi
+
+# Next.js host-proxy: lerd menjalankan `next dev` di host sebagai unit
+# lerd-app-dibumi, nginx mem-proxy domain -> port 3000 (HTTPS).
+proxy:
+  command: npm run dev
+  port: 3000
+  # Next membaca PORT sendiri (default 3000) dan bind 0.0.0.0, jadi env HOST
+  # yang disuntik lerd diabaikan. Matikan agar unit tidak menyuntik HOST.
+  inject_host: false
+
+# One-shot commands di dashboard (Commands) dan `lerd run <name>`.
+commands:
+  - name: typecheck
+    label: Typecheck
+    command: bun run typecheck
+    output: text
+    icon: check
+  - name: build:worker
+    label: Build for Cloudflare
+    command: bun run build:worker
+    output: text
+    icon: play
+  - name: preview
+    label: Preview worker
+    command: bun run preview
+    output: terminal
+    icon: terminal
+  - name: deploy
+    label: Deploy to Cloudflare
+    command: bun run deploy
+    output: text
+    confirm: true
+    icon: arrow-up
