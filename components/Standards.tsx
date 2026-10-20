@@ -27,7 +27,7 @@ export default function Standards({
   basePath: string;
 }) {
   return (
-    <section id="standards" className="py-20 lg:py-36">
+    <section id="standards" className="py-20 lg:py-28">
       <div className="column-guides mx-auto max-w-page px-5 sm:px-8">
         <Reveal>
           <SectionHeading
@@ -40,7 +40,7 @@ export default function Standards({
 
         {/* Baris standar. Wadahnya sendiri yang menyimpan garis atas, jadi
             baris pertama tidak perlu border-t ganda. */}
-        <Reveal className="border-hairline mt-16 border-t">
+        <Reveal className="border-hairline mt-12 border-t">
           {content.standards.items.map((item, index) => (
             // 0.07s per baris: ritmenya lebih rapat daripada rail proses,
             // karena baris-baris ini dibaca sebagai satu tabel, bukan urutan.
@@ -65,7 +65,7 @@ export default function Standards({
             feature grid di referensi tanpa ikon. Band ini tidak lagi punya
             border-t sendiri — kalau ditumpuk dengan border tiap kolom, garisnya
             jadi dobel di baris pertama. */}
-        <Reveal delay={0.15} className="mt-16 grid gap-8 sm:grid-cols-3">
+        <Reveal delay={0.15} className="mt-12 grid gap-8 sm:grid-cols-3">
           {content.standards.commitments.map((item) => (
             <div key={item.title} className="border-hairline border-t pt-5">
               <h3 className="text-ink-black text-body font-medium">{item.title}</h3>

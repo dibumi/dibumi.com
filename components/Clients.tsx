@@ -4,20 +4,26 @@ import { clients } from "@/lib/clients";
 import type { Locale, SiteContent } from "@/lib/i18n";
 
 /**
- * Section Clients: tabel wilayah, bukan grid kartu.
+ * Section Clients: pita warna dengan dinding logo.
  *
- * Halaman ini sudah punya dua grid tiga kartu (Highlights dan Services). Kalau
- * klien juga tampil sebagai kartu, ketiganya melebur dan section ini kehilangan
- * fungsinya sebagai jeda. DESIGN.md memakai tabel wilayah kecil sebagai artifact
- * khasnya, dan daftar dua belas nama memang lebih jujur dibaca sebagai baris
- * daripada dua belas kotak.
+ * Ini padanan bagian customer story di referensi, yang di sana memakai
+ * pita biru dengan kutipan besar, foto, dan sebaris logo. Foto tidak ada
+ * di sini — tidak ada aset foto studio ini, dan mengarang foto orang yang
+ * tidak pernah ada adalah memalsukannya. Yang menggantikannya adalah dinding
+ * logo: dua belas klien nyata, dua belas logo nyata, tiap selnya satu kotak
+ * yang dipisah garis sienna tipis.
  *
- * Section ini adalah band warna halaman — padanan bagian customer story biru di
- * referensi. Warnanya peach penuh, jadi seluruh teks di dalamnya memakai sienna:
- * abu-abu dingin di atas peach memutus efek kertas kraft dan membuat band ini
- * terbaca sebagai panel abu-abu yang kebetulan berwarna, bukan sebagai kertas
- * berwarna. Karena itu SectionHeading tidak dipakai di sini; ia membawa slate
- * dan ash yang tidak boleh masuk ke dalam band.
+ * Dinding logo itu juga lebih jujur daripada tabel nama: yang ingin dilihat
+ * prospective client adalah siapa yang pernah percaya pada kita, bukan
+ * kebangsaan badan hukum mereka. Kode ISO dan bendera tetap ada, tapi di
+ * bawah logo, bukan di sampingnya.
+ *
+ * Section ini adalah band warna halaman. Warnanya peach penuh, jadi seluruh
+ * teks di dalamnya memakai sienna: abu-abu dingin di atas peach memutus efek
+ * kertas kraft dan membuat band ini terbaca sebagai panel abu-abu yang
+ * kebetulan berwarna, bukan sebagai kertas berwarna. Karena itu SectionHeading
+ * tidak dipakai di sini; ia membawa slate dan ash yang tidak boleh masuk ke
+ * dalam band.
  *
  * Logo memakai <img> biasa, bukan next/image, karena separuhnya SVG dan
  * beberapa di antaranya aset pihak ketiga berukuran kecil. Dengan begitu tidak
@@ -54,85 +60,89 @@ export default function Clients({
   content: SiteContent["clients"];
   locale: Locale;
 }) {
-  // Dua belas baris dibagi rata ke dua kolom supaya tingginya tetap pendek.
-  // Tanpa pembagian manual, satu kolom akan memanjang dan section ini menelan
-  // satu layar penuh.
-  const midpoint = Math.ceil(clients.length / 2);
-  const columns = [clients.slice(0, midpoint), clients.slice(midpoint)];
+  // Jumlah negara dihitung dari data, bukan ditulis manual: kode ISO di
+  // lib/clients.ts bisa bertambah kapan saja dan angkanya harus ikut.
+  const countries = new Set(clients.map((client) => client.region)).size;
+
+  const facts = [
+    { value: String(clients.length), label: content.facts.clients },
+    { value: String(countries), label: content.facts.countries },
+    { value: "2013", label: content.facts.since },
+  ];
 
   return (
     <section id="clients" className="bg-blush-peach py-20 lg:py-40">
       <div className="mx-auto max-w-page px-5 sm:px-8">
-        {/* Judul masuk lebih dulu, dua kolom menyusul dengan jeda: band ini
-            panjang, dan tanpa jeda semuanya muncul sekaligus seperti gambar. */}
-        <Reveal className="max-w-[58ch]">
-          <p className="text-sienna-brown/70 flex items-center gap-1.5 text-caption">
-            {content.eyebrow}
-            <span aria-hidden="true" className="rtl:-scale-x-100">
-              ›
-            </span>
-          </p>
-          <h2 className="text-sienna-brown font-display mt-4 text-heading font-normal sm:text-heading-lg">
-            {content.title}
-          </h2>
-          <p className="text-sienna-brown/80 mt-5 max-w-[52ch] text-body">
-            {content.description}
-          </p>
-        </Reveal>
+        <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
+          {/* Kolom kiri: judul, deskripsi, dan tiga angka keras. */}
+          <Reveal>
+            <p className="text-sienna-brown/70 flex items-center gap-1.5 text-caption">
+              {content.eyebrow}
+              <span aria-hidden="true" className="rtl:-scale-x-100">
+                ›
+              </span>
+            </p>
+            <h2 className="text-sienna-brown font-display mt-4 text-heading font-normal sm:text-heading-lg">
+              {content.title}
+            </h2>
+            <p className="text-sienna-brown/80 mt-5 max-w-[46ch] text-body">
+              {content.description}
+            </p>
 
-        <div className="mt-16 grid gap-x-10 sm:grid-cols-2">
-          {columns.map((column, columnIndex) => (
-            <Reveal key={columnIndex} delay={columnIndex === 0 ? 0.1 : 0.18}>
-              <ul className="divide-sienna-brown/15 divide-y">
-                {column.map((client) => (
-                  <li
-                    key={client.name}
-                    // Margin negatif menarik wash hover sedikit ke luar kolom
-                    // teks, supaya barisnya terbaca sebagai baris yang disorot
-                    // dan bukan sebagai kotak yang menempel di tepi.
-                    className="hover:bg-sienna-brown/5 -mx-3 flex items-center gap-4 px-3 py-4 transition-colors"
-                  >
+            {/* Tiga angka, dipisah garis. Di band peach ini satu-satunya
+                tempat yang boleh memakai garis penuh selebar kolom. */}
+            <dl className="border-sienna-brown/20 mt-12 grid grid-cols-3 gap-6 border-t pt-6">
+              {facts.map((fact) => (
+                <div key={fact.label}>
+                  <dt className="text-sienna-brown/60 text-caption">{fact.label}</dt>
+                  <dd className="text-sienna-brown font-display tabular mt-1 text-heading-sm font-normal">
+                    {fact.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+
+          {/* Kolom kanan: dinding logo. Jarak 1px antar sel memperlihatkan
+              warna latar sebagai garis pemisah, jadi tidak perlu border per
+              sel dan tidak ada garis yang penggantung di tepi. */}
+          <Reveal delay={0.12}>
+            <ul className="grid grid-cols-2 gap-px bg-sienna-brown/20 sm:grid-cols-3">
+              {clients.map((client) => (
+                <li
+                  key={client.name}
+                  className="bg-blush-peach flex flex-col items-center justify-center gap-3 p-6 transition-colors hover:bg-sienna-brown/[0.06]"
+                >
+                  {client.logo ? (
+                    <img
+                      src={client.logo}
+                      alt={client.name}
+                      width={client.width}
+                      height={client.height}
+                      loading="lazy"
+                      className="max-h-9 w-auto max-w-[130px] object-contain opacity-70 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0"
+                    />
+                  ) : (
+                    <span className="text-sienna-brown text-caption font-medium uppercase tracking-tight">
+                      {client.name}
+                    </span>
+                  )}
+
+                  <span className="text-sienna-brown/60 flex items-center gap-1.5 text-caption uppercase">
                     <img
                       src={`/flags/${client.region}.svg`}
                       alt={regionName(client.region, locale)}
                       width={18}
                       height={12}
                       loading="lazy"
-                      className="h-3 w-[18px] shrink-0 rounded-[2px] object-cover"
+                      className="h-2.5 w-[15px] shrink-0 rounded-[2px] object-cover"
                     />
-
-                    {client.logo ? (
-                      <img
-                        src={client.logo}
-                        alt=""
-                        width={client.width}
-                        height={client.height}
-                        loading="lazy"
-                        className="max-h-8 w-auto max-w-[120px] shrink-0 object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0"
-                      />
-                    ) : (
-                      <span className="text-sienna-brown shrink-0 text-caption font-medium uppercase tracking-tight">
-                        {client.name}
-                      </span>
-                    )}
-
-                    {/* Label nama hanya muncul kalau logonya ada. Untuk Wap2Cash
-                        namanya sudah jadi wordmark di slot logo, jadi mengulangnya
-                        di sini akan menulis nama yang sama dua kali. */}
-                    {client.logo ? (
-                      <span className="text-sienna-brown min-w-0 truncate text-caption">
-                        {client.name}
-                      </span>
-                    ) : null}
-
-                    <span className="text-sienna-brown/60 tabular ms-auto shrink-0 text-caption uppercase">
-                      {client.region}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          ))}
+                    <span className="tabular">{client.region}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
         </div>
       </div>
     </section>

@@ -100,22 +100,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  /* Semua gerak dimatikan di sini. Yang tersisa hanya transisi opacity dan
-     transform sepele, dan itu cukup: isinya harus terbaca, bukan bergerak. */
-  .animate-fade-up,
-  .animate-panel-in,
-  .animate-marquee,
-  .animate-float,
-  .animate-float-slow,
-  .hero-atmosphere {
-    animation: none;
-  }
-}
 
 /*
  * Atmosfer hero.
@@ -240,4 +224,27 @@
  */
 :lang(ar) .hero-title {
   line-height: 1.45;
+}
+
+/*
+ * Prefers-reduced-motion: semua gerak berhenti.
+ *
+ * Blok ini sengaja diletakkan paling bawah. Sebelumnya ia berada di atas
+ * definisi `.hero-atmosphere`, dan karena spesifisitasnya sama, aturan
+ * `animation: hero-drift ...` di bawahnya yang menang — wash tetap bergerak
+ * walau pengunjung meminta sebaliknya.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-fade-up,
+  .animate-panel-in,
+  .animate-marquee,
+  .animate-float,
+  .animate-float-slow,
+  .hero-atmosphere {
+    animation: none;
+  }
 }

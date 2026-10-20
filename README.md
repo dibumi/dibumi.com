@@ -10,10 +10,10 @@ Built with **Next.js 16 (App Router)** and deployed as a **Cloudflare Worker** (
 
 ## Design system
 
-- `DESIGN.md` holds the reference: palette, type scale, radii, shadows, components, and the do's and don'ts. Its closing section records the three places this build deliberately departs from it.
+- `DESIGN.md` holds the reference: palette, type scale, radii, shadows, components, and the do's and don'ts. Its closing section records the six places this build deliberately departs from it.
 - `tailwind.config.ts` and `app/globals.css` hold the implemented tokens. They mirror each other by hand, so a token change means changing both files.
 - The palette is intentionally achromatic, with `blush-peach` and `sienna-brown` reserved for one accent card per page. That card is the first one in Highlights.
-- The hero gradient wash lives in `app/globals.css` (`.hero-atmosphere`, `.hero-grain`, `.hero-fade`) rather than in a component, because it is five stacked gradients plus a grain overlay. It is the only chromatic background on the site.
+- The hero gradient wash lives in `app/globals.css` (`.hero-atmosphere`, `.hero-grain`, `.hero-fade`) rather than in a component, because it is seven stacked gradients plus a grain overlay, drifting on a 26-second loop. It is the only chromatic background on the site.
 - Cards never carry shadows. Only floating product artifacts (`shadow-subtle-3`) and dropdown overlays (`shadow-subtle`, `shadow-subtle-2`) do.
 - The anchor-offset rule from `AGENTS.md` still applies: `scroll-padding-top` in `app/globals.css` stays in sync with the header height in `components/Navbar.tsx`, and sections do not add `scroll-margin-top` on top of it.
 
@@ -24,7 +24,7 @@ Built with **Next.js 16 (App Router)** and deployed as a **Cloudflare Worker** (
 | Route | Content |
 | --- | --- |
 | `/` | Redirects to `/en` |
-| `/[locale]` | Landing page: hero, highlights, services, products, clients, process, standards, contact |
+| `/[locale]` | Landing page: hero, marquee, products, highlights, clients, services, process, standards, contact |
 | `/[locale]/teams` | The team: one engineer, facts, and direct contact links |
 | `/[locale]/privacy` | Privacy policy |
 | `/[locale]/terms` | Terms & conditions |
@@ -37,18 +37,18 @@ Legal documents are written in English and Indonesian. Other locales render the 
 
 ## Sections
 
-1. **Hero** — a soft gradient wash with a fine grain, a small pill of guarantees above the headline, a centred serif headline with one italicised phrase, a filled and a ghost pill button side by side, and three floating artifact cards (client region table, services list, counts with a gestural line) that bleed past the viewport edge at `xl` and above. One full screen, no pin; the entrance is choreographed and the cards then drift on a slow loop.
+1. **Hero** — a soft gradient wash with a fine grain, a grey pill of guarantees above the headline, a centred serif headline with one italicised phrase, a filled pill and a text link, and four floating artifact cards (client region table, services list, counts with a gestural line, Ngambeg) plus an avatar bubble, bleeding past the viewport edge at `xl` and above. One full screen, no pin; the entrance is choreographed and the cards then drift on a slow loop. Each card is three layers deep — CSS float outside, scroll parallax in the middle, entrance animation inside — because one element cannot hold three transforms.
 2. **Client marquee** — twelve real client logos on a 50-second CSS marquee with edge fades, paused on hover and stopped under reduced motion.
-3. **Products** — a single elevated panel on a fog-to-white gradient, listing the six platform products with ordinals and a `Soon` pill, then the Ngambeg Cyber Media exit.
-4. **Highlights** — three cards: discover, build, operate. The first is the page's single peach card and carries an oversized serif ordinal in place of an illustration; the other two are mist.
-5. **Clients** — the peach band: twelve clients as a two-column hairline table, everything in sienna on blush, each row carrying a flag, the logo, and the ISO country code.
-6. **Services** — the dark band: six practices on ink with hairline rules, an ordinal `01`–`06`, a points list, and a text link with an arrow.
+3. **Products** — the reference's device: a vertical tab list of the six platform products plus the Ngambeg group on the left, the selected product in a framed window on the right with a browser chrome and a real `01 / 07` counter. A client component, server-fed. Below `lg` the tab list becomes a scrollable strip.
+4. **Highlights** — three cards: discover, build, operate. The first is the page's single peach card; each carries an oversized serif ordinal as a watermark bleeding off the bottom-right corner in place of an illustration. Titles are sans at 26px, the way the reference sets card titles.
+5. **Clients** — the peach band: the copy and three computed facts on the left (12 clients, 10 countries, since 2013), a twelve-cell logo wall on the right with 1px gaps showing the band through as hairlines, each cell carrying a flag and the ISO country code. Everything in sienna on blush.
+6. **Services** — the dark band: the six practices as a hairline-separated list on the left, a diagram of the delivery model on the right (six inputs, one team, three outputs) built from the same data, sticky while the list scrolls.
 7. **Process** — four steps on an achromatic rail.
 8. **Standards** — three standards as hairline rows, then three commitments.
 9. **Contact** — a centred closing call to action on fog with a single peach radial, WhatsApp as a filled pill and email as a ghost pill, then the operational facts.
 10. **Footer** — the mark alone, four link columns, and a single closing row on a fog-white surface with no divider line and no oversized wordmark.
 
-Sections reveal their headers and stagger their items on scroll through `components/motion/Reveal.tsx`. The band order (white, fog, peach, ink) is deliberate: without alternating surfaces the page reads as one flat colour from top to bottom.
+Sections reveal their headers and stagger their items on scroll through `components/motion/Reveal.tsx`, and the white sections draw three vertical hairlines at 25/50/75% of the container (`.column-guides` in `app/globals.css`). The band order (white, fog, peach, ink) is deliberate: without alternating surfaces the page reads as one flat colour from top to bottom.
 
 The 404 page is styled in the same system.
 

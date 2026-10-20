@@ -116,6 +116,8 @@ Background #17191c, text #ffffff, border 1px solid #ffffff (invisible against fi
 
 Background transparent, text #17191c, border 1px solid #17191c, border-radius 9999px, padding 0 20px. Sohne 16px weight 400. Shares the pill geometry with the filled variant so they read as a matched pair on the same baseline.
 
+> **Note:** the live steep.app hero does **not** use this variant. Its secondary hero action is a **Text Link with Arrow** beside the filled pill. The ghost pill is still the correct secondary action inside page bodies, but the hero pair is filled pill + text link. See "Where this project departs from the reference".
+
 ### Text Link with Arrow
 **Role:** Inline navigation and section transitions (Learn more →, Read the story →)
 
@@ -363,9 +365,29 @@ The reference above is the target. This project implements it on **Tailwind CSS 
 
 ## Where this project departs from the reference
 
-Three deliberate deviations, all of them because the reference's exact asset or surface is not available here:
+Six deliberate deviations. Five are because the reference's exact asset, surface, or product does not exist here; the sixth is because the live site disagrees with its own style guide.
 
-- **The hero atmosphere.** The reference backs its hero with a looping gradient-mesh video (`steep.app/videos/door.mp4`) plus a noise overlay. A video is not shipped here. The wash is rebuilt in CSS as five stacked radial gradients (`.hero-atmosphere` in `app/globals.css`) with a desaturated `feTurbulence` grain (`.hero-grain`) and a white fade at the bottom edge (`.hero-fade`). It is the only place on the site that uses colour outside the peach/sienna pair, and only as a background wash, never as a component surface.
-- **The accent card position.** In the reference the first feature card of the three-up row is peach. That is where the single peach card lives here too, not in the contact section. The contact panel is neutral mist.
-- **Illustrations.** The reference's feature cards carry line illustrations. No such assets exist for this studio, and drawing decorative SVGs would be inventing imagery, so each card carries an oversized serif ordinal instead — typography doing the visual work.
+- **The hero atmosphere.** The reference backs its hero with a looping gradient-mesh video (`steep.app/videos/door.mp4`) plus a noise overlay. A video is not shipped here. The wash is rebuilt in CSS as seven stacked radial gradients (`.hero-atmosphere` in `app/globals.css`), each on a 120% layer so it can drift on a 26-second alternating loop, with a desaturated `feTurbulence` grain (`.hero-grain`) and a white fade at the bottom edge (`.hero-fade`). The drift is the substitute for the video's motion: without it the wash freezes in a way the reference never does. It is the only place on the site that uses colour outside the peach/sienna pair, and only as a background wash, never as a component surface.
+- **The hero's secondary action.** The Ghost Pill entry above describes a bordered pill as the secondary action. The live steep.app hero pairs its filled pill with a plain **text link and arrow** instead. The hero follows the live site, not the style guide. The ghost pill remains the right secondary action inside page bodies (contact section, closing CTA).
+- **The fourth hero artifact.** The reference's fourth floating card is an AI composer: an input field, an `@` mention affordance, a circular send button. This studio has no chat product, and a composer for a product that does not exist is invented UI. That slot holds the Ngambeg card instead, which is a real brand with a real destination. For the same reason there is no `Input / Composer` component anywhere in this build.
+- **The accent card position.** In the reference the first feature card of the three-up row is peach. That is where the single peach card lives here too, not in the contact section. The contact panel is neutral mist. The peach *band* in Clients is a section surface, not a card, and is a separate instance of the accent.
+- **Illustrations.** The reference's feature cards carry line illustrations. No such assets exist for this studio, and drawing decorative SVGs would be inventing imagery, so each card carries an oversized serif ordinal as a watermark bleeding off the bottom-right corner — typography doing the visual work. The only drawn line on the site is the gestural sparkline in the hero's stat card, which the reference's own `Stat Card with Chart` entry specifies as "a gestural line, not a data dashboard": it has no axes, no gridlines, and no numbers.
+- **The dark band's photography.** The reference fills its customer-story band with a photograph and its dark band with product screenshots. Neither exists here. The story band becomes a logo wall of the twelve real clients, and the dark band becomes a diagram of the delivery model built from the section's own data.
+
+## Motion
+
+The reference is built on GSAP ScrollTrigger; it pins its hero for 3256px and scrubs several sections. This build does not pin anything. A pinned hero was tried and removed: the cards slid off-screen and left empty scroll behind them, which is worse than the motion it bought. What remains:
+
+- **Entrance choreography**, not scroll scrubbing. The hero's pill, headline, paragraph, buttons, and cards enter in sequence with their own delays, and the cards enter with a slight rotation so they read as *placed* rather than *appeared*.
+- **A slow drift after entrance.** `animate-float` and `animate-float-slow` (9s and 13s, opposing phases) keep the hero cards alive without anyone noticing the loop.
+- **A bounded exit parallax.** As the hero leaves, the headline rises 40px and fades to 0.35, and the cards rise 22px. The range is deliberately short because the hero is only one viewport tall — there is no room for a long scrub.
+- **Scroll reveals.** `components/motion/Reveal.tsx` is the shared primitive: 10px rise, 0.6s, `once: true`. Staggered per section by index.
+- **One 50-second CSS marquee** for the client logos, paused on hover.
+- **`pathLength`** on the hero's sparkline, so the line is drawn rather than faded in.
+
+The only dependency added for this is `motion` (v14). Everything else is CSS keyframes in `tailwind.config.ts`. Under `prefers-reduced-motion: reduce` every animation is switched off — the reduced-motion block in `app/globals.css` sits at the end of the file specifically so it wins the cascade against the `.hero-atmosphere` rule above it, and `Reveal` zeroes its duration rather than only its initial state.
+
+## Column guides
+
+The reference runs three vertical hairlines through its white sections at 25%, 50%, and 75% of the container. `.column-guides` in `app/globals.css` reproduces them as a `::before` overlay with `isolation: isolate` and `z-index: -1`, so the lines sit behind the content instead of crossing the text. Applied to Process and Standards. It is *not* applied to Products, because the framed device already provides the structure and the guide cut straight through the section title.
 

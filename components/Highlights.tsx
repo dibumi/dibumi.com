@@ -26,12 +26,13 @@ import type { SiteContent } from "@/lib/i18n";
  * naik berurutan 0 / 0.08 / 0.16 detik. Mata membaca kiri ke kanan, jadi jeda
  * kecil itu yang membuat barisnya terasa disusun, bukan dilempar.
  *
- * Section ini tidak punya padding bawah sendiri: jarak ke section Clients
- * diambil dari padding atas Clients, supaya ritmenya tidak dijumlahkan dua kali.
+ * Section ini duduk di antara panel Products dan pita peach Clients, jadi ia
+ * membawa jarak bawahnya sendiri: dua permukaan berbeda warna tidak boleh
+ * bertemu tanpa jeda.
  */
 export default function Highlights({ content }: { content: SiteContent["highlights"] }) {
   return (
-    <section className="column-guides mx-auto max-w-page px-5 sm:px-8">
+    <section className="mx-auto max-w-page px-5 pb-20 pt-4 sm:px-8 lg:pb-28">
       <div className="grid gap-6 md:grid-cols-3">
         {content.map((item, index) => {
           const accent = index === 0;
@@ -44,7 +45,7 @@ export default function Highlights({ content }: { content: SiteContent["highligh
                   `hover:-translate-y` dari Tailwind. `h-full` menjaga tinggi
                   ketiga kartu tetap sama walau isinya beda panjang. */}
               <div
-                className={`rounded-cards relative flex h-full min-h-[24rem] flex-col overflow-hidden p-8 transition duration-500 hover:-translate-y-1 ${
+                className={`rounded-cards relative flex h-full min-h-[19rem] flex-col justify-between overflow-hidden p-8 transition duration-500 hover:-translate-y-1 ${
                   accent ? "bg-blush-peach hover:brightness-[0.98]" : "bg-mist-gray"
                 }`}
               >
@@ -54,8 +55,8 @@ export default function Highlights({ content }: { content: SiteContent["highligh
                     terasa lebih besar darikotaknya. */}
                 <span
                   aria-hidden="true"
-                  className={`font-display pointer-events-none absolute -end-6 -bottom-12 text-[190px] leading-none transition-transform duration-500 group-hover:scale-[1.03] ${
-                    accent ? "text-sienna-brown/25" : "text-ink-black/[0.07]"
+                  className={`font-display pointer-events-none absolute -bottom-10 -end-8 text-[220px] leading-none transition-transform duration-500 group-hover:scale-[1.03] ${
+                    accent ? "text-sienna-brown/20" : "text-ink-black/[0.06]"
                   }`}
                 >
                   {String(index + 1).padStart(2, "0")}
@@ -71,7 +72,7 @@ export default function Highlights({ content }: { content: SiteContent["highligh
                   {item.tag}
                 </p>
 
-                <div className="relative mt-auto">
+                <div className="relative">
                   <h2
                     className={`text-[26px] leading-[1.18] font-[450] ${
                       accent ? "text-sienna-brown" : "text-ink-black/70"

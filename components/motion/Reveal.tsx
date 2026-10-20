@@ -14,8 +14,11 @@ import { motion, useReducedMotion } from "motion/react";
  * `once: true` supaya elemen tidak berkedip lagi saat digulir balik — reveal
  * yang berulang terbaca sebagai bug, bukan sebagai animasi.
  *
- * Saat prefers-reduced-motion aktif, `initial` dimatikan: elemen langsung
- * tampil tanpa transisi.
+ * Saat prefers-reduced-motion aktif, `initial` dimatikan dan durasinya nol:
+ * elemen langsung tampil. Durasinya ikut dinolkan, bukan hanya `initial`,
+ * karena preferensi itu baru terbaca setelah mount — kalau hanya `initial`
+ * yang dimatikan, elemen sudah sempat dirender pada opasitas 0 dan transisi
+ * 0.6 detik tetap dijalankan saat masuk viewport.
  */
 export default function Reveal({
   children,
@@ -38,7 +41,11 @@ export default function Reveal({
       initial={reduce ? false : { opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: reduce ? 0 : 0.6,
+        delay: reduce ? 0 : delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
     >
       {children}
     </Component>
