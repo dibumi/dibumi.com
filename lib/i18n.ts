@@ -108,6 +108,8 @@ export type SiteContent = {
   };
   clients: {
     eyebrow: string;
+    /** Label overline di atas strip logo, di bawah hero. */
+    marqueeLabel: string;
     title: string;
     description: string;
     /** Label untuk tiga angka di pita klien. */
@@ -341,6 +343,7 @@ const en: SiteContent = {
   },
   clients: {
     eyebrow: "Clients",
+    marqueeLabel: "Trusted by teams at",
     title: "Clients we have worked with",
     description:
       "Teams and networks we have supported across software, mobile, and infrastructure work.",
@@ -635,6 +638,7 @@ const id: SiteContent = {
   },
   clients: {
     eyebrow: "Klien",
+    marqueeLabel: "Dipercaya oleh tim di",
     title: "Klien yang pernah bekerja sama",
     description:
       "Tim dan jaringan yang pernah kami dukung dalam pekerjaan software, mobile, dan infrastruktur.",
@@ -929,6 +933,7 @@ const ar: SiteContent = {
   },
   clients: {
     eyebrow: "العملاء",
+    marqueeLabel: "موثوق به من فرق في",
     title: "عملاء تعاملنا معهم",
     description:
       "فرق وشبكات دعمناها في أعمال البرمجيات والجوال والبنية التحتية.",
@@ -1204,6 +1209,7 @@ const zh: SiteContent = {
   },
   clients: {
     eyebrow: "客户",
+    marqueeLabel: "深受以下团队信赖",
     title: "合作过的客户",
     description: "我们在软件、移动端和基础设施项目中支持过的团队与网络。",
     facts: {
@@ -1484,6 +1490,7 @@ const pl: SiteContent = {
   },
   clients: {
     eyebrow: "Klienci",
+    marqueeLabel: "Zaufali nam zespoły z",
     title: "Klienci, z którymi pracowaliśmy",
     description:
       "Zespoły i sieci, które wspieraliśmy w projektach software, mobile i infrastrukturalnych.",
