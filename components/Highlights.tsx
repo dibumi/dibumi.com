@@ -37,6 +37,14 @@ import type { SiteContent } from "@/lib/i18n";
  * animasi masuknya, dan inline style mengalahkan utility Tailwind. Karena itu
  * zoom hover dipegang `<div>` di dalam kartu, bukan elemen `Reveal` — kalau
  * keduanya digabung, `hover:scale` akan diam-diam tidak berlaku.
+ *
+ * Jebakan kedua, yang sempat terjadi di judul: `ch` diukur dari font-size
+ * elemen yang memakai kelas itu, bukan dari elemen di dalamnya. Pembungkus
+ * judul mewarisi 17px dari body, jadi `max-w-[26ch]` berarti 262px — bukan 26
+ * karakter pada 64px seperti yang terbaca. Judul 64px dijejalkan ke 262px dan
+ * pecah jadi lima baris. Batasnya sekarang `58ch`, sama dengan SectionHeading,
+ * sehingga 585px dan dua baris. `text-balance` menemani batas itu: tanpa
+ * penyeimbang, dua baris pecah jadi satu baris penuh plus satu kata.
  */
 
 export default function Highlights({ content }: { content: SiteContent }) {
@@ -45,7 +53,7 @@ export default function Highlights({ content }: { content: SiteContent }) {
     // pita peach Clients, dan dua permukaan berbeda warna tidak boleh bertemu
     // tanpa jeda.
     <section className="mx-auto max-w-page px-5 pb-20 pt-4 sm:px-8 lg:pb-28">
-      <Reveal className="mx-auto max-w-[26ch] text-center">
+      <Reveal className="mx-auto max-w-[58ch] text-balance text-center">
         <p className="text-ash-gray flex items-center justify-center gap-1.5 text-caption">
           {content.highlightsSection.eyebrow}
           <span aria-hidden="true" className="rtl:-scale-x-100">
