@@ -1,23 +1,25 @@
 import React from "react";
 import Link from "next/link";
-import SectionHeading from "@/components/SectionHeading";
 import { serviceAnchor, serviceMeta } from "@/lib/services";
+import Reveal from "@/components/motion/Reveal";
 import type { SiteContent } from "@/lib/i18n";
 
 /**
- * Enam praktik layanan.
+ * Pita gelap berisi enam praktik layanan.
  *
- * Section ini duduk di atas kanvas putih, jadi tidak diberi background sendiri:
- * ritme pita terang/gelap diurus section lain, dan menambahkan satu lagi di
- * sini akan memecahnya.
+ * Referensinya memakai satu section hitam pekat (#121212) di tengah halaman,
+ * dengan judul serif terang, tab di kiri, dan grid fitur di bawahnya. Pita itu
+ * berfungsi sebagai titik henti: setelah dua section terang, mata butuh
+ * kontras. Di sini peran itu diambil section Services, dengan ink-black sebagai
+ * permukaannya dan paper-white sebagai tintanya.
  *
- * Ikon sudah dihapus dari kartu. Peran penanda urutan diambil alih nomor
- * ordinal (01–06) dalam tabular, dan tiap poin cukup ditumpuk sebagai teks
- * caption tanpa marker titik: sistem ini tidak punya warna fungsional untuk
- * sebuah bullet.
+ * Warna aksen tidak ikut masuk: peach hanya bekerja di atas putih, dan di atas
+ * ink ia kehilangan sifat kertasnya. Satu-satunya warna di pita ini adalah
+ * putih pada hitam.
  *
- * `scroll-mt-28` dipertahankan karena navbar menaut langsung ke anchor
- * tiap layanan; tanpa itu judul kartu mendarat di bawah header sticky.
+ * Ikon tetap tidak ada. Urutan ditandai ordinal 01–06, dan tiap kartu punya
+ * garis hairline tipis sebagai pemisah — di atas latar gelap, garis lebih
+ * terbaca daripada kartu berisi.
  */
 export default function Services({
   content,
@@ -27,61 +29,78 @@ export default function Services({
   basePath: string;
 }) {
   return (
-    <section id="services" className="py-20 lg:py-24">
+    <section id="services" className="bg-ink-black py-20 lg:py-28">
       <div className="mx-auto max-w-page px-5 sm:px-8">
-        <SectionHeading
-          eyebrow={content.servicesSection.eyebrow}
-          title={content.servicesSection.title}
-          description={content.servicesSection.description}
-        />
+        <Reveal>
+          <div className="max-w-[58ch]">
+            <p className="text-paper-white/50 flex items-center gap-1.5 text-caption">
+              {content.servicesSection.eyebrow}
+              <span aria-hidden="true" className="rtl:-scale-x-100">
+                ›
+              </span>
+            </p>
+            <h2 className="text-paper-white font-display mt-4 text-heading font-normal sm:text-heading-lg">
+              {content.servicesSection.title}
+            </h2>
+            <p className="text-paper-white/60 mt-5 max-w-[52ch] text-body">
+              {content.servicesSection.description}
+            </p>
+          </div>
+        </Reveal>
 
-        {/* auto-rows-fr: semua baris memakai tinggi yang sama, jadi kartu di
-            baris kedua setinggi kartu tertinggi di baris pertama. Tanpa ini,
-            tiap baris grid diukur sendiri-sendiri. Hanya dari sm ke atas, supaya
-            di mobile satu kolom tidak ada kartu pendek yang dipaksa tinggi. */}
-        <div className="mt-16 grid gap-6 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3">
+        {/* auto-rows-fr menyamakan tinggi kartu dalam satu baris. Di pita gelap
+            ini yang menyusun ritme adalah garis, bukan kotak: setiap sel punya
+            border atas, sehingga enam layanan terbaca sebagai satu tabel. */}
+        <div className="mt-14 grid gap-x-10 gap-y-0 sm:grid-cols-2 lg:grid-cols-3">
           {content.services.map((service, index) => {
             const meta = serviceMeta[index];
 
             return (
-              <article
+              <Reveal
                 key={service.title}
-                id={meta ? serviceAnchor(meta.slug) : undefined}
-                className="bg-mist-gray rounded-cards flex scroll-mt-28 flex-col gap-6 p-8"
+                as="article"
+                delay={index * 0.06}
+                className="group border-paper-white/15 border-t py-8"
               >
-                <span className="text-ash-gray tabular text-caption">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
+                <div
+                  id={meta ? serviceAnchor(meta.slug) : undefined}
+                  className="flex scroll-mt-28 flex-col gap-4"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-paper-white/40 tabular text-caption">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="bg-paper-white/20 h-px flex-1 transition-colors duration-500 group-hover:bg-paper-white/50"
+                    />
+                  </div>
 
-                <div>
-                  <h3 className="text-ink-black text-body-lg font-medium">
+                  <h3 className="text-paper-white text-body-lg font-medium">
                     {service.title}
                   </h3>
-                  <p className="text-slate-gray mt-2 text-body">{service.description}</p>
+
+                  <p className="text-paper-white/60 text-caption">{service.description}</p>
+
+                  <ul className="mt-1 flex flex-col gap-1.5">
+                    {service.points.map((point) => (
+                      <li key={point} className="text-paper-white/40 text-caption">
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link
+                    href={`${basePath}#contact`}
+                    className="text-paper-white mt-3 inline-flex w-fit items-center gap-1.5 text-caption hover:underline"
+                  >
+                    {content.servicesSection.consult}
+                    <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
+                      →
+                    </span>
+                  </Link>
                 </div>
-
-                <ul className="flex flex-col gap-1.5">
-                  {service.points.map((point) => (
-                    <li key={point} className="text-slate-gray text-caption">
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* mt-auto menempelkan tautan ke dasar kartu, supaya keenam
-                    kartu punya baris aksi yang sejajar meski panjang teksnya
-                    berbeda. Panah ditulis sebagai glyph di dalam label, dan
-                    dibalik di RTL. */}
-                <Link
-                  href={`${basePath}#contact`}
-                  className="text-ink-black mt-auto inline-flex w-fit items-center gap-1.5 text-body hover:underline"
-                >
-                  {content.servicesSection.consult}
-                  <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
-                    →
-                  </span>
-                </Link>
-              </article>
+              </Reveal>
             );
           })}
         </div>

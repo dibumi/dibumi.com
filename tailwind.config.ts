@@ -110,11 +110,36 @@ export default {
           "0%": { opacity: "0", transform: "translateY(-0.35rem)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        // Marquee logo: track digandakan dua kali, jadi geser -50% menutup
+        // satu putaran penuh tanpa celah.
+        marquee: {
+          "0%": { transform: "translate3d(0, 0, 0)" },
+          "100%": { transform: "translate3d(-50%, 0, 0)" },
+        },
+        // Garis tipis yang tumbuh dari nol, dipakai penanda progres.
+        sweep: {
+          "0%": { transform: "scaleY(0.3)" },
+          "100%": { transform: "scaleY(1)" },
+        },
+        // Hanyut sangat lambat untuk artifact di hero. Dua fase berlawanan
+        // supaya kartu-kartu tidak bergerak serempak seperti satu benda.
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "float-slow": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(8px)" },
+        },
       },
       animation: {
         "fade-up": "fade-up 650ms cubic-bezier(0.22, 1, 0.36, 1) both",
         "fade-in": "fade-in 400ms ease-out both",
         "panel-in": "panel-in 160ms cubic-bezier(0.22, 1, 0.36, 1) both",
+        marquee: "marquee 50s linear infinite",
+        sweep: "sweep 400ms ease-out both",
+        float: "float 9s ease-in-out infinite",
+        "float-slow": "float-slow 11s ease-in-out infinite",
       },
     },
   },

@@ -1,22 +1,37 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { clients } from "@/lib/clients";
 import type { SiteContent } from "@/lib/i18n";
 
 /**
- * Hero: judul serif di atas atmosfer gradient, dikelilingi floating artifact.
+ * Hero: satu layar penuh, tanpa pin.
  *
- * Komposisinya mengikuti referensi: wash warna lembut memenuhi seluruh lebar
- * layar, satu pill kecil di atas judul, judul dan sepasang pill di tengah, lalu
- * kartu-kartu data mengambang yang keluar dari tepi VIEWPORT dan dipotong di
- * sana — bukan tersusun rapi di dalam kontainer. Isi artifact-nya data nyata
- * situs ini (klien, layanan, hitungan), tidak ada metrik karangan.
+ * Versi sebelumnya menahan hero selama 180vh sambil menggeser kartunya keluar
+ * layar. Itu keliru: yang terlihat justru kartu menghilang dan sisa gulir yang
+ * kosong. Di referensi, gulir di dalam hero tidak menggeser kartu — yang
+ * terjadi adalah kartu-kartu itu MASUK dengan urutan tertentu, lalu halaman
+ * lanjut. Gerak yang terasa mahal ada di entrance, bukan di scroll.
  *
- * Atmosfernya ada di app/globals.css (.hero-atmosphere, .hero-grain, .hero-fade)
- * karena terdiri dari lima gradient bertumpuk.
+ * Jadi di sini:
+ * 1. Entrance berjenjang saat halaman dibuka — pill, judul, paragraf, tombol,
+ *    lalu tiga kartu, masing-masing dengan jeda sendiri. Kartu masuk dengan
+ *    sedikit putaran supaya terasa "diletakkan", bukan "muncul".
+ * 2. Hanyutan sangat lambat setelah masuk (animate-float / animate-float-slow),
+ *    dua fase berlawanan supaya ketiga kartu tidak bergerak serempak.
+ * 3. Parallax keluar yang DIBATASI: saat hero ditinggalkan, judul naik 40px
+ *    dan memudar, kartu ikut naik sedikit. Karena section-nya hanya 100dvh,
+ *    rentangnya pendek — tidak ada ruang gulir yang kosong.
  *
- * Artifact ditandai aria-hidden: isinya pengulangan dari section Clients dan
- * Services di bawah, jadi pembaca layar tidak perlu mendengarnya dua kali.
+ * Isi kartu tetap data nyata situs ini. Satu-satunya elemen grafis adalah garis
+ * gestural di kartu statistik: DESIGN.md menyebutnya "a gestural line, not a
+ * data dashboard", jadi garis itu digambar sebagai goresan tanpa sumbu, tanpa
+ * angka, dan digambar dengan animasi pathLength saat kartu masuk.
+ *
+ * Atmosfer wash ada di app/globals.css (.hero-atmosphere, .hero-grain,
+ * .hero-fade) karena terdiri dari lima gradient bertumpuk.
  */
 export default function Hero({
   content,
@@ -27,18 +42,42 @@ export default function Hero({
 }) {
   const hero = content.hero;
   const tableClients = clients.slice(0, 5);
+  const reduce = useReducedMotion();
+
+  const sectionRef = React.useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Semua nilai kecil dan berbatas: hero ini editorial, bukan pertunjukan.
+  const titleY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0.35]);
+  const artifactY = useTransform(scrollYProgress, [0, 1], [0, -22]);
+
+  const ease = [0.22, 1, 0.36, 1] as const;
 
   return (
-    <section className="relative isolate overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative isolate flex min-h-dvh items-center overflow-hidden"
+    >
       <div
         className="hero-atmosphere hero-grain hero-fade absolute inset-0 -z-10"
         aria-hidden="true"
       />
 
-      {/* Lapisan artifact: selebar viewport, supaya kartu bisa diposisikan dari
-          tepi layar dan terpotong oleh overflow-hidden di section. */}
+      {/* Lapisan artifact: selebar section, diposisikan dari tepi layar supaya
+          dua kartu menjorok sedikit dan dipotong di sana — potongan UI yang
+          mengapung, bukan kartu yang tersusun rapi di dalam kontainer. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden xl:block">
-        <figure className="bg-paper-white shadow-subtle-3 rounded-elevatedcards absolute start-[-1rem] top-20 w-64 p-4">
+        <motion.figure
+          className="bg-paper-white shadow-subtle-3 rounded-elevatedcards animate-float absolute start-[-1rem] top-[16%] w-64 p-4 motion-reduce:animate-none"
+          style={reduce ? undefined : { y: artifactY }}
+          initial={reduce ? false : { opacity: 0, y: 28, rotate: -2 }}
+          animate={{ opacity: 1, y: 0, rotate: 0 }}
+          transition={{ duration: 0.9, delay: 0.35, ease }}
+        >
           <table className="w-full border-collapse">
             <tbody>
               {tableClients.map((client) => (
@@ -63,9 +102,15 @@ export default function Hero({
               ))}
             </tbody>
           </table>
-        </figure>
+        </motion.figure>
 
-        <figure className="bg-paper-white shadow-subtle-3 rounded-elevatedcards absolute end-[-2rem] top-28 w-60 p-5">
+        <motion.figure
+          className="bg-paper-white shadow-subtle-3 rounded-elevatedcards animate-float-slow absolute end-[-1.5rem] top-[14%] w-60 p-5 motion-reduce:animate-none"
+          style={reduce ? undefined : { y: artifactY }}
+          initial={reduce ? false : { opacity: 0, y: 28, rotate: 2 }}
+          animate={{ opacity: 1, y: 0, rotate: 0 }}
+          transition={{ duration: 0.9, delay: 0.5, ease }}
+        >
           <ol className="space-y-3">
             {content.services.map((service, index) => (
               <li key={service.title} className="flex items-baseline gap-3">
@@ -78,15 +123,36 @@ export default function Hero({
               </li>
             ))}
           </ol>
-        </figure>
+        </motion.figure>
 
-        <figure className="bg-paper-white shadow-subtle-3 rounded-elevatedcards absolute bottom-20 start-0 w-56 p-5">
+        <motion.figure
+          className="bg-paper-white shadow-subtle-3 rounded-elevatedcards animate-float absolute bottom-[12%] start-[3%] w-56 p-5 [animation-delay:1.5s] motion-reduce:animate-none"
+          style={reduce ? undefined : { y: artifactY }}
+          initial={reduce ? false : { opacity: 0, y: 28, rotate: -1.5 }}
+          animate={{ opacity: 1, y: 0, rotate: 0 }}
+          transition={{ duration: 0.9, delay: 0.65, ease }}
+        >
           <div className="flex items-baseline gap-2">
             <span className="text-ink-black tabular text-subheading font-normal">
               {clients.length}
             </span>
             <span className="text-ash-gray text-caption">{content.clients.eyebrow}</span>
           </div>
+
+          {/* Garis gestural: satu goresan sienna tanpa sumbu dan tanpa angka.
+              Digambar dengan pathLength supaya terlihat "ditarik" saat masuk. */}
+          <svg viewBox="0 0 160 36" className="mt-3 h-9 w-full" aria-hidden="true" fill="none">
+            <motion.path
+              d="M2 30 C 22 30, 30 22, 46 21 S 72 25, 88 17 S 118 12, 132 7 S 150 4, 158 3"
+              stroke="#5d2a1a"
+              strokeWidth="1.25"
+              strokeLinecap="round"
+              initial={reduce ? false : { pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{ duration: 1.6, delay: 0.9, ease: "easeInOut" }}
+            />
+          </svg>
+
           <div className="border-hairline mt-3 flex items-baseline gap-2 border-t pt-3">
             <span className="text-ink-black tabular text-subheading font-normal">
               {content.services.length}
@@ -95,14 +161,20 @@ export default function Hero({
               {content.servicesSection.eyebrow}
             </span>
           </div>
-        </figure>
+        </motion.figure>
       </div>
 
-      <div className="mx-auto max-w-page px-5 pb-20 pt-16 sm:px-8 sm:pt-20 lg:pb-28 lg:pt-24">
-        <div className="animate-fade-up mx-auto flex max-w-3xl flex-col items-center gap-7 text-center">
-          {/* Pill pengumuman, seperti "New in Steep: …" di referensi. Isinya
-              tiga jaminan yang sudah ada di salinan, bukan klaim baru. */}
-          <p className="border-hairline bg-paper-white/70 text-slate-gray rounded-buttons inline-flex flex-wrap items-center justify-center gap-x-2 border px-4 py-1.5 text-caption backdrop-blur-sm">
+      <div className="mx-auto w-full max-w-page px-5 py-24 sm:px-8 lg:py-28">
+        <motion.div
+          className="mx-auto flex max-w-3xl flex-col items-center gap-7 text-center"
+          style={reduce ? undefined : { y: titleY, opacity: titleOpacity }}
+        >
+          <motion.p
+            className="border-hairline bg-paper-white/70 text-slate-gray rounded-buttons inline-flex flex-wrap items-center justify-center gap-x-2 border px-4 py-1.5 text-caption backdrop-blur-sm"
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease }}
+          >
             {hero.chips.map((chip, index) => (
               <React.Fragment key={chip}>
                 {index > 0 && (
@@ -113,22 +185,42 @@ export default function Hero({
                 <span>{chip}</span>
               </React.Fragment>
             ))}
-          </p>
+          </motion.p>
 
-          <h1 className="hero-title text-ink-black font-display text-heading font-normal md:text-heading-lg xl:text-[76px] xl:leading-[1.1] xl:tracking-[-1.6px]">
+          {/* 76px, bukan 100px seperti referensi: baris di sini lebih panjang
+              daripada headline referensi, dan 100px memecahnya jadi empat baris. */}
+          <motion.h1
+            className="hero-title text-ink-black font-display text-heading font-normal md:text-heading-lg xl:text-[76px] xl:leading-[1.1] xl:tracking-[-1.6px]"
+            initial={reduce ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, delay: 0.08, ease }}
+          >
             {hero.titleLead}
             <br />
             <em>{hero.titleAccent}</em>
-          </h1>
+          </motion.h1>
 
-          <p className="text-slate-gray max-w-xl text-body-lg">{hero.description}</p>
+          <motion.p
+            className="text-slate-gray max-w-xl text-body-lg"
+            initial={reduce ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.16, ease }}
+          >
+            {hero.description}
+          </motion.p>
 
-          <div className="mt-1 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:gap-3">
+          <motion.div
+            className="mt-1 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:gap-3"
+            initial={reduce ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.24, ease }}
+          >
             <Link
               href={`${basePath}#contact`}
-              className="bg-ink-black text-paper-white rounded-buttons inline-flex h-12 w-full items-center justify-center px-6 text-body transition hover:bg-ink-black/90 sm:w-auto"
+              className="bg-ink-black text-paper-white rounded-buttons group inline-flex h-12 w-full items-center justify-center gap-2 px-6 text-body transition hover:bg-ink-black/90 sm:w-auto"
             >
               {hero.primaryCta}
+              <ArrowGlyph />
             </Link>
             <Link
               href={`${basePath}#services`}
@@ -136,9 +228,27 @@ export default function Hero({
             >
               {hero.secondaryCta}
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
+  );
+}
+
+/**
+ * Panah yang meluncur keluar lalu masuk dari sisi lain saat tautan di-hover.
+ * Pola `arrow-slide-frames` di referensi: glyph bergerak ke kanan, hilang, dan
+ * muncul lagi dari kiri. Dua glyph ditumpuk supaya tidak ada ruang kosong.
+ */
+function ArrowGlyph() {
+  return (
+    <span aria-hidden="true" className="relative inline-block h-4 w-4 overflow-hidden">
+      <span className="absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-out group-hover:translate-x-full rtl:-scale-x-100 rtl:group-hover:-translate-x-full">
+        →
+      </span>
+      <span className="absolute inset-0 flex -translate-x-full items-center justify-center transition-transform duration-300 ease-out group-hover:translate-x-0 rtl:-scale-x-100 rtl:group-hover:translate-x-0">
+        →
+      </span>
+    </span>
   );
 }

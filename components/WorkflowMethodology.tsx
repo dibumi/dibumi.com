@@ -1,4 +1,5 @@
 import React from "react";
+import Reveal from "@/components/motion/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 import type { SiteContent } from "@/lib/i18n";
 
@@ -14,6 +15,10 @@ import type { SiteContent } from "@/lib/i18n";
  * seluruh situs; urutan langkah memang informasi, jadi yang ditampilkan adalah
  * angkanya, bukan gambar yang harus ditebak artinya.
  *
+ * Section ini menyusul satu band gelap, jadi ia sengaja tidak punya latar
+ * sendiri: kanvas putih polos setelah band gelap itulah "reset" yang membuat
+ * mata berhenti sejenak sebelum membaca prosesnya.
+ *
  * Sumbu horizontal memakai properti logis (start/end, ps/pe) karena halaman ini
  * juga dibaca dalam locale RTL.
  */
@@ -25,34 +30,56 @@ export default function WorkflowMethodology({
   const lastIndex = content.steps.length - 1;
 
   return (
-    <section id="process" className="py-20 lg:py-24">
+    <section id="process" className="py-20 lg:py-28">
       <div className="mx-auto max-w-page px-5 sm:px-8">
-        <SectionHeading
-          eyebrow={content.eyebrow}
-          title={content.title}
-          description={content.description}
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow={content.eyebrow}
+            title={content.title}
+            description={content.description}
+          />
+        </Reveal>
 
         <div className="relative mt-16">
           {/* Rail vertikal untuk mobile. Mulai di pusat node pertama (top-3),
-              bukan di tepi container, supaya garis tidak menyembul di atasnya. */}
+              bukan di tepi container, supaya garis tidak menyembul di atasnya.
+              `animate-sweep` men-scaleY garis dari 0.3 ke 1, jadi rail terbaca
+              sedang digambar saat section masuk — bukan muncul mendadak.
+              motion-reduce: matikan, karena gerak ini murni dekoratif. */}
           <div
-            className="bg-hairline absolute bottom-6 start-[5px] top-3 w-0.5 lg:hidden"
+            className="bg-hairline animate-sweep absolute bottom-6 start-[5px] top-3 w-0.5 origin-left motion-reduce:animate-none lg:hidden"
             aria-hidden="true"
           />
           {/* Rail horizontal untuk desktop: hanya sepanjang titik terakhir, jadi
               w-3/4 dan bukan lebar penuh — garis yang berhenti di luar kolom
-              keempat akan menggantung tanpa tujuan. */}
-          <div
-            className="bg-hairline absolute start-0 top-[5px] hidden h-0.5 w-3/4 lg:block"
-            aria-hidden="true"
-          />
+              keempat akan menggantung tanpa tujuan.
+              Keyframe `sweep` adalah scaleY; pada garis horizontal ia justru
+              menebalkan/menipiskan garisnya, bukan memanjangkannya, jadi efek
+              itu tidak dipakai di sini. Rail-nya cukup di-reveal sebagai satu
+              elemen, searah dengan node pertama yang muncul lebih dulu. */}
+          <Reveal
+            className="absolute start-0 top-[5px] hidden h-0.5 w-3/4 lg:block"
+            delay={0.08}
+          >
+            <div className="bg-hairline h-full w-full" aria-hidden="true" />
+          </Reveal>
 
           <ol className="grid grid-cols-1 gap-x-8 gap-y-12 lg:grid-cols-4">
             {content.steps.map((step, index) => (
-              <li key={step.title} className="relative ps-7 lg:ps-0">
+              // Jeda 0.09s per langkah: cukup untuk membaca 01→04 sebagai
+              // urutan, tidak cukup lambat untuk terasa seperti loading.
+              <Reveal
+                as="li"
+                key={step.title}
+                delay={index * 0.09}
+                className="group relative ps-7 lg:ps-0"
+              >
+                {/* Node ikut membesar saat barisnya di-hover (CSS murni, tanpa
+                    scroll listener) supaya rail terasa hidup saat dibaca satu
+                    per satu. Yang di-hover adalah barisnya, bukan titiknya:
+                    target 12px terlalu kecil untuk kursor. */}
                 <span
-                  className={`bg-paper-white absolute start-0 top-1.5 h-3 w-3 rounded-full border-2 lg:static lg:top-auto lg:mb-4 lg:block ${
+                  className={`bg-paper-white absolute start-0 top-1.5 h-3 w-3 rounded-full border-2 transition-transform duration-500 group-hover:scale-125 lg:static lg:top-auto lg:mb-4 lg:block ${
                     index === lastIndex ? "border-slate-gray" : "border-ink-black"
                   }`}
                   aria-hidden="true"
@@ -64,7 +91,7 @@ export default function WorkflowMethodology({
 
                 <h3 className="text-ink-black mt-2 text-body-lg font-medium">{step.title}</h3>
                 <p className="text-slate-gray mt-2 text-body">{step.description}</p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </div>

@@ -22,9 +22,13 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  * Aturan yang dijaga di sini:
  * - Tinggi bar 64px di bawah lg dan 72px mulai lg. Offset anchor di globals.css
  *   mengikuti angka ini, jadi ubah keduanya bersamaan.
- * - Tidak ada border bawah maupun shadow. Bar hanya dibedakan dari isi halaman
- *   oleh latar putih yang sedikit tembus pandang plus backdrop-blur. Begitu ada
- *   garis 1px, nav berhenti terasa sebagai lapisan yang mengambang.
+ * - Bar ini fixed, bukan sticky. Di posisi paling atas ia transparan dan menyatu
+ *   dengan wash hero — persis seperti referensi, di mana nav tidak punya bidang
+ *   sendiri sampai halaman digulir. Setelah digulir ia baru mendapat permukaan
+ *   putih tembus pandang, garis hairline, dan blur. Transisi itulah yang membuat
+ *   nav terasa sebagai lapisan yang mengambang di atas isi halaman.
+ * - Karena fixed, bar keluar dari alur dokumen. Tingginya dibayar oleh spacer
+ *   di bawah header, dan angka spacer itu harus sama dengan tinggi bar.
  * - Item aktif dinyatakan lewat warna saja (slate -> ink), bukan garis bawah.
  *   Warna sudah cukup; garis menambah satu elemen visual yang tidak dibutuhkan.
  * - Panel menempel langsung ke bawah bar (tanpa jarak), supaya kursor tidak
@@ -66,6 +70,8 @@ export default function Navbar({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openSection, setOpenSection] = useState<OpenSection>(null);
   const [activeHash, setActiveHash] = useState<string | null>(null);
+  // Status permukaan bar: transparan di puncak halaman, solid setelah digulir.
+  const [scrolled, setScrolled] = useState(false);
 
   const navRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -102,6 +108,24 @@ export default function Navbar({
     setMobileOpen(false);
     setOpenSection(null);
   }, [pathname]);
+
+  // Satu-satunya listener scroll di proyek ini, dan sengaja dibiarkan ada: bar
+  // ini fixed di atas seluruh halaman, jadi ia harus tahu posisi gulir apa pun
+  // section yang sedang tampil, dan tidak ada hook lain yang bisa memberi tahu
+  // itu untuk elemen di luar alur. Kerjanya dijaga seminimal mungkin — membaca
+  // scrollY, tanpa rAF dan tanpa pembacaan layout — dan React membatalkan
+  // render sendiri saat nilainya tidak berubah. Passive supaya tidak menahan
+  // thread gulir. Pemanggilan awal menangani halaman yang dibuka lewat anchor
+  // atau di-refresh dalam keadaan sudah tergulir.
+  useEffect(() => {
+    function handleScroll() {
+      setScrolled(window.scrollY > 8);
+    }
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Sorot Process/Standards sesuai posisi baca. IntersectionObserver, bukan
   // listener scroll, supaya tidak ada kerja di setiap frame.
@@ -241,11 +265,25 @@ export default function Navbar({
     setOpenPanel((value) => (value === panel ? null : panel));
   }
 
+  // Panel mega dan sheet mobile sama-sama putih penuh dan menempel ke bawah bar.
+  // Kalau bar di atasnya tetap transparan, wash hero akan terlihat di balik
+  // tautan nav di atas bidang putih — jadi keduanya ikut menuntut permukaan
+  // solid, bukan hanya status gulir.
+  const solidBar = scrolled || openPanel !== null || mobileOpen;
+
   return (
     <>
-      {/* Tanpa border dan tanpa shadow: bar hanya dibaca sebagai lapisan UI
-          karena latarnya putih tembus pandang di atas isi halaman. */}
-      <header className="bg-paper-white/85 sticky top-0 z-50 backdrop-blur-md">
+      {/* Bar fixed: transparan di puncak halaman, lalu menguat jadi permukaan
+          putih tembus pandang dengan garis hairline dan blur setelah digulir
+          atau saat panel/sheet dibuka. Border selalu ada (transparan saat belum
+          digulir) supaya tinggi bar tidak melompat 1px saat statusnya berubah. */}
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500 ${
+          solidBar
+            ? "bg-paper-white/85 border-hairline border-b backdrop-blur-md"
+            : "border-b border-transparent bg-transparent"
+        }`}
+      >
         <div className="mx-auto flex h-16 max-w-page items-center gap-2 px-5 sm:px-8 lg:h-[4.5rem]">
           {/* Brand: sekaligus link ke beranda, jadi tidak ada item "Home".
               Wordmark satu warna; titik ".com" tidak lagi diberi aksen. */}
@@ -381,6 +419,13 @@ export default function Navbar({
           </div>
         )}
       </header>
+
+      {/* Bar fixed keluar dari alur dokumen, jadi tingginya harus dibayar di
+          sini supaya isi halaman tidak tertutup. Angka ini WAJIB sama dengan
+          tinggi bar di atas (h-16 / lg:h-[4.5rem]) dan dengan
+          scroll-padding-top di app/globals.css: kalau salah satu bergeser,
+          judul section mendarat di bawah bar atau terlalu jauh dari tepi. */}
+      <div aria-hidden="true" className="h-16 lg:h-[4.5rem]" />
 
       {/* Mobile sheet: di luar header karena backdrop-blur membuat header jadi
           containing block untuk elemen fixed. */}
