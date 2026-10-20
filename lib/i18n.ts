@@ -90,6 +90,11 @@ export type SiteContent = {
       | "trafficAnalytics",
       { description: string }
     >;
+    catalog: {
+      heading: string;
+      games: string;
+      apps: string;
+    };
   };
   clients: {
     eyebrow: string;
@@ -300,6 +305,11 @@ const en: SiteContent = {
         description:
           "Visits, referrers, and conversion funnels in a single dashboard.",
       },
+    },
+    catalog: {
+      heading: "Games & Apps",
+      games: "Games",
+      apps: "Apps",
     },
   },
   clients: {
@@ -574,6 +584,11 @@ const id: SiteContent = {
           "Kunjungan, referrer, dan funnel konversi dalam satu dashboard.",
       },
     },
+    catalog: {
+      heading: "Game & Aplikasi",
+      games: "Game",
+      apps: "Aplikasi",
+    },
   },
   clients: {
     eyebrow: "Klien",
@@ -847,6 +862,11 @@ const ar: SiteContent = {
         description: "الزيارات والمصادر ومسارات التحويل في لوحة واحدة.",
       },
     },
+    catalog: {
+      heading: "الألعاب والتطبيقات",
+      games: "الألعاب",
+      apps: "التطبيقات",
+    },
   },
   clients: {
     eyebrow: "العملاء",
@@ -1101,6 +1121,11 @@ const zh: SiteContent = {
       trafficAnalytics: {
         description: "访问量、来源与转化漏斗，集中在一个面板。",
       },
+    },
+    catalog: {
+      heading: "游戏与应用",
+      games: "游戏",
+      apps: "应用",
     },
   },
   clients: {
@@ -1360,6 +1385,11 @@ const pl: SiteContent = {
       trafficAnalytics: {
         description: "Odwiedziny, źródła i lejki konwersji w jednym panelu.",
       },
+    },
+    catalog: {
+      heading: "Gry i aplikacje",
+      games: "Gry",
+      apps: "Aplikacje",
     },
   },
   clients: {

@@ -32,6 +32,15 @@ export type ProductItem = {
 /** Halaman hub semua produk Ngambeg Cyber Media. */
 export const ngambegHubUrl = "https://www.ngambeg.com";
 
+/** Halaman katalog di hub Ngambeg, dipakai sel Games dan Apps di panel Product. */
+export const ngambegCatalogUrl = {
+  games: "https://www.ngambeg.com/p/games",
+  apps: "https://www.ngambeg.com/p/apps",
+};
+
+/** Logo resmi Ngambeg, PNG transparan 512x512. */
+export const ngambegLogoUrl = "https://www.ngambeg.com/ngambeg_logo.png";
+
 export const platformProducts: ProductItem[] = [
   // Produk platform milik dibumi.com, situsnya belum dipublikasikan.
   { id: "aiGateway", name: "AI Gateway", href: null, status: "soon" },

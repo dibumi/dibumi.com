@@ -3,12 +3,19 @@ import {
   ArrowUpRight,
   ChartLine,
   CreditCard,
-  Layers,
+  Gamepad2,
   Megaphone,
   Receipt,
+  Smartphone,
   Sparkles,
 } from "lucide-react";
-import { getPlatformProducts, ngambegHubUrl, type ProductItem } from "@/lib/products";
+import {
+  getPlatformProducts,
+  ngambegCatalogUrl,
+  ngambegHubUrl,
+  ngambegLogoUrl,
+  type ProductItem,
+} from "@/lib/products";
 import { iconTints, rowTints, tintAt } from "@/lib/tints";
 import type { SiteContent } from "@/lib/i18n";
 
@@ -112,6 +119,10 @@ function PlatformRow({
  * Satu tile tautan keluar ke ngambeg.com, menggantikan daftar dua belas game
  * dan aplikasi. Nama grup sekaligus jadi judul tile, jadi tidak ada label grup
  * terpisah di atasnya yang akan mengulang teks yang sama.
+ *
+ * Ikonnya logo resmi Ngambeg dari situsnya sendiri, bukan glyph lucide: ini
+ * satu-satunya label pihak ketiga di panel, jadi mark aslinya yang dipakai.
+ * Diambil langsung dari ngambeg.com supaya tidak ada salinan yang bisa basi.
  */
 function NgambegTile({
   content,
@@ -132,10 +143,16 @@ function NgambegTile({
       onClick={onNavigate}
       className={`group flex h-full items-start gap-3 rounded-xl border px-4 py-4 transition ${rowTints[tint]}`}
     >
-      <span
-        className={`bg-surface mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm ${iconTints[tint]}`}
-      >
-        <Layers className="h-4 w-4" aria-hidden="true" />
+      <span className="bg-surface mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm">
+        <img
+          src={ngambegLogoUrl}
+          alt=""
+          width={24}
+          height={24}
+          loading="lazy"
+          decoding="async"
+          className="h-6 w-6 object-contain"
+        />
       </span>
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
@@ -148,6 +165,75 @@ function NgambegTile({
         <span className="text-muted mt-1.5 block text-xs leading-5">{group.description}</span>
       </span>
     </a>
+  );
+}
+
+/** Satu sel katalog: ikon, label, dan panah keluar. */
+function CatalogCell({
+  href,
+  label,
+  Icon,
+  tint,
+  onNavigate,
+}: {
+  href: string;
+  label: string;
+  Icon: typeof Gamepad2;
+  tint: number;
+  onNavigate?: () => void;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={onNavigate}
+      className={`group flex h-full items-center gap-2.5 rounded-xl border px-3 py-3 transition ${rowTints[tint]}`}
+    >
+      <span
+        className={`bg-surface flex h-7 w-7 shrink-0 items-center justify-center rounded-lg shadow-sm ${iconTints[tint]}`}
+      >
+        <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+      </span>
+      <span className="text-ink group-hover:text-primary min-w-0 flex-1 truncate text-sm font-semibold transition">
+        {label}
+      </span>
+      <ArrowUpRight className="text-muted h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+    </a>
+  );
+}
+
+/**
+ * Dua pintu ke katalog Ngambeg: game dan aplikasi, masing-masing ke halaman
+ * kategorinya sendiri di ngambeg.com.
+ */
+function NgambegCatalog({ content, onNavigate }: { content: SiteContent; onNavigate?: () => void }) {
+  const catalog = content.products.catalog;
+
+  return (
+    <div>
+      <GroupLabel>{catalog.heading}</GroupLabel>
+      <ul className="mt-2 grid auto-rows-fr grid-cols-2 gap-2.5">
+        <li>
+          <CatalogCell
+            href={ngambegCatalogUrl.games}
+            label={catalog.games}
+            Icon={Gamepad2}
+            tint={tintAt(6)}
+            onNavigate={onNavigate}
+          />
+        </li>
+        <li>
+          <CatalogCell
+            href={ngambegCatalogUrl.apps}
+            label={catalog.apps}
+            Icon={Smartphone}
+            tint={tintAt(7)}
+            onNavigate={onNavigate}
+          />
+        </li>
+      </ul>
+    </div>
   );
 }
 
@@ -170,7 +256,7 @@ export function ProductMenu({ content, onNavigate }: MenuProps) {
         </ul>
       </div>
 
-      <div className="border-line-subtle border-t pt-6 md:border-s md:border-t-0 md:ps-8 md:pt-0">
+      <div className="border-line-subtle space-y-2.5 border-t pt-6 md:border-s md:border-t-0 md:ps-8 md:pt-0">
         {/* Siklus melanjutkan deret kolom kiri, jadi dua kolom terbaca sebagai
             satu urutan warna, bukan dua deret yang mulai dari nol. */}
         <NgambegTile
@@ -178,6 +264,7 @@ export function ProductMenu({ content, onNavigate }: MenuProps) {
           onNavigate={onNavigate}
           tint={tintAt(platforms.length)}
         />
+        <NgambegCatalog content={content} onNavigate={onNavigate} />
       </div>
     </div>
   );
@@ -202,12 +289,13 @@ export function ProductMenuList({ content, onNavigate }: MenuProps) {
         </ul>
       </div>
 
-      <div className="border-line-subtle border-t pt-4">
+      <div className="border-line-subtle space-y-4 border-t pt-4">
         <NgambegTile
           content={content}
           onNavigate={onNavigate}
           tint={tintAt(platforms.length)}
         />
+        <NgambegCatalog content={content} onNavigate={onNavigate} />
       </div>
     </div>
   );
