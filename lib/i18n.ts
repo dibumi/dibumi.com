@@ -106,7 +106,6 @@ export type SiteContent = {
     commitments: { title: string; description: string }[];
   };
   contact: {
-    eyebrow: string;
     title: string;
     description: string;
     locationLabel: string;
@@ -133,6 +132,7 @@ export type SiteContent = {
     copyright: string;
     builtFor: string;
     whatsapp: string;
+    since: string;
   };
   legal: {
     updated: string;
@@ -364,7 +364,6 @@ const en: SiteContent = {
     ],
   },
   contact: {
-    eyebrow: "Contact",
     title: "Start building your system",
     description:
       "Contact our technical desk in Lamongan for a quick response and technical discovery.",
@@ -394,6 +393,7 @@ const en: SiteContent = {
     copyright: "All rights reserved.",
     builtFor: "Built in Lamongan, shipped worldwide.",
     whatsapp: "WhatsApp consultation",
+    since: "Building since 2013",
   },
   legal: {
     updated: "Last updated",
@@ -630,7 +630,6 @@ const id: SiteContent = {
     ],
   },
   contact: {
-    eyebrow: "Kontak",
     title: "Mulai bangun sistem Anda",
     description:
       "Hubungi technical desk kami di Lamongan untuk respons cepat dan analisis kebutuhan teknis.",
@@ -660,6 +659,7 @@ const id: SiteContent = {
     copyright: "Hak cipta dilindungi undang-undang.",
     builtFor: "Dibangun di Lamongan, dikirim ke seluruh dunia.",
     whatsapp: "Konsultasi WhatsApp",
+    since: "Berkarya sejak 2013",
   },
   legal: {
     updated: "Terakhir diperbarui",
@@ -891,7 +891,6 @@ const ar: SiteContent = {
     ],
   },
   contact: {
-    eyebrow: "تواصل",
     title: "ابدأ بناء نظامك",
     description:
       "تواصل مع مكتبنا التقني في لامونجان للحصول على رد سريع وتحليل تقني.",
@@ -921,6 +920,7 @@ const ar: SiteContent = {
     copyright: "جميع الحقوق محفوظة.",
     builtFor: "مبني في لامونجان، ويصل إلى العالم.",
     whatsapp: "استشارة عبر WhatsApp",
+    since: "نصنع منذ 2013",
   },
   legal: {
     updated: "آخر تحديث",
@@ -1132,7 +1132,6 @@ const zh: SiteContent = {
     ],
   },
   contact: {
-    eyebrow: "联系",
     title: "开始构建您的系统",
     description:
       "联系我们位于拉蒙岸的技术团队，快速获得响应和技术需求分析。",
@@ -1161,6 +1160,7 @@ const zh: SiteContent = {
     copyright: "版权所有。",
     builtFor: "在拉蒙岸构建，交付到世界各地。",
     whatsapp: "WhatsApp 咨询",
+    since: "自 2013 年起",
   },
   legal: {
     updated: "最后更新",
@@ -1397,7 +1397,6 @@ const pl: SiteContent = {
     ],
   },
   contact: {
-    eyebrow: "Kontakt",
     title: "Zacznijmy budować Twój system",
     description:
       "Skontaktuj się z naszym zespołem technicznym w Lamongan, aby szybko omówić potrzeby projektu.",
@@ -1427,6 +1426,7 @@ const pl: SiteContent = {
     copyright: "Wszelkie prawa zastrzeżone.",
     builtFor: "Zbudowane w Lamongan, dostarczane na cały świat.",
     whatsapp: "Konsultacja WhatsApp",
+    since: "Tworzymy od 2013",
   },
   legal: {
     updated: "Ostatnia aktualizacja",

@@ -4,10 +4,18 @@
  * Nama dan tautan tidak diterjemahkan, jadi tinggal di sini. Peran, bio, dan
  * label fakta ada di `teamPage` pada lib/i18n.ts karena harus ikut locale.
  *
+ * Nomor WhatsApp dan helper tautannya tinggal di lib/contact.ts karena dipakai
+ * juga oleh section Contact dan footer; di sini hanya di-re-export supaya
+ * pemanggil lama (TeamPage) tidak perlu berubah.
+ *
  * Foto: isi `photo` dengan path di public/ begitu asetnya ada, misalnya
  * "/team/fatkul.jpg". Selama masih null, halaman memakai tile monogram dari
  * BrandMark, jadi tidak ada gambar rusak yang tampil.
  */
+
+import { contactEmail, contactWhatsapp } from "@/lib/contact";
+
+export { whatsappLink } from "@/lib/contact";
 
 export type TeamMember = {
   name: string;
@@ -21,12 +29,7 @@ export type TeamMember = {
 export const teamMember: TeamMember = {
   name: "Fatkul Nur Koirudin",
   photo: null,
-  email: "fatkul@dibumi.com",
-  whatsapp: "6285607100255",
+  email: contactEmail,
+  whatsapp: contactWhatsapp.number,
   github: "https://github.com/fatkulnurk",
 };
-
-/** Tautan wa.me dengan pesan pembuka yang sudah terisi. */
-export function whatsappLink(number: string, message: string): string {
-  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
-}

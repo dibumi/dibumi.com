@@ -1,129 +1,115 @@
 import React from "react";
 import { ArrowUpRight, Clock, Mail, MapPin, MessageSquare } from "lucide-react";
-import SectionHeading from "@/components/SectionHeading";
+import { contactEmail, contactWhatsapp, whatsappLink } from "@/lib/contact";
 import type { SiteContent } from "@/lib/i18n";
 
-type Row = {
-  Icon: typeof MapPin;
-  label: string;
-  value: string;
-  note?: string;
-  href?: string;
-  external?: boolean;
-  emphasis?: boolean;
-};
-
 /**
- * Kontak tanpa formulir: satu panel berisi empat baris kanal. Baris WhatsApp
- * diberi latar mint supaya jadi satu-satunya titik fokus warna.
+ * Section penutup: klaim di kiri, dua jalur aksi di kanan, fakta operasional di
+ * band bawah.
  *
- * Tidak ada state di sini, jadi server component.
+ * Hierarki tiga tingkat, bukan empat baris setara:
+ * - WhatsApp adalah satu-satunya blok berwarna di section ini, karena itu jalur
+ *   tercepat dan tombol navbar "Start a project" mendarat di sini.
+ * - Email setingkat di bawahnya, dibedakan lewat bingkai bukan warna.
+ * - Jam kerja dan alamat turun jadi fakta pendukung di band terpisah, karena
+ *   tidak ada yang bisa diklik dari keduanya.
+ *
+ * Nomor, email, dan URL wa.me dibaca dari lib/contact.ts, jadi tidak ada nilai
+ * kontak yang ditulis ulang di komponen ini.
+ *
+ * Tanpa state, jadi server component.
  */
 export default function ContactSection({
   content,
 }: {
   content: SiteContent["contact"];
 }) {
-  const whatsappUrl = `https://wa.me/6285607100255?text=${encodeURIComponent(content.whatsappMessage)}`;
+  const whatsappUrl = whatsappLink(contactWhatsapp.number, content.whatsappMessage);
 
-  const rows: Row[] = [
-    {
-      Icon: MessageSquare,
-      label: "WhatsApp",
-      value: "+62 856 0710 0255",
-      note: content.whatsappHint,
-      href: whatsappUrl,
-      external: true,
-      emphasis: true,
-    },
-    {
-      Icon: Mail,
-      label: content.emailLabel,
-      value: "fatkul@dibumi.com",
-      note: content.emailHint,
-      href: "mailto:fatkul@dibumi.com",
-    },
-    {
-      Icon: Clock,
-      label: content.hoursLabel,
-      value: content.hours,
-      note: content.hoursNote,
-    },
-    {
-      Icon: MapPin,
-      label: content.locationLabel,
-      value: content.location,
-      note: content.locationNote,
-    },
-  ];
+  const actionShell =
+    "flex min-h-12 items-center gap-3 rounded-lg px-3.5 transition active:translate-y-px";
 
   return (
     <section id="contact" className="bg-surface py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <SectionHeading
-          eyebrow={content.eyebrow}
-          title={content.title}
-          description={content.description}
-        />
+        <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-start">
+          <div>
+            <h2 className="text-ink text-4xl font-medium leading-[1.08] tracking-tight sm:text-5xl">
+              {content.title}
+            </h2>
+            <p className="text-muted mt-5 max-w-md text-base leading-7">
+              {content.description}
+            </p>
+          </div>
 
-        <div className="border-line bg-surface mx-auto mt-12 max-w-4xl overflow-hidden rounded-2xl border">
-          {rows.map(({ Icon, label, value, note, href, external, emphasis }) => {
-            const body = (
-              <>
-                <span
-                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
-                    emphasis ? "bg-primary text-white" : "bg-primary-soft text-primary"
-                  }`}
-                >
-                  <Icon className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
+          {/* Dua jalur aksi. WhatsApp satu-satunya elemen berwarna di sini. */}
+          <div className="border-line bg-elevated rounded-2xl border p-5">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${actionShell} bg-primary hover:bg-primary-hover group`}
+            >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/15 text-white">
+                <MessageSquare className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-semibold text-white">WhatsApp</span>
+                <span className="block text-xs text-white/90 tabular" dir="ltr">
+                  {contactWhatsapp.display}
                 </span>
+              </span>
+              <ArrowUpRight
+                className="h-4 w-4 shrink-0 text-white/90 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
+            </a>
+            <p className="text-muted mt-2.5 px-1 text-xs leading-5">{content.whatsappHint}</p>
 
-                <span className="min-w-0 flex-1">
-                  <span className="text-muted block text-[10px] font-semibold uppercase tracking-widest">
-                    {label}
-                  </span>
-                  <span className="text-ink mt-1 block text-sm font-medium leading-6 break-words">
-                    {value}
-                  </span>
-                  {note && (
-                    <span className="text-muted mt-0.5 block text-xs leading-5">{note}</span>
-                  )}
-                </span>
-
-                {href && (
-                  <ArrowUpRight
-                    className={`mt-1 h-4 w-4 shrink-0 ${emphasis ? "text-primary" : "text-muted"}`}
-                    aria-hidden="true"
-                  />
-                )}
-              </>
-            );
-
-            const shell = "flex items-start gap-4 px-5 py-5 sm:px-7 sm:py-6";
-
-            if (!href) {
-              return (
-                <div key={label} className={`border-line-subtle border-t first:border-t-0 ${shell}`}>
-                  {body}
-                </div>
-              );
-            }
-
-            return (
+            <div className="border-line mt-5 border-t pt-5">
               <a
-                key={label}
-                href={href}
-                target={external ? "_blank" : undefined}
-                rel={external ? "noopener noreferrer" : undefined}
-                className={`border-line-subtle hover:bg-elevated flex items-start gap-4 border-t px-5 py-5 transition first:border-t-0 sm:px-7 sm:py-6 ${
-                  emphasis ? "bg-tint-mint" : ""
-                }`}
+                href={`mailto:${contactEmail}`}
+                className={`${actionShell} border-line bg-surface hover:border-primary/40 group border`}
               >
-                {body}
+                <span className="bg-primary-soft text-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
+                  <Mail className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="text-ink block text-sm font-semibold">{content.emailLabel}</span>
+                  <span className="text-muted block text-xs break-words" dir="ltr">
+                    {contactEmail}
+                  </span>
+                </span>
+                <ArrowUpRight
+                  className="text-muted h-4 w-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
               </a>
-            );
-          })}
+              <p className="text-muted mt-2.5 px-1 text-xs leading-5">{content.emailHint}</p>
+            </div>
+          </div>
         </div>
+
+        {/* Fakta operasional: tidak bisa diklik, jadi dipisah dari dua aksi di atas. */}
+        <dl className="border-line mt-14 grid gap-8 border-t pt-10 sm:grid-cols-2">
+          <div>
+            <dt className="text-muted flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest">
+              <Clock className="text-primary h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              {content.hoursLabel}
+            </dt>
+            <dd className="text-ink mt-2 text-sm font-medium">{content.hours}</dd>
+            <dd className="text-muted mt-1 text-xs leading-5">{content.hoursNote}</dd>
+          </div>
+
+          <div>
+            <dt className="text-muted flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest">
+              <MapPin className="text-primary h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              {content.locationLabel}
+            </dt>
+            <dd className="text-ink mt-2 text-sm font-medium leading-6">{content.location}</dd>
+            <dd className="text-muted mt-1 text-xs leading-5">{content.locationNote}</dd>
+          </div>
+        </dl>
       </div>
     </section>
   );
