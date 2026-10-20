@@ -205,6 +205,34 @@ export default function Footer({
           {footer.builtFor} · {footer.location}
         </span>
       </div>
+
+      {/* Wordmark penutup: satu-satunya elemen di footer yang berskala display.
+          Sengaja SVG, bukan teks CSS: textLength membuatnya benar-benar mengisi
+          lebar kontainer di semua ukuran, sedangkan clamp hanya mendekati dan
+          menyisakan celah di sebagian breakpoint. Hiasan, jadi aria-hidden:
+          brand yang bisa diklik sudah ada di atas footer. */}
+      <div className="mx-auto max-w-7xl px-5 pb-8 sm:px-8">
+        <svg
+          viewBox="0 0 1000 104"
+          className="text-ink block w-full"
+          role="presentation"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <text
+            x="500"
+            y="92"
+            textAnchor="middle"
+            textLength="1000"
+            lengthAdjust="spacingAndGlyphs"
+            className="font-mono"
+            fontSize="115"
+            fill="currentColor"
+          >
+            WWW.DIBUMI.COM
+          </text>
+        </svg>
+      </div>
     </footer>
   );
 }
