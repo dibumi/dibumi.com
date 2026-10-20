@@ -1,10 +1,24 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowUpRight, Code2 } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { serviceAnchor, serviceMeta } from "@/lib/services";
 import type { SiteContent } from "@/lib/i18n";
 
+/**
+ * Enam praktik layanan.
+ *
+ * Section ini duduk di atas kanvas putih, jadi tidak diberi background sendiri:
+ * ritme pita terang/gelap diurus section lain, dan menambahkan satu lagi di
+ * sini akan memecahnya.
+ *
+ * Ikon sudah dihapus dari kartu. Peran penanda urutan diambil alih nomor
+ * ordinal (01–06) dalam tabular, dan tiap poin cukup ditumpuk sebagai teks
+ * caption tanpa marker titik: sistem ini tidak punya warna fungsional untuk
+ * sebuah bullet.
+ *
+ * `scroll-mt-28` dipertahankan karena navbar menaut langsung ke anchor
+ * tiap layanan; tanpa itu judul kartu mendarat di bawah header sticky.
+ */
 export default function Services({
   content,
   basePath,
@@ -13,8 +27,8 @@ export default function Services({
   basePath: string;
 }) {
   return (
-    <section id="services" className="bg-surface py-28 lg:py-36">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+    <section id="services" className="py-20 lg:py-24">
+      <div className="mx-auto max-w-page px-5 sm:px-8">
         <SectionHeading
           eyebrow={content.servicesSection.eyebrow}
           title={content.servicesSection.title}
@@ -25,51 +39,47 @@ export default function Services({
             baris kedua setinggi kartu tertinggi di baris pertama. Tanpa ini,
             tiap baris grid diukur sendiri-sendiri. Hanya dari sm ke atas, supaya
             di mobile satu kolom tidak ada kartu pendek yang dipaksa tinggi. */}
-        <div className="mt-16 grid gap-6 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
+        <div className="mt-16 grid gap-6 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3">
           {content.services.map((service, index) => {
             const meta = serviceMeta[index];
-            const Icon = meta?.icon ?? Code2;
 
             return (
               <article
                 key={service.title}
                 id={meta ? serviceAnchor(meta.slug) : undefined}
-                className="border-line bg-surface hover:border-primary/30 group flex scroll-mt-28 flex-col gap-6 rounded-2xl border p-9 transition"
+                className="bg-mist-gray rounded-cards flex scroll-mt-28 flex-col gap-6 p-8"
               >
-                <div className="flex items-center justify-between gap-3">
-                  <span className="bg-primary-soft text-primary group-hover:bg-primary flex h-12 w-12 items-center justify-center rounded-2xl transition-colors group-hover:text-white">
-                    <Icon className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
-                  </span>
-                  <span className="text-muted font-mono text-[10px] tracking-widest tabular">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                </div>
+                <span className="text-ash-gray tabular text-caption">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
 
                 <div>
-                  <h3 className="text-ink text-lg font-semibold tracking-tight">
+                  <h3 className="text-ink-black text-body-lg font-medium">
                     {service.title}
                   </h3>
-                  <p className="text-muted mt-2 text-sm leading-7">{service.description}</p>
+                  <p className="text-slate-gray mt-2 text-body">{service.description}</p>
                 </div>
 
-                <ul className="mt-auto flex flex-wrap gap-x-4 gap-y-2">
+                <ul className="flex flex-col gap-1.5">
                   {service.points.map((point) => (
-                    <li key={point} className="text-muted flex items-center gap-2 text-xs">
-                      <span className="bg-primary h-1 w-1 rounded-full" aria-hidden="true" />
+                    <li key={point} className="text-slate-gray text-caption">
                       {point}
                     </li>
                   ))}
                 </ul>
 
+                {/* mt-auto menempelkan tautan ke dasar kartu, supaya keenam
+                    kartu punya baris aksi yang sejajar meski panjang teksnya
+                    berbeda. Panah ditulis sebagai glyph di dalam label, dan
+                    dibalik di RTL. */}
                 <Link
                   href={`${basePath}#contact`}
-                  className="text-primary inline-flex w-fit items-center gap-1.5 text-sm font-semibold"
+                  className="text-ink-black mt-auto inline-flex w-fit items-center gap-1.5 text-body hover:underline"
                 >
                   {content.servicesSection.consult}
-                  <ArrowUpRight
-                    className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                    aria-hidden="true"
-                  />
+                  <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
+                    →
+                  </span>
                 </Link>
               </article>
             );

@@ -1,54 +1,51 @@
 import React from "react";
-import { Braces, Eye, FileCheck2, Headset, KeyRound, LockKeyhole } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import type { SiteContent } from "@/lib/i18n";
 
-const standardIcons = [FileCheck2, LockKeyhole, Braces];
-const commitmentIcons = [KeyRound, Eye, Headset];
-
+/**
+ * Section Standards: tiga standar sebagai baris hairline, bukan kartu.
+ *
+ * Halaman ini sudah memakai grid tiga kartu di Highlights dan Services. Kalau
+ * standar diulang dengan bentuk yang sama, ketiga section itu jadi satu pola
+ * yang monoton. Baris bertumpuk memberi keluarga tata letak yang lain: judul di
+ * kolom kiri yang sempit, penjelasan di kolom kanan, dan garis rambut sebagai
+ * satu-satunya pemisah.
+ *
+ * Tidak ada ikon di sini. Ikon dekoratif sudah dihapus dari seluruh situs, jadi
+ * judulnya yang memikul hierarki, bukan chip di atasnya.
+ */
 export default function Standards({ content }: { content: SiteContent["standards"] }) {
   return (
-    <section id="standards" className="bg-elevated py-28 lg:py-32">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+    <section id="standards" className="bg-fog-white py-20 lg:py-24">
+      <div className="mx-auto max-w-page px-5 sm:px-8">
         <SectionHeading
           eyebrow={content.eyebrow}
           title={content.title}
           description={content.description}
         />
 
-        <div className="mt-16 grid gap-6 lg:grid-cols-3 lg:gap-7">
-          {content.items.map((item, index) => {
-            const Icon = standardIcons[index] ?? FileCheck2;
-
-            return (
-              <article
-                key={item.title}
-                className="border-line bg-surface rounded-2xl border p-9"
-              >
-                <span className="bg-primary-soft text-primary mb-5 flex h-11 w-11 items-center justify-center rounded-xl">
-                  <Icon className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
-                </span>
-                <h3 className="text-ink text-base font-semibold">{item.title}</h3>
-                <p className="text-muted mt-2 text-sm leading-7">{item.description}</p>
-              </article>
-            );
-          })}
+        <div className="border-hairline mt-16 border-t">
+          {content.items.map((item) => (
+            <article
+              key={item.title}
+              className="border-hairline grid gap-3 border-b py-8 sm:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] sm:gap-10"
+            >
+              <h3 className="text-ink-black text-body-lg font-medium">{item.title}</h3>
+              <p className="text-slate-gray text-body">{item.description}</p>
+            </article>
+          ))}
         </div>
 
-        <div className="border-line mt-12 grid gap-10 border-t pt-12 sm:grid-cols-3">
-          {content.commitments.map((item, index) => {
-            const Icon = commitmentIcons[index] ?? KeyRound;
-
-            return (
-              <div key={item.title}>
-                <span className="border-primary/15 text-primary mb-4 flex h-9 w-9 items-center justify-center rounded-xl border bg-surface">
-                  <Icon className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
-                </span>
-                <h3 className="text-ink text-sm font-semibold">{item.title}</h3>
-                <p className="text-muted mt-2 text-sm leading-7">{item.description}</p>
-              </div>
-            );
-          })}
+        {/* Band komitmen di bawah tetap tiga kolom, tapi tanpa chip ikon: yang
+            tersisa hanya judul 17px dan penjelasan 15px, jadi bobotnya lebih
+            ringan daripada baris standar di atasnya dan tidak bersaing. */}
+        <div className="border-hairline mt-12 grid gap-10 border-t pt-12 sm:grid-cols-3">
+          {content.commitments.map((item) => (
+            <div key={item.title}>
+              <h3 className="text-ink-black text-body font-medium">{item.title}</h3>
+              <p className="text-slate-gray mt-2 text-caption">{item.description}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

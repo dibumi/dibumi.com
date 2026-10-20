@@ -1,23 +1,11 @@
 import React from "react";
 import {
-  ArrowUpRight,
-  ChartLine,
-  CreditCard,
-  Gamepad2,
-  Megaphone,
-  Receipt,
-  Smartphone,
-  Sparkles,
-  Store,
-} from "lucide-react";
-import {
   getPlatformProducts,
   ngambegCatalogUrl,
   ngambegHubUrl,
   ngambegLogoUrl,
   type ProductItem,
 } from "@/lib/products";
-import { iconTints, rowTints, tintAt } from "@/lib/tints";
 import type { SiteContent } from "@/lib/i18n";
 
 /**
@@ -29,19 +17,11 @@ import type { SiteContent } from "@/lib/i18n";
  * keluar ke ngambeg.com, karena daftar game dan aplikasinya hidup di sana dan
  * berubah tanpa menyentuh situs ini.
  *
- * Radius yang dipakai konsisten: badge 6px, baris klik 8px, tile tautan 12px,
- * panel tanpa radius karena menempel penuh ke tepi viewport.
+ * Tidak ada ikon dekoratif dan tidak ada chip ikon. Baris menu adalah baris
+ * teks yang tenang: nama, deskripsi, dan latar mist saat hover. Satu-satunya
+ * gambar yang tersisa adalah logo Ngambeg, karena itu aset merek pihak ketiga,
+ * bukan glyph hiasan.
  */
-
-/** Ikon per produk platform, dipetakan lewat id dari lib/products.ts. */
-const platformIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  aiGateway: Sparkles,
-  paymentOrchestration: CreditCard,
-  adserverExchange: Megaphone,
-  cloudHostingBilling: Receipt,
-  trafficAnalytics: ChartLine,
-  selfHostedOnlineStore: Store,
-};
 
 type MenuProps = {
   content: SiteContent;
@@ -49,9 +29,22 @@ type MenuProps = {
   onNavigate?: () => void;
 };
 
+/** Satu baris menu: tanpa border, hanya latar saat hover. */
+const rowClass =
+  "group flex items-start gap-3 rounded-smallcards px-4 py-3.5 transition hover:bg-mist-gray";
+
+/** Panah teks untuk tautan keluar. Dibalik di RTL supaya tetap menunjuk maju. */
+function Arrow() {
+  return (
+    <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
+      →
+    </span>
+  );
+}
+
 function SoonBadge({ label }: { label: string }) {
   return (
-    <span className="border-line text-muted shrink-0 rounded-md border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider">
+    <span className="border-hairline text-ash-gray text-caption shrink-0 rounded-full border px-2 py-0.5">
       {label}
     </span>
   );
@@ -59,59 +52,37 @@ function SoonBadge({ label }: { label: string }) {
 
 function GroupLabel({ children, note }: { children: React.ReactNode; note?: string }) {
   return (
-    <p className="text-muted flex flex-wrap items-baseline gap-x-2 text-[10px] font-semibold uppercase tracking-wider">
+    <p className="text-ash-gray text-caption flex flex-wrap items-baseline gap-x-2">
       <span>{children}</span>
-      {note && (
-        <span className="text-muted/70 text-[10px] font-normal normal-case tracking-normal">
-          {note}
-        </span>
-      )}
+      {note && <span className="text-smoke-gray text-caption">{note}</span>}
     </p>
   );
 }
 
-/** Produk platform: ikon, nama, deskripsi satu baris, badge Soon. */
-function PlatformRow({
-  item,
-  content,
-  tint,
-}: {
-  item: ProductItem;
-  content: SiteContent;
-  tint: number;
-}) {
-  const Icon = platformIcons[item.id] ?? Sparkles;
+/** Produk platform: nama, deskripsi dua baris, badge Soon. */
+function PlatformRow({ item, content }: { item: ProductItem; content: SiteContent }) {
   const description =
     (content.products.platforms as Record<string, { description: string }>)[item.id]
       ?.description ?? "";
 
-  const shell = `flex h-full items-start gap-3 rounded-xl border px-4 py-4 transition ${rowTints[tint]}`;
-
   const body = (
-    <>
-      <span
-        className={`bg-surface mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm ${iconTints[tint]}`}
-      >
-        <Icon className="h-4 w-4" aria-hidden="true" />
+    <span className="min-w-0 flex-1">
+      <span className="flex flex-wrap items-center gap-2">
+        <bdi className="text-ink-black text-body font-medium">{item.name}</bdi>
+        {item.status === "soon" && <SoonBadge label={content.products.soon} />}
       </span>
-      <span className="min-w-0 flex-1">
-        <span className="flex flex-wrap items-center gap-2">
-          <bdi className="text-ink group-hover:text-primary text-sm font-semibold transition">
-            {item.name}
-          </bdi>
-          {item.status === "soon" && <SoonBadge label={content.products.soon} />}
-        </span>
-        <span className="text-muted mt-0.5 line-clamp-2 block text-xs leading-5">{description}</span>
+      <span className="text-slate-gray text-caption line-clamp-2 mt-0.5 block">
+        {description}
       </span>
-    </>
+    </span>
   );
 
   if (!item.href) {
-    return <div className={shell}>{body}</div>;
+    return <div className={rowClass}>{body}</div>;
   }
 
   return (
-    <a href={item.href} target="_blank" rel="noopener noreferrer" className={`${shell} group`}>
+    <a href={item.href} target="_blank" rel="noopener noreferrer" className={rowClass}>
       {body}
     </a>
   );
@@ -125,15 +96,14 @@ function PlatformRow({
  * Ikonnya logo resmi Ngambeg dari situsnya sendiri, bukan glyph lucide: ini
  * satu-satunya label pihak ketiga di panel, jadi mark aslinya yang dipakai.
  * Diambil langsung dari ngambeg.com supaya tidak ada salinan yang bisa basi.
+ * Tidak ada chip putih di belakangnya; logonya berdiri sendiri di atas latar.
  */
 function NgambegTile({
   content,
   onNavigate,
-  tint,
 }: {
   content: SiteContent;
   onNavigate?: () => void;
-  tint: number;
 }) {
   const group = content.products.groups.ngambeg;
 
@@ -143,31 +113,29 @@ function NgambegTile({
       target="_blank"
       rel="noopener noreferrer"
       onClick={onNavigate}
-      className={`group flex items-start gap-3 rounded-xl border px-4 py-4 transition ${rowTints[tint]}`}
+      className={rowClass}
     >
-      <span className="bg-surface mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm">
-        <img
-          src={ngambegLogoUrl}
-          alt=""
-          width={24}
-          height={24}
-          loading="lazy"
-          decoding="async"
-          className="h-6 w-6 object-contain"
-        />
-      </span>
+      <img
+        src={ngambegLogoUrl}
+        alt=""
+        width={24}
+        height={24}
+        loading="lazy"
+        decoding="async"
+        className="mt-0.5 h-6 w-6 shrink-0 object-contain"
+      />
       <span className="min-w-0 flex-1">
         {/* Domain menempel di baris judul, bukan barisnya sendiri: tile ini
             duduk di samping baris produk, jadi tinggi barisnya harus sama.
             Tiga baris teks membuatnya lebih jangkung dari tetangganya. */}
         <span className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-          <span className="text-ink group-hover:text-primary text-sm font-semibold transition">
-            {group.label}
+          <span className="text-ink-black text-body font-medium">{group.label}</span>
+          <span className="text-ash-gray text-caption">{group.brand}</span>
+          <span className="text-ash-gray text-caption">
+            <Arrow />
           </span>
-          <span className="text-muted text-[11px]">{group.brand}</span>
-          <ArrowUpRight className="text-muted h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         </span>
-        <span className="text-muted mt-0.5 line-clamp-2 block text-xs leading-5">
+        <span className="text-slate-gray text-caption line-clamp-2 mt-0.5 block">
           {group.description}
         </span>
       </span>
@@ -175,18 +143,14 @@ function NgambegTile({
   );
 }
 
-/** Satu sel katalog: ikon, label, dan panah keluar. */
+/** Satu sel katalog: label dan panah keluar, tanpa chip ikon. */
 function CatalogCell({
   href,
   label,
-  Icon,
-  tint,
   onNavigate,
 }: {
   href: string;
   label: string;
-  Icon: typeof Gamepad2;
-  tint: number;
   onNavigate?: () => void;
 }) {
   return (
@@ -195,17 +159,14 @@ function CatalogCell({
       target="_blank"
       rel="noopener noreferrer"
       onClick={onNavigate}
-      className={`group flex h-full items-center gap-2.5 rounded-xl border px-3 py-3 transition ${rowTints[tint]}`}
+      className="group hover:bg-mist-gray rounded-smallcards flex h-full items-center gap-2.5 px-4 py-3 transition"
     >
-      <span
-        className={`bg-surface flex h-7 w-7 shrink-0 items-center justify-center rounded-lg shadow-sm ${iconTints[tint]}`}
-      >
-        <Icon className="h-3.5 w-3.5" aria-hidden="true" />
-      </span>
-      <span className="text-ink group-hover:text-primary min-w-0 flex-1 truncate text-sm font-semibold transition">
+      <span className="text-ink-black text-caption min-w-0 flex-1 truncate font-medium">
         {label}
       </span>
-      <ArrowUpRight className="text-muted h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      <span className="text-ash-gray text-caption shrink-0">
+        <Arrow />
+      </span>
     </a>
   );
 }
@@ -217,25 +178,20 @@ function CatalogCell({
 function NgambegCatalog({
   content,
   onNavigate,
-  tint,
 }: {
   content: SiteContent;
   onNavigate?: () => void;
-  /** Indeks warna tile Ngambeg; dua sel di bawahnya melanjutkan deret itu. */
-  tint: number;
 }) {
   const catalog = content.products.catalog;
 
   return (
     <div>
       <GroupLabel>{catalog.heading}</GroupLabel>
-      <ul className="mt-2 grid auto-rows-fr grid-cols-2 gap-2.5">
+      <ul className="mt-2 grid auto-rows-fr grid-cols-2 gap-1">
         <li>
           <CatalogCell
             href={ngambegCatalogUrl.games}
             label={catalog.games}
-            Icon={Gamepad2}
-            tint={tintAt(tint + 1)}
             onNavigate={onNavigate}
           />
         </li>
@@ -243,8 +199,6 @@ function NgambegCatalog({
           <CatalogCell
             href={ngambegCatalogUrl.apps}
             label={catalog.apps}
-            Icon={Smartphone}
-            tint={tintAt(tint + 2)}
             onNavigate={onNavigate}
           />
         </li>
@@ -263,32 +217,23 @@ export function ProductMenu({ content, onNavigate }: MenuProps) {
         <GroupLabel note={content.products.groups.platforms.brand}>
           {content.products.groups.platforms.label}
         </GroupLabel>
-        <ul className="mt-2 grid auto-rows-fr gap-2.5">
-          {platforms.map((item, index) => (
+        <ul className="mt-2 grid auto-rows-fr gap-1">
+          {platforms.map((item) => (
             <li key={item.id}>
-              <PlatformRow item={item} content={content} tint={tintAt(index)} />
+              <PlatformRow item={item} content={content} />
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="border-line-subtle border-t pt-6 md:border-s md:border-t-0 md:ps-8 md:pt-0">
-        {/* Label di sini bukan hiasan: kolom kiri didahului label PLATFORMS, jadi
-            tanpa label yang setara, tile Ngambeg akan sejajar dengan label itu
-            dan bukan dengan baris AI Gateway. Siklus warna melanjutkan deret
-            kolom kiri, sehingga dua kolom terbaca sebagai satu urutan. */}
+      <div className="border-hairline border-t pt-6 md:border-s md:border-t-0 md:ps-8 md:pt-0">
+        {/* Label di sini bukan hiasan: kolom kiri didahului label platforms,
+            jadi tanpa label yang setara, tile Ngambeg akan sejajar dengan
+            label itu dan bukan dengan baris AI Gateway. */}
         <GroupLabel>{content.products.groups.ngambeg.label}</GroupLabel>
-        <div className="mt-2 space-y-2.5">
-          <NgambegTile
-            content={content}
-            onNavigate={onNavigate}
-            tint={tintAt(platforms.length)}
-          />
-          <NgambegCatalog
-            content={content}
-            onNavigate={onNavigate}
-            tint={tintAt(platforms.length)}
-          />
+        <div className="mt-2 space-y-1">
+          <NgambegTile content={content} onNavigate={onNavigate} />
+          <NgambegCatalog content={content} onNavigate={onNavigate} />
         </div>
       </div>
     </div>
@@ -305,26 +250,18 @@ export function ProductMenuList({ content, onNavigate }: MenuProps) {
         <GroupLabel note={content.products.groups.platforms.brand}>
           {content.products.groups.platforms.label}
         </GroupLabel>
-        <ul className="mt-2 grid auto-rows-fr gap-2.5">
-          {platforms.map((item, index) => (
+        <ul className="mt-2 grid auto-rows-fr gap-1">
+          {platforms.map((item) => (
             <li key={item.id}>
-              <PlatformRow item={item} content={content} tint={tintAt(index)} />
+              <PlatformRow item={item} content={content} />
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="border-line-subtle space-y-4 border-t pt-4">
-        <NgambegTile
-          content={content}
-          onNavigate={onNavigate}
-          tint={tintAt(platforms.length)}
-        />
-        <NgambegCatalog
-          content={content}
-          onNavigate={onNavigate}
-          tint={tintAt(platforms.length)}
-        />
+      <div className="border-hairline space-y-4 border-t pt-4">
+        <NgambegTile content={content} onNavigate={onNavigate} />
+        <NgambegCatalog content={content} onNavigate={onNavigate} />
       </div>
     </div>
   );

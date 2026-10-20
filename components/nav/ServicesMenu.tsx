@@ -1,8 +1,6 @@
-import React from "react";
 import Link from "next/link";
-import { ArrowUpRight, type LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { serviceAnchor } from "@/lib/services";
-import { iconTints, rowTints, tintAt } from "@/lib/tints";
 import type { SiteContent } from "@/lib/i18n";
 
 /**
@@ -11,6 +9,10 @@ import type { SiteContent } from "@/lib/i18n";
  *
  * `ServicesMenu` dipakai mega panel desktop (tiga kolom), `ServicesMenuList`
  * dipakai lembar mobile (satu kolom).
+ *
+ * Barisnya sama tenangnya dengan panel Product: tanpa border, tanpa chip ikon,
+ * hanya nama, deskripsi, dan latar mist saat hover. Field `Icon` masih ada di
+ * tipe karena Navbar yang merakitnya, tetapi tidak dirender lagi.
  */
 
 export type ServiceItem = {
@@ -27,35 +29,33 @@ type MenuProps = {
   onNavigate?: () => void;
 };
 
+/** Panah teks untuk affordance tautan. Dibalik di RTL supaya tetap menunjuk maju. */
+function Arrow() {
+  return (
+    <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
+      →
+    </span>
+  );
+}
+
 function ServiceRow({
   item,
   basePath,
   onNavigate,
-  tint,
 }: {
   item: ServiceItem;
   basePath: string;
   onNavigate?: () => void;
-  tint: number;
 }) {
-  const Icon = item.Icon;
-
   return (
     <Link
       href={`${basePath}#${serviceAnchor(item.slug)}`}
       onClick={onNavigate}
-      className={`group flex h-full items-start gap-3 rounded-xl border px-4 py-4 transition ${rowTints[tint]}`}
+      className="group hover:bg-mist-gray rounded-smallcards flex h-full items-start gap-3 px-4 py-3.5 transition"
     >
-      <span
-        className={`bg-surface mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm ${iconTints[tint]}`}
-      >
-        <Icon className="h-4 w-4" aria-hidden="true" />
-      </span>
       <span className="min-w-0 flex-1">
-        <span className="text-ink group-hover:text-primary block text-sm font-semibold transition">
-          {item.title}
-        </span>
-        <span className="text-muted mt-0.5 line-clamp-2 block text-xs leading-5">
+        <span className="text-ink-black text-body block font-medium">{item.title}</span>
+        <span className="text-slate-gray text-caption line-clamp-2 mt-0.5 block">
           {item.description}
         </span>
       </span>
@@ -63,6 +63,7 @@ function ServiceRow({
   );
 }
 
+/** Tautan teks, bukan pill: panah di ujung label yang membawa affordance-nya. */
 function AllServicesLink({
   content,
   basePath,
@@ -76,10 +77,10 @@ function AllServicesLink({
     <Link
       href={`${basePath}#services`}
       onClick={onNavigate}
-      className="text-primary hover:bg-elevated -me-2.5 inline-flex items-center gap-1 rounded-lg py-1.5 ps-2.5 text-[11px] font-semibold transition"
+      className="text-ink-black text-caption inline-flex items-center gap-1 hover:underline"
     >
       {content.nav.allServices}
-      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+      <Arrow />
     </Link>
   );
 }
@@ -88,20 +89,13 @@ export function ServicesMenu({ content, basePath, items, onNavigate }: MenuProps
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-        <p className="text-muted text-[10px] font-semibold uppercase tracking-wider">
-          {content.nav.services}
-        </p>
+        <p className="text-ash-gray text-caption">{content.nav.services}</p>
         <AllServicesLink content={content} basePath={basePath} onNavigate={onNavigate} />
       </div>
-      <ul className="mt-2 grid auto-rows-fr gap-x-6 gap-y-2.5 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((item, index) => (
+      <ul className="mt-2 grid auto-rows-fr gap-x-6 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((item) => (
           <li key={item.slug}>
-            <ServiceRow
-              item={item}
-              basePath={basePath}
-              onNavigate={onNavigate}
-              tint={tintAt(index)}
-            />
+            <ServiceRow item={item} basePath={basePath} onNavigate={onNavigate} />
           </li>
         ))}
       </ul>
@@ -112,15 +106,10 @@ export function ServicesMenu({ content, basePath, items, onNavigate }: MenuProps
 export function ServicesMenuList({ content, basePath, items, onNavigate }: MenuProps) {
   return (
     <div>
-      <ul className="grid auto-rows-fr gap-2.5">
-        {items.map((item, index) => (
+      <ul className="grid auto-rows-fr gap-1">
+        {items.map((item) => (
           <li key={item.slug}>
-            <ServiceRow
-              item={item}
-              basePath={basePath}
-              onNavigate={onNavigate}
-              tint={tintAt(index)}
-            />
+            <ServiceRow item={item} basePath={basePath} onNavigate={onNavigate} />
           </li>
         ))}
       </ul>

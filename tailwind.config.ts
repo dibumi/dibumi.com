@@ -1,5 +1,20 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * Token layer for the Steep system, transcribed from DESIGN.md.
+ *
+ * The reference publishes these as Tailwind v4 `@theme` variables. This project
+ * runs Tailwind 3, so the same values live here under `theme.extend` and mirror
+ * the CSS custom properties in app/globals.css. Ubah keduanya bersamaan.
+ *
+ * Aturan yang dijaga di file ini:
+ * - Palet 97% achromatic. Satu-satunya warna chromatic adalah pasangan
+ *   blush-peach / sienna-brown, dan hanya untuk satu kartu editorial per halaman.
+ * - Radius punya dua nilai struktural: cards 24px dan buttons 9999px. Nilai
+ *   perantara (images 12px, inputs 16px, smallcards 16px, elevatedcards 20px)
+ *   hanya untuk elemen yang memang lebih kecil dari kartu.
+ * - Elevasi hanya untuk floating artifact. Kartu konten tidak pernah ber-shadow.
+ */
 export default {
   content: [
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,85 +23,79 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Token diporting dari C:\Herd\ai-party\frontend\marketing\app\assets\css\main.css.
-        // primary #0a7668 di atas putih = 5.5:1, lolos AA untuk teks dan tombol.
-        canvas: "#f8faf9",
-        surface: "#ffffff",
-        elevated: "#f0f5f2",
-        ink: "#16332d",
-        muted: "#61716b",
-        line: {
-          DEFAULT: "#dce5df",
-          subtle: "#edf1ee",
-        },
-        primary: {
-          DEFAULT: "#0a7668",
-          hover: "#085d53",
-          soft: "#e4f2eb",
-          ring: "#0a7668",
-        },
-        accent: {
-          DEFAULT: "#256b83",
-          soft: "#e7f1f6",
-        },
-        tint: {
-          mint: "#ecf5ee",
-          violet: "#f3f0fb",
-          amber: "#faf3e6",
-        },
-        // Alias lama. Semua komponen sudah memakai token baru, alias ini hanya
-        // jaring pengaman supaya tidak ada kelas yang diam-diam hilang.
-        brand: {
-          50: "#f8faf9",
-          100: "#e4f2eb",
-          200: "#dce5df",
-          300: "#9dc4bb",
-          400: "#5fa89b",
-          500: "#2f8c7d",
-          600: "#0a7668",
-          700: "#085d53",
-          800: "#0b4a43",
-          900: "#16332d",
-          950: "#0d211e",
-        },
+        "ink-black": "#17191c",
+        "paper-white": "#ffffff",
+        "mist-gray": "#f2f2f3",
+        "fog-white": "#fafafb",
+        "slate-gray": "#777b86",
+        "ash-gray": "#979799",
+        "smoke-gray": "#a3a6af",
+        "blush-peach": "#fbe1d1",
+        "sienna-brown": "#5d2a1a",
+        // Satu-satunya nilai di luar DESIGN.md: warna garis dari Quick Color
+        // Reference. Border saja, tidak pernah dipakai sebagai permukaan.
+        hairline: "#ececec",
       },
       fontFamily: {
-        // Seluruh teks memakai Geist Mono, sama seperti situs referensi.
+        // Signifier dan Sohne adalah lisensi komersial. Substitusinya Source
+        // Serif 4 dan Inter, dimuat lewat next/font di app/layout.tsx.
+        display: [
+          "var(--font-display)",
+          "var(--font-arabic)",
+          "var(--font-chinese)",
+          "ui-serif",
+          "Georgia",
+          "serif",
+        ],
         sans: [
-          "var(--font-geist-mono)",
-          "ui-monospace",
-          "SFMono-Regular",
-          "Menlo",
-          "monospace",
+          "var(--font-sans)",
+          "var(--font-arabic)",
+          "var(--font-chinese)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
         ],
-        mono: [
-          "var(--font-geist-mono)",
-          "ui-monospace",
-          "SFMono-Regular",
-          "monospace",
-        ],
-        // Geist Mono tidak punya glyph Arab dan CJK, jadi dua locale ini
-        // memakai font pendamping agar teks tetap terbaca.
-        ar: ["var(--font-arabic)", "var(--font-geist-mono)", "system-ui", "sans-serif"],
-        zh: ["var(--font-chinese)", "var(--font-geist-mono)", "system-ui", "sans-serif"],
+        // Dua locale ini tidak punya glyph di Source Serif 4 maupun Inter, jadi
+        // keduanya memakai font pendamping agar teks tetap terbaca.
+        ar: ["var(--font-arabic)", "var(--font-sans)", "system-ui", "sans-serif"],
+        zh: ["var(--font-chinese)", "var(--font-sans)", "system-ui", "sans-serif"],
+      },
+      fontSize: {
+        caption: ["15px", { lineHeight: "1.5" }],
+        body: ["17px", { lineHeight: "1.35" }],
+        "body-lg": ["20px", { lineHeight: "1.35" }],
+        subheading: ["22px", { lineHeight: "1.5" }],
+        "heading-sm": ["26px", { lineHeight: "1.18", letterSpacing: "-0.23px" }],
+        heading: ["44px", { lineHeight: "1.3", letterSpacing: "-0.66px" }],
+        "heading-lg": ["64px", { lineHeight: "1.3", letterSpacing: "-0.96px" }],
+        display: ["90px", { lineHeight: "1.3", letterSpacing: "-2.25px" }],
       },
       borderRadius: {
-        "4xl": "2rem",
+        cards: "24px",
+        images: "12px",
+        inputs: "16px",
+        buttons: "9999px",
+        smallcards: "16px",
+        elevatedcards: "20px",
       },
       boxShadow: {
-        card: "0 4px 20px -8px rgba(22, 51, 45, 0.04)",
-        glow: "0 6px 20px -10px rgba(10, 118, 104, 0.25)",
-        float: "0 20px 70px -45px rgba(22, 51, 45, 0.3)",
+        // Dropdown / popover.
+        subtle:
+          "oklab(0 0 0 / 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.08) 0px 4px 24px 0px",
+        // Modal / overlay card.
+        "subtle-2":
+          "oklab(0 0 0 / 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 8px 40px 0px",
+        // Floating product artifact. Satu-satunya elevasi di sistem ini.
+        "subtle-3":
+          "rgba(4, 23, 43, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.1) 0px 8px 10px -6px",
       },
-      backgroundImage: {
-        // Garis 1px yang memudar, dipakai sebagai pembatas section.
-        "hairline-x": "linear-gradient(90deg, #0a7668 0%, rgba(10,118,104,0) 100%)",
-        // Rail progres alur kerja: memudar di ujung supaya terbaca sebagai urutan.
-        "rail-x": "linear-gradient(90deg, #0a7668 0%, #2f8c7d 45%, #dce5df 100%)",
-        // Cahaya lembut di sudut panel gelap.
-        "panel-glow": "radial-gradient(125% 95% at 6% 0%, rgba(10,118,104,0.28) 0%, rgba(10,118,104,0) 62%)",
-        // Wash satu kartu unggulan, supaya tidak putih-semua.
-        "tile-wash": "radial-gradient(130% 115% at 0% 0%, #e4f2eb 0%, rgba(248,250,249,0) 68%)",
+      maxWidth: {
+        page: "1200px",
+      },
+      spacing: {
+        124: "124px",
+        128: "128px",
+        160: "160px",
       },
       keyframes: {
         "fade-up": {
