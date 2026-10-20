@@ -114,6 +114,55 @@
 }
 
 /*
+ * Atmosfer hero.
+ *
+ * Referensinya memakai video gradient mesh (steep.app/videos/door.mp4) di balik
+ * judul, ditutup noise halus dan gradien putih di tepi bawah. Video tidak bisa
+ * disalin, jadi wash-nya dibangun ulang dengan lima radial-gradient bertumpuk:
+ * rose di tengah, lavender di kiri, peach di kanan, krem di kanan bawah, dan
+ * biru pucat di kiri bawah. Saturasinya sengaja rendah supaya tetap terbaca
+ * sebagai kertas berwarna, bukan sebagai ilustrasi.
+ *
+ * Ini satu-satunya tempat di sistem yang memakai warna di luar pasangan
+ * peach/sienna, dan hanya sebagai wash latar — tidak pernah sebagai permukaan
+ * komponen. Kartu peach di section kontak tetap satu-satunya bidang berwarna.
+ */
+.hero-atmosphere {
+  background-color: var(--color-paper-white);
+  background-image:
+    radial-gradient(38% 34% at 50% 44%, #ffffff 0%, rgba(255, 255, 255, 0) 72%),
+    radial-gradient(62% 48% at 50% 26%, #f8ded5 0%, rgba(248, 222, 213, 0) 68%),
+    radial-gradient(44% 40% at 6% 46%, #e6edfc 0%, rgba(230, 237, 252, 0) 70%),
+    radial-gradient(50% 44% at 94% 34%, #fbe7da 0%, rgba(251, 231, 218, 0) 68%),
+    radial-gradient(44% 34% at 84% 88%, #f8eed6 0%, rgba(248, 238, 214, 0) 70%),
+    radial-gradient(40% 30% at 16% 86%, #eff3ff 0%, rgba(239, 243, 255, 0) 72%);
+}
+
+/* Noise halus di atas wash, supaya gradient tidak terbaca sebagai pita digital.
+   Sama seperti referensi: feTurbulence yang didesaturasi, opasitas rendah. */
+.hero-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.11;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.91' numOctaves='2' seed='10' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Tepi bawah wash melebur ke putih, jadi section berikutnya tidak menerima
+   potongan warna yang tiba-tiba. */
+.hero-fade::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 9rem;
+  pointer-events: none;
+  background-image: linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+/*
  * Huruf Arab membawa harakat di atas dan di bawah garis dasar, dengan ascent
  * 1.085em dan descent 0.415em. Leading rapat yang enak untuk Latin membuat
  * baris judul Arab saling menabrak, jadi judul hero dilonggarkan khusus untuk

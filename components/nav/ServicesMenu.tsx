@@ -1,25 +1,22 @@
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
 import { serviceAnchor } from "@/lib/services";
 import type { SiteContent } from "@/lib/i18n";
 
 /**
  * Isi panel Services. `ServiceItem` dirakit di Navbar karena judul dan
- * deskripsi berasal dari i18n, sedangkan slug dan ikon dari lib/services.ts.
+ * deskripsi berasal dari i18n, sedangkan slug dari lib/services.ts.
  *
  * `ServicesMenu` dipakai mega panel desktop (tiga kolom), `ServicesMenuList`
  * dipakai lembar mobile (satu kolom).
  *
  * Barisnya sama tenangnya dengan panel Product: tanpa border, tanpa chip ikon,
- * hanya nama, deskripsi, dan latar mist saat hover. Field `Icon` masih ada di
- * tipe karena Navbar yang merakitnya, tetapi tidak dirender lagi.
+ * hanya nama, deskripsi, dan latar mist saat hover.
  */
 
 export type ServiceItem = {
   title: string;
   description: string;
   slug: string;
-  Icon: LucideIcon;
 };
 
 type MenuProps = {

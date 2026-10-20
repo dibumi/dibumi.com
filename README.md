@@ -10,9 +10,10 @@ Built with **Next.js 16 (App Router)** and deployed as a **Cloudflare Worker** (
 
 ## Design system
 
-- `DESIGN.md` holds the reference: palette, type scale, radii, shadows, components, and the do's and don'ts.
+- `DESIGN.md` holds the reference: palette, type scale, radii, shadows, components, and the do's and don'ts. Its closing section records the three places this build deliberately departs from it.
 - `tailwind.config.ts` and `app/globals.css` hold the implemented tokens. They mirror each other by hand, so a token change means changing both files.
-- The palette is intentionally achromatic, with `blush-peach` and `sienna-brown` reserved for one accent card per page. No other chromatic colour is introduced.
+- The palette is intentionally achromatic, with `blush-peach` and `sienna-brown` reserved for one accent card per page. That card is the first one in Highlights.
+- The hero gradient wash lives in `app/globals.css` (`.hero-atmosphere`, `.hero-grain`, `.hero-fade`) rather than in a component, because it is five stacked gradients plus a grain overlay. It is the only chromatic background on the site.
 - Cards never carry shadows. Only floating product artifacts (`shadow-subtle-3`) and dropdown overlays (`shadow-subtle`, `shadow-subtle-2`) do.
 - The anchor-offset rule from `AGENTS.md` still applies: `scroll-padding-top` in `app/globals.css` stays in sync with the header height in `components/Navbar.tsx`, and sections do not add `scroll-margin-top` on top of it.
 
@@ -36,14 +37,15 @@ Legal documents are written in English and Indonesian. Other locales render the 
 
 ## Sections
 
-1. **Hero** — centred serif headline with one italicised phrase, a filled and a ghost pill button side by side, and a row of guarantees. Three floating product artifact cards (client region table, services list, counts) sit beside the text, only at `xl` and above.
-2. **Highlights** — three quiet mist cards: discover, build, operate. No icons.
+1. **Hero** — a soft gradient wash with a fine grain, a small pill of guarantees above the headline, a centred serif headline with one italicised phrase, a filled and a ghost pill button side by side, and three floating artifact cards (client region table, services list, counts) that bleed past the viewport edge at `xl` and above.
+2. **Highlights** — three cards: discover, build, operate. The first is the page's single peach card and carries an oversized serif ordinal in place of an illustration; the other two are mist. No icons.
 3. **Services** — six practices, each with an ordinal `01`–`06`, a points list, and a text link with an arrow; the navbar Services panel links straight to each card anchor.
 4. **Products** — six platform products owned by dibumi.com (all `Soon`, no public site yet), then one full-width Ngambeg Cyber Media card that links out to ngambeg.com.
 5. **Clients** — twelve clients as a two-column hairline region table, each row carrying a flag, the logo, and the ISO country code.
 6. **Process** — four steps on an achromatic rail.
 7. **Standards** — three standards as hairline rows, then three commitments.
-8. **Contact** — one peach accent card, the only chromatic surface on the site: WhatsApp as a filled pill and email as a ghost pill, followed by a band of operational facts.
+8. **Contact** — a neutral mist panel with WhatsApp as a filled pill and email as a ghost pill, followed by a band of operational facts. The page's peach card is in Highlights, not here.
+9. **Footer** — the mark alone, four link columns, and a single closing row on a fog-white surface with no divider line and no oversized wordmark.
 
 The 404 page is styled in the same system.
 
@@ -53,7 +55,7 @@ The 404 page is styled in the same system.
 
 - `lib/i18n.ts` — every visible string, for all five locales.
 - `lib/products.ts` — product catalogue used by the navbar dropdown, the Products section, and the footer. Two levels: groups (`platforms`, `ngambeg`) and the items inside them. Games and apps share the `ngambeg` group because they are presented as one list pointing at ngambeg.com. Fill in `href` for a product once its site exists; `null` renders a `Soon` badge instead of a link.
-- `lib/services.ts` — service slugs shared by the navbar Services panel and the Services section. Its order must match the `services` array in `lib/i18n.ts`; titles and descriptions stay there because they are translated. Each entry still carries an icon, but nothing renders it any more: the design system has no decorative icons, so the section numbers the services instead.
+- `lib/services.ts` — service slugs shared by the navbar Services panel and the Services section. Its order must match the `services` array in `lib/i18n.ts`; titles and descriptions stay there because they are translated. The file carries no icons: the design system has none, so the section numbers the services instead.
 - `lib/team.ts` — the one team member: name, optional photo, and contact links. Set `photo` to a path under `public/` once the portrait exists; until then the page renders a monogram tile.
 - `lib/clients.ts` — the client list: name, logo path, ISO country code, and native image size. Logos live in `public/clients/`, flags in `public/flags/`. A `null` logo renders the name as a text wordmark instead of an image.
 - `lib/legal.ts` — terms and privacy content, keyed by locale.

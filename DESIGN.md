@@ -360,3 +360,12 @@ The reference above is the target. This project implements it on **Tailwind CSS 
 
 - This file describes the **target** visual system. Sections of the site that have not been migrated yet are out of date relative to it, and should be brought over rather than used as precedent.
 - The anchor-offset rule in `AGENTS.md` still holds and is not affected by this document: `scroll-padding-top` in `app/globals.css` stays in sync with the header height in `components/Navbar.tsx`, and sections must not add `scroll-margin-top` on top of it.
+
+## Where this project departs from the reference
+
+Three deliberate deviations, all of them because the reference's exact asset or surface is not available here:
+
+- **The hero atmosphere.** The reference backs its hero with a looping gradient-mesh video (`steep.app/videos/door.mp4`) plus a noise overlay. A video is not shipped here. The wash is rebuilt in CSS as five stacked radial gradients (`.hero-atmosphere` in `app/globals.css`) with a desaturated `feTurbulence` grain (`.hero-grain`) and a white fade at the bottom edge (`.hero-fade`). It is the only place on the site that uses colour outside the peach/sienna pair, and only as a background wash, never as a component surface.
+- **The accent card position.** In the reference the first feature card of the three-up row is peach. That is where the single peach card lives here too, not in the contact section. The contact panel is neutral mist.
+- **Illustrations.** The reference's feature cards carry line illustrations. No such assets exist for this studio, and drawing decorative SVGs would be inventing imagery, so each card carries an oversized serif ordinal instead — typography doing the visual work.
+

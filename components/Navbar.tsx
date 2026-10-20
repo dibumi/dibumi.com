@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Code2, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import BrandMark from "@/components/BrandMark";
 import { ProductMenu, ProductMenuList } from "@/components/nav/ProductMenu";
@@ -77,14 +77,11 @@ export default function Navbar({
 
   const nav = content.nav;
 
-  // Judul dan deskripsi layanan ada di i18n; slug dan ikon di lib/services.ts.
-  // Ikon masih ikut dirakit karena tipe ServiceItem membawanya, tetapi tidak
-  // lagi dirender: ikon dekoratif sudah dihapus dari seluruh menu.
+  // Judul dan deskripsi layanan ada di i18n; slug di lib/services.ts.
   const serviceItems: ServiceItem[] = content.services.map((service, index) => ({
     title: service.title,
     description: service.description,
     slug: serviceMeta[index]?.slug ?? "",
-    Icon: serviceMeta[index]?.icon ?? Code2,
   }));
 
   const anchorLinks = [
@@ -367,7 +364,7 @@ export default function Navbar({
           <div
             ref={panelRef}
             id={`${openPanel}-menu`}
-            className="bg-paper-white shadow-subtle-2 animate-panel-in absolute inset-x-0 top-full hidden max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain lg:block"
+            className="border-hairline bg-paper-white shadow-subtle-2 animate-panel-in absolute inset-x-0 top-full hidden max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain border-b lg:block"
           >
             <div className="mx-auto max-w-page px-5 py-6 sm:px-8">
               {openPanel === "product" ? (

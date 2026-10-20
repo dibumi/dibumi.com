@@ -4,14 +4,13 @@ import React from "react";
  * Judul section yang konsisten di seluruh halaman.
  *
  * Tiga tingkat, semuanya tipografis:
- * - tag kategori 15px ash, tanpa huruf besar dan tanpa tracking. Di DESIGN.md
- *   ini "Tag / Category Label": penanda yang mengelompokkan tanpa bobot visual.
+ * - tag kategori 15px ash dengan chevron `›`, mengikuti pola "Product ›" di
+ *   referensi. Chevron-nya bagian dari label, bukan ikon terpisah.
  * - judul serif weight 400. Tidak pernah bold: serif yang berbisik, bukan
  *   berteriak, adalah inti dari sistem ini.
  * - deskripsi 17px slate, dibatasi 52ch supaya baris tetap enak dibaca.
  *
- * Tidak ada ikon di sini. Ikon dekoratif sudah dihapus dari seluruh situs;
- * yang tersisa hanya glyph fungsional (chevron, panah, pemilih bahasa).
+ * Tidak ada ikon dekoratif di sini.
  */
 export default function SectionHeading({
   eyebrow,
@@ -26,7 +25,12 @@ export default function SectionHeading({
 }) {
   return (
     <div className={`max-w-[58ch] ${className}`}>
-      <p className="text-ash-gray text-caption">{eyebrow}</p>
+      <p className="text-ash-gray flex items-center gap-1.5 text-caption">
+        {eyebrow}
+        <span aria-hidden="true" className="rtl:-scale-x-100">
+          ›
+        </span>
+      </p>
       <h2 className="text-ink-black font-display mt-4 text-heading font-normal sm:text-heading-lg">
         {title}
       </h2>
