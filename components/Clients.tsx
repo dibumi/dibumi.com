@@ -10,8 +10,9 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  * pita biru dengan kutipan besar, foto, dan sebaris logo. Foto tidak ada
  * di sini — tidak ada aset foto studio ini, dan mengarang foto orang yang
  * tidak pernah ada adalah memalsukannya. Yang menggantikannya adalah dinding
- * logo: dua belas klien nyata, dua belas logo nyata, tiap selnya satu kotak
- * yang dipisah garis sienna tipis.
+ * logo: dua belas klien dengan aset logo yang tersimpan, tiap selnya satu
+ * kotak yang dipisah garis sienna tipis. Dua belas itu adalah jumlah logo yang
+ * ada, bukan jumlah klien: angkanya jauh lebih besar dan ditulis di pita kiri.
  *
  * Dinding logo itu juga lebih jujur daripada tabel nama: yang ingin dilihat
  * prospective client adalah siapa yang pernah percaya pada kita, bukan
@@ -60,13 +61,15 @@ export default function Clients({
   content: SiteContent["clients"];
   locale: Locale;
 }) {
-  // Jumlah negara dihitung dari data, bukan ditulis manual: kode ISO di
-  // lib/clients.ts bisa bertambah kapan saja dan angkanya harus ikut.
-  const countries = new Set(clients.map((client) => client.region)).size;
-
+  // Angka di pita ini adalah klaim total sepanjang 2013–sekarang, bukan
+  // jumlah logo di dinding kanan: hanya sebagian klien yang aset logonya
+  // tersimpan, jadi dua belas sel logo dan "100+" bukan dua versi angka yang
+  // sama. Karena itu ketiganya ditulis tetap, bukan diturunkan dari data —
+  // kalau dihitung, angkanya berubah jadi 12 dan 10 setiap kali daftar logo
+  // bertambah atau berkurang.
   const facts = [
-    { value: String(clients.length), label: content.facts.clients },
-    { value: String(countries), label: content.facts.countries },
+    { value: "100+", label: content.facts.clients },
+    { value: "10+", label: content.facts.countries },
     { value: "2013", label: content.facts.since },
   ];
 

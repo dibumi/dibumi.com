@@ -41,7 +41,7 @@ Legal documents are written in English and Indonesian. Other locales render the 
 2. **Client marquee** — twelve real client logos on a 50-second CSS marquee with edge fades, paused on hover and stopped under reduced motion.
 3. **Products** — the reference's device: a vertical tab list of the six platform products plus the Ngambeg group on the left, the selected product in a framed window on the right with a browser chrome and a real `01 / 07` counter. A client component, server-fed. Below `lg` the tab list becomes a scrollable strip.
 4. **Highlights** — three cards: discover, build, operate. The first is the page's single peach card; each carries an oversized serif ordinal as a watermark bleeding off the bottom-right corner in place of an illustration. Titles are sans at 26px, the way the reference sets card titles.
-5. **Clients** — the peach band: the copy and three computed facts on the left (12 clients, 10 countries, since 2013), a twelve-cell logo wall on the right with 1px gaps showing the band through as hairlines, each cell carrying a flag and the ISO country code. Everything in sienna on blush.
+5. **Clients** — the peach band: the copy and three fixed facts on the left (100+ clients, 10+ countries, since 2013), a twelve-cell logo wall on the right with 1px gaps showing the band through as hairlines, each cell carrying a flag and the ISO country code. Everything in sienna on blush.
 6. **Services** — the dark band: the six practices as a hairline-separated list on the left, a diagram of the delivery model on the right (six inputs, one team, three outputs) built from the same data, sticky while the list scrolls.
 7. **Process** — four steps on an achromatic rail.
 8. **Standards** — three standards as hairline rows, then three commitments.
