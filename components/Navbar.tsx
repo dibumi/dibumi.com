@@ -20,8 +20,8 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  * Navigasi utama: bar yang berbisik, tanpa garis dan tanpa bayangan.
  *
  * Aturan yang dijaga di sini:
- * - Tinggi bar 64px di bawah lg dan 72px mulai lg. Offset anchor di globals.css
- *   mengikuti angka ini, jadi ubah keduanya bersamaan.
+ * - Tinggi bar 64px di semua lebar. Offset anchor di globals.css mengikuti
+ *   angka ini, jadi ubah keduanya bersamaan.
  * - Bar ini fixed, bukan sticky. Di posisi paling atas ia transparan dan menyatu
  *   dengan wash hero — persis seperti referensi, di mana nav tidak punya bidang
  *   sendiri sampai halaman digulir. Setelah digulir ia baru mendapat permukaan
@@ -29,8 +29,14 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  *   nav terasa sebagai lapisan yang mengambang di atas isi halaman.
  * - Karena fixed, bar keluar dari alur dokumen. Tingginya dibayar oleh spacer
  *   di bawah header, dan angka spacer itu harus sama dengan tinggi bar.
- * - Item aktif dinyatakan lewat warna saja (slate -> ink), bukan garis bawah.
- *   Warna sudah cukup; garis menambah satu elemen visual yang tidak dibutuhkan.
+ * - Tata letaknya tiga kolom saat desktop: merek di tepi awal, tautan di tengah,
+ *   aksi di tepi akhir. Grid `1fr auto 1fr`, bukan flex: dengan flex tautan
+ *   hanya di tengah ruang sisa, dan karena merek lebih sempit daripada kluster
+ *   aksi hasilnya meleset puluhan piksel dari pusat bar.
+ * - Tautan tidak pernah punya latar atau border, bahkan saat hover: nav ini
+ *   tidak punya bidang sendiri, jadi hover memudarkan teks ke slate, bukan
+ *   menyalakan kotak. Item aktif dinyatakan lewat berat huruf, bukan warna,
+ *   supaya penandanya tidak hilang saat kursor kebetulan ada di atasnya.
  * - Panel menempel langsung ke bawah bar (tanpa jarak), supaya kursor tidak
  *   pernah melewati celah yang menutup menu.
  * - Semua posisi memakai properti logis (ms/me/ps/pe/start/end) agar locale
@@ -41,11 +47,20 @@ type OpenPanel = "product" | "services" | null;
 type OpenSection = "product" | "services" | null;
 
 const desktopItem =
-  "group inline-flex h-9 items-center gap-1.5 rounded-smallcards px-2.5 text-caption transition-colors hover:bg-mist-gray";
+  "group inline-flex h-8 items-center gap-1 rounded-buttons px-3.5 text-xs transition-colors";
 
-/** Keadaan warna item desktop: diam itu slate, aktif atau hover itu ink. */
+/**
+ * Keadaan warna item desktop.
+ *
+ * Semua item berdiri dengan ink yang sama, dan hover meredupkannya ke slate.
+ * Arahnya sengaja dibalik dari kebiasaan: nav ini tidak punya bidang sendiri,
+ * jadi menyalakan latar saat hover akan menambahkan satu permukaan yang tidak
+ * ada di sistem. Meredupkan teks justru terbaca sebagai "item ini hidup" tanpa
+ * menggambar apa pun. Item aktif memakai berat huruf, bukan warna, supaya
+ * penandanya tidak hilang saat kursor kebetulan ada di atasnya.
+ */
 function itemState(active: boolean) {
-  return active ? "text-ink-black" : "text-slate-gray hover:text-ink-black";
+  return active ? "text-ink-black font-medium" : "text-ink-black hover:text-slate-gray";
 }
 
 /** Panah teks untuk affordance tautan. Dibalik di RTL supaya tetap menunjuk maju. */
@@ -284,19 +299,27 @@ export default function Navbar({
             : "border-b border-transparent bg-transparent"
         }`}
       >
-        <div className="mx-auto flex h-16 max-w-page items-center gap-2 px-5 sm:px-8 lg:h-[4.5rem]">
+        {/* Tiga kolom saat lg, satu baris flex sebelumnya. Grid dipilih supaya
+            kolom tengah benar-benar di tengah bar: dengan `flex-1` tautan hanya
+            di tengah ruang sisa, dan karena merek (137px) lebih sempit daripada
+            kluster aksi (222px) hasilnya meleset ~43px. Dua kolom `1fr` di kiri
+            dan kanan membuat kolom `auto` di tengah selalu simetris. */}
+        <div className="mx-auto flex h-16 max-w-page items-center gap-2 px-5 sm:px-8 lg:grid lg:grid-cols-[1fr_auto_1fr]">
           {/* Brand: sekaligus link ke beranda, jadi tidak ada item "Home".
               Wordmark satu warna; titik ".com" tidak lagi diberi aksen. */}
-          <Link href={basePath} className="text-ink-black flex shrink-0 items-center gap-2.5">
+          <Link
+            href={basePath}
+            className="text-ink-black flex shrink-0 items-center gap-2.5 lg:justify-self-start"
+          >
             <BrandMark className="h-8 w-8 shrink-0" />
             <span className="text-body truncate font-medium">dibumi.com</span>
           </Link>
 
-          {/* Desktop navigation */}
+          {/* Desktop navigation — di tengah bar, bukan menempel brand. */}
           <nav
             ref={navRef}
             aria-label="Main navigation"
-            className="ms-6 hidden items-center gap-0.5 lg:flex"
+            className="hidden items-center gap-0.5 lg:flex lg:justify-self-center"
           >
             <div className="relative">
               <button
@@ -312,7 +335,7 @@ export default function Navbar({
               >
                 {nav.product}
                 <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                  className={`h-3 w-3 transition-transform duration-200 ${
                     openPanel === "product" ? "rotate-180" : ""
                   }`}
                   aria-hidden="true"
@@ -334,7 +357,7 @@ export default function Navbar({
               >
                 {nav.services}
                 <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                  className={`h-3 w-3 transition-transform duration-200 ${
                     openPanel === "services" ? "rotate-180" : ""
                   }`}
                   aria-hidden="true"
@@ -369,12 +392,12 @@ export default function Navbar({
           </nav>
 
           {/* Right cluster */}
-          <div className="ms-auto flex items-center gap-1 sm:gap-2">
-            <LanguageSwitcher locale={locale} label={nav.language} variant="bare" />
+          <div className="ms-auto flex items-center gap-1 sm:gap-2 lg:ms-0 lg:justify-self-end">
+            <LanguageSwitcher locale={locale} label={nav.language} variant="ghost" />
 
             <Link
               href={`${basePath}#contact`}
-              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 ms-1 hidden h-10 items-center justify-center px-4 text-caption transition lg:inline-flex"
+              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 ms-1 hidden h-8 items-center justify-center px-3 text-caption transition lg:inline-flex"
             >
               {nav.cta}
             </Link>
@@ -402,7 +425,7 @@ export default function Navbar({
           <div
             ref={panelRef}
             id={`${openPanel}-menu`}
-            className="border-hairline bg-paper-white shadow-subtle-2 animate-panel-in absolute inset-x-0 top-full hidden max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain border-b lg:block"
+            className="border-hairline bg-paper-white shadow-subtle-2 animate-panel-in absolute inset-x-0 top-full hidden max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-b lg:block"
           >
             <div className="mx-auto max-w-page px-5 py-6 sm:px-8">
               {openPanel === "product" ? (
@@ -422,10 +445,10 @@ export default function Navbar({
 
       {/* Bar fixed keluar dari alur dokumen, jadi tingginya harus dibayar di
           sini supaya isi halaman tidak tertutup. Angka ini WAJIB sama dengan
-          tinggi bar di atas (h-16 / lg:h-[4.5rem]) dan dengan
-          scroll-padding-top di app/globals.css: kalau salah satu bergeser,
-          judul section mendarat di bawah bar atau terlalu jauh dari tepi. */}
-      <div aria-hidden="true" className="h-16 lg:h-[4.5rem]" />
+          tinggi bar di atas (h-16) dan dengan scroll-padding-top di
+          app/globals.css: kalau salah satu bergeser, judul section mendarat di
+          bawah bar atau terlalu jauh dari tepi. */}
+      <div aria-hidden="true" className="h-16" />
 
       {/* Mobile sheet: di luar header karena backdrop-blur membuat header jadi
           containing block untuk elemen fixed. */}

@@ -59,7 +59,7 @@ export default function Hero({
   return (
     <section
       ref={sectionRef}
-      className="relative isolate -mt-16 flex min-h-dvh items-center overflow-hidden lg:-mt-[4.5rem]"
+      className="relative isolate -mt-16 flex min-h-dvh items-center overflow-hidden"
     >
       <div
         className="hero-atmosphere hero-grain hero-fade absolute inset-0 -z-10"

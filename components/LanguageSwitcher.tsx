@@ -23,8 +23,13 @@ export default function LanguageSwitcher({
   locale: Locale;
   label: string;
   compact?: boolean;
-  /** `bare` dipakai di navbar: tanpa border, hanya latar saat hover. */
-  variant?: "outline" | "bare";
+  /**
+   * `ghost` dipakai di navbar: pill abu 32px tanpa border, sejajar dengan CTA
+   * hitam di sebelahnya. `mist-gray` tepat 5% hitam di atas putih, jadi pill
+   * ini terbaca sebagai bidang yang lebih ringan satu tingkat dari CTA, bukan
+   * sebagai tombol kedua yang bersaing dengannya.
+   */
+  variant?: "outline" | "ghost";
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -77,8 +82,8 @@ export default function LanguageSwitcher({
         aria-expanded={open}
         aria-label={label}
         className={
-          variant === "bare"
-            ? "text-slate-gray hover:bg-mist-gray hover:text-ink-black rounded-smallcards inline-flex min-h-9 items-center gap-1.5 px-2.5 text-caption transition"
+          variant === "ghost"
+            ? "bg-mist-gray text-ink-black hover:bg-ink-black/10 rounded-buttons inline-flex h-8 items-center gap-1.5 px-3 text-caption transition"
             : "border-hairline bg-paper-white text-slate-gray hover:text-ink-black rounded-smallcards inline-flex min-h-10 items-center gap-1.5 border px-2.5 text-caption transition"
         }
       >

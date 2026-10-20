@@ -69,12 +69,12 @@
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Header sticky setinggi 4.5rem di desktop dan 4rem di mobile. Nilai di
-       bawah menyisakan jarak 1rem di bawah bar. Tanpa ini, judul section
+    /* Header fixed setinggi 4rem (h-16) di semua lebar. Nilai di bawah
+       menyisakan jarak 1rem di bawah bar. Tanpa ini, judul section
        tertutup saat klik anchor. Ubah bersama tinggi bar di Navbar.
        Jangan menambahkan scroll-margin-top di section: keduanya dijumlahkan
        dan target mendarat 88px lebih rendah dari yang dimaksud. */
-    scroll-padding-top: 5.5rem;
+    scroll-padding-top: 5rem;
   }
 
   body {
