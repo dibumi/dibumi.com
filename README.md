@@ -14,7 +14,7 @@ Built with **Next.js 16 (App Router)** and deployed as a **Cloudflare Worker** (
 - `tailwind.config.ts` and `app/globals.css` hold the implemented tokens. They mirror each other by hand, so a token change means changing both files.
 - The palette is intentionally achromatic, with `blush-peach` and `sienna-brown` reserved for one accent card per page. That card is the first one in Highlights.
 - The hero gradient wash lives in `app/globals.css` (`.hero-atmosphere`, `.hero-grain`, `.hero-fade`) rather than in a component, because it is seven stacked gradients plus a grain overlay, drifting on a 26-second loop. It is the only chromatic background on the site.
-- Cards never carry shadows. Only floating product artifacts (`shadow-subtle-3`) and dropdown overlays (`shadow-subtle`, `shadow-subtle-2`) do.
+- Cards never carry shadows. Only the framed product demo (`shadow-subtle-3`) and dropdown overlays (`shadow-subtle`, `shadow-subtle-2`) do.
 - The anchor-offset rule from `AGENTS.md` still applies: `scroll-padding-top` in `app/globals.css` stays in sync with the header height in `components/Navbar.tsx`, and sections do not add `scroll-margin-top` on top of it.
 
 ---
@@ -37,7 +37,7 @@ Legal documents are written in English and Indonesian. Other locales render the 
 
 ## Sections
 
-1. **Hero** — a soft gradient wash with a fine grain, a grey pill of guarantees above the headline, a centred serif headline with one italicised phrase, a filled pill and a text link, and four floating artifact cards (client region table, services list, counts with a gestural line, Ngambeg) plus an avatar bubble, bleeding past the viewport edge at `xl` and above. One full screen, no pin; the entrance is choreographed and the cards then drift on a slow loop. Each card is three layers deep — CSS float outside, scroll parallax in the middle, entrance animation inside — because one element cannot hold three transforms.
+1. **Hero** — a soft gradient wash with a fine grain, and nothing on it but type: a centred serif headline at 100px with one italicised line, a paragraph, a filled pill and a text link. No artifact cards, no pill of guarantees — the wash is the visual and the type is the content. One full screen, no pin. Each headline line lifts out of a `clip-path` mask 0.1s apart, and the headline drifts 40px as the hero leaves.
 2. **Client marquee** — twelve real client logos on a 50-second CSS marquee with edge fades, paused on hover and stopped under reduced motion.
 3. **Products** — the reference's device: a vertical tab list of the six platform products plus the Ngambeg group on the left, the selected product in a framed window on the right with a browser chrome and a real `01 / 07` counter. A client component, server-fed. Below `lg` the tab list becomes a scrollable strip.
 4. **Highlights** — three cards: discover, build, operate. The first is the page's single peach card; each carries an oversized serif ordinal as a watermark bleeding off the bottom-right corner in place of an illustration. Titles are sans at 26px, the way the reference sets card titles.
@@ -84,7 +84,7 @@ The wordmark inside the lockup is outlined from Geist Mono at weight 600, so the
 
 - **Framework:** Next.js 16 (App Router, static generation per locale)
 - **Styling:** Tailwind CSS 3 with design tokens in `tailwind.config.ts`, mirroring the CSS custom properties in `app/globals.css`
-- **Motion:** `motion` (formerly Framer Motion) for entrance choreography and scroll reveals, plus CSS keyframes for the marquee, the artifact drift, and the nav panel. Everything collapses to static under `prefers-reduced-motion`
+- **Motion:** `motion` (formerly Framer Motion) for entrance choreography and scroll reveals, plus CSS keyframes for the marquee, the hero wash drift, and the nav panel. Everything collapses to static under `prefers-reduced-motion`
 - **Icons:** Lucide React, kept for functional glyphs only (chevrons, arrows, the language icon), not for decorative icons
 - **Fonts:** Source Serif 4 (display) and Inter (body), both via `next/font`; IBM Plex Sans Arabic and Noto Sans SC as the Arabic and Chinese companions. Source Serif 4 and Inter stand in for the commercial Signifier and Sohne faces named in DESIGN.md
 - **Cloudflare:** `@opennextjs/cloudflare` + `wrangler` (Workers Static Assets)

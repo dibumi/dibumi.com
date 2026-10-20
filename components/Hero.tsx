@@ -3,44 +3,38 @@
 import React from "react";
 import Link from "next/link";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import type { MotionValue } from "motion/react";
-import { clients } from "@/lib/clients";
-import { ngambegLogoUrl } from "@/lib/products";
 import type { SiteContent } from "@/lib/i18n";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 /**
- * Hero: satu layar penuh, tanpa pin.
+ * Hero: satu layar penuh, teks saja, di tengah.
  *
- * Versi sebelumnya menahan hero selama 180vh sambil menggeser kartunya keluar
- * layar. Itu keliru: yang terlihat justru kartu menghilang dan sisa gulir yang
- * kosong. Di referensi, gulir di dalam hero tidak menggeser kartu — yang
- * terjadi adalah kartu-kartu itu MASUK dengan urutan tertentu, lalu halaman
- * lanjut. Gerak yang terasa mahal ada di entrance, bukan di scroll.
+ * Riwayatnya panjang. Versi pertama menahan hero selama 180vh dan menggeser
+ * kartunya keluar layar — itu keliru, yang terlihat justru kartu menghilang dan
+ * sisa gulir yang kosong. Versi berikutnya menaruh empat kartu artifact
+ * mengambang di tepi layar, meniru kolase produk steep.app. Itu juga dilepas:
+ * kartu-kartu itu mengulang isi section Clients, Services, dan Products, jadi
+ * hero berhenti menjadi pernyataan dan berubah jadi ringkasan halaman.
  *
- * Jadi di sini:
- * 1. Entrance berjenjang saat halaman dibuka — pill, judul, paragraf, tombol,
- *    lalu empat kartu, masing-masing dengan jeda sendiri. Kartu masuk dengan
- *    sedikit putaran supaya terasa "diletakkan", bukan "muncul".
- * 2. Hanyutan sangat lambat setelah masuk (animate-float / animate-float-slow),
- *    dua fase berlawanan supaya kartu tidak bergerak serempak.
- * 3. Parallax keluar yang DIBATASI: saat hero ditinggalkan, judul naik 40px
- *    dan memudar, kartu ikut naik sedikit. Karena section-nya hanya 100dvh,
- *    rentangnya pendek — tidak ada ruang gulir yang kosong.
+ * Yang tersisa adalah wash gradien sebagai satu-satunya visual, dan tipografi
+ * sebagai satu-satunya isi. Itu memang pembagian tugas di referensi: videonya
+ * yang bergerak, teksnya yang diam dan besar.
  *
- * Empat kartu artifact, komposisi yang sama dengan referensi: tabel wilayah
- * kiri atas, daftar layanan kanan atas, kartu statistik kiri bawah, kartu
- * Ngambeg kanan bawah, plus satu avatar bubble. Isinya tetap data nyata situs
- * ini. Elemen grafisnya cuma satu: garis gestural di kartu statistik.
- * DESIGN.md menyebutnya "a gestural line, not a data dashboard", jadi garis
- * itu digambar sebagai goresan tanpa sumbu, tanpa angka, dan digambar dengan
- * animasi pathLength saat kartu masuk.
+ * Gerak yang ada di sini tiga, dan semuanya halus:
+ * 1. Entrance berjenjang. Tiap baris judul muncul dari balik mask (clip-path
+ *    yang membuka dari atas ke bawah sambil naik sedikit), lalu paragraf dan
+ *    tombol menyusul. Mask dipakai, bukan fade biasa, karena baris yang
+ *    "terangkat dari balik garis" terbaca sebagai tipografi yang disusun, bukan
+ *    teks yang sekadar muncul.
+ * 2. Wash yang tidak pernah diam — `hero-drift` di globals.css, 26 detik.
+ * 3. Parallax keluar yang DIBATASI: judul naik 40px dan memudar ke 0.35 saat
+ *    hero ditinggalkan. Rentangnya pendek karena section-nya hanya 100dvh.
  *
- * Seluruh lapisan artifact disembunyikan dari pembaca layar: isinya sudah
- * tercantum lengkap di section Clients, Services, dan Products. Karena itu
- * tidak ada tautan di dalam lapisan ini — tautan yang tersembunyi di dalam
- * aria-hidden akan hilang dari urutan navigasi keyboard.
+ * Mask-nya `clip-path`, bukan `overflow: hidden`. Dengan leading 1.06 di 100px,
+ * kotak baris lebih pendek daripada kotak glyph, jadi `overflow: hidden` akan
+ * memotong descender ("p" di "keep") dan harakat Arab. `clip-path` bisa diberi
+ * inset negatif, jadi keadaan akhirnya tidak memotong apa pun.
  */
 export default function Hero({
   content,
@@ -50,7 +44,6 @@ export default function Hero({
   basePath: string;
 }) {
   const hero = content.hero;
-  const tableClients = clients.slice(0, 5);
   const reduce = useReducedMotion();
 
   const sectionRef = React.useRef<HTMLElement>(null);
@@ -59,10 +52,9 @@ export default function Hero({
     offset: ["start start", "end start"],
   });
 
-  // Semua nilai kecil dan berbatas: hero ini editorial, bukan pertunjukan.
+  // Nilai kecil dan berbatas: hero ini editorial, bukan pertunjukan.
   const titleY = useTransform(scrollYProgress, [0, 1], [0, -40]);
   const titleOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0.35]);
-  const artifactY = useTransform(scrollYProgress, [0, 1], [0, -22]);
 
   return (
     <section
@@ -74,219 +66,26 @@ export default function Hero({
         aria-hidden="true"
       />
 
-      {/* Lapisan artifact: selebar section, diposisikan dari tepi layar supaya
-          kartu-kartu menjorok sedikit dan dipotong di sana — potongan UI yang
-          mengapung, bukan kartu yang tersusun rapi di dalam kontainer. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden xl:block">
-        <Artifact
-          position="start-[-1rem] top-[12%] w-64"
-          floatClass="animate-float"
-          delay={0.35}
-          rotate={-2}
-          parallax={artifactY}
-          surface="bg-paper-white shadow-subtle-3 rounded-elevatedcards w-full p-4"
-        >
-          <table className="w-full border-collapse">
-            <tbody>
-              {tableClients.map((client) => (
-                <tr key={client.name} className="border-hairline border-b last:border-b-0">
-                  <td className="w-7 py-2.5 pe-1.5 align-middle">
-                    <img
-                      src={`/flags/${client.region}.svg`}
-                      alt=""
-                      width={16}
-                      height={11}
-                      loading="lazy"
-                      className="h-2.5 w-4 rounded-[2px] object-cover"
-                    />
-                  </td>
-                  <td className="text-ink-black truncate py-2.5 pe-2 align-middle text-caption">
-                    {client.name}
-                  </td>
-                  <td className="text-ash-gray tabular py-2.5 align-middle text-caption uppercase">
-                    {client.region}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Artifact>
-
-        <Artifact
-          position="end-[-1.5rem] top-[10%] w-60"
-          floatClass="animate-float-slow"
-          delay={0.5}
-          rotate={2}
-          parallax={artifactY}
-          surface="bg-paper-white shadow-subtle-3 rounded-elevatedcards w-full p-5"
-        >
-          <ol className="space-y-3">
-            {content.services.map((service, index) => (
-              <li key={service.title} className="flex items-baseline gap-3">
-                <span className="text-ash-gray tabular shrink-0 text-caption">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span className="text-ink-black leading-snug text-caption">
-                  {service.title}
-                </span>
-              </li>
-            ))}
-          </ol>
-        </Artifact>
-
-        <Artifact
-          position="bottom-[9%] start-[2%] w-56"
-          floatClass="animate-float [animation-delay:1.5s]"
-          delay={0.65}
-          rotate={-1.5}
-          parallax={artifactY}
-          surface="bg-paper-white shadow-subtle-3 rounded-elevatedcards w-full p-5"
-        >
-          <div className="flex items-baseline gap-2">
-            <span className="text-ink-black tabular text-subheading font-normal">
-              {clients.length}
-            </span>
-            <span className="text-ash-gray text-caption">{content.clients.eyebrow}</span>
-          </div>
-
-          {/* Baris delta: DESIGN.md menyebut kartu statistik punya "a delta
-              line (↑ 5.5x vs last week)". Yang kita punya bukan angka
-              mingguan, tapi tahun kami mulai — jujur dan tetap informatif. */}
-          <p className="text-slate-gray mt-0.5 flex items-center gap-1 text-caption">
-            <span aria-hidden="true" className="text-sienna-brown">
-              ↑
-            </span>
-            {content.footer.since}
-          </p>
-
-          {/* Garis gestural: satu goresan sienna tanpa sumbu dan tanpa angka.
-              Digambar dengan pathLength supaya terlihat "ditarik" saat masuk. */}
-          <svg viewBox="0 0 160 36" className="mt-3 h-9 w-full" aria-hidden="true" fill="none">
-            <motion.path
-              d="M2 30 C 22 30, 30 22, 46 21 S 72 25, 88 17 S 118 12, 132 7 S 150 4, 158 3"
-              stroke="#5d2a1a"
-              strokeWidth="1.25"
-              strokeLinecap="round"
-              initial={reduce ? false : { pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 1.6, delay: 0.9, ease: "easeInOut" }}
-            />
-          </svg>
-
-          <div className="border-hairline mt-3 flex items-baseline gap-2 border-t pt-3">
-            <span className="text-ink-black tabular text-subheading font-normal">
-              {content.services.length}
-            </span>
-            <span className="text-ash-gray text-caption">
-              {content.servicesSection.eyebrow}
-            </span>
-          </div>
-        </Artifact>
-
-        {/* Kartu Ngambeg: satu pintu keluar ke katalog game dan aplikasi.
-            Referensi punya kartu composer di posisi ini; kita tidak punya
-            produk chat, jadi yang mengisi slot itu adalah produk yang benar
-            ada milik kita. */}
-        <Artifact
-          position="bottom-[11%] end-[6%] w-72"
-          floatClass="animate-float-slow [animation-delay:2.1s]"
-          delay={0.8}
-          rotate={1.5}
-          parallax={artifactY}
-          surface="bg-paper-white shadow-subtle-3 rounded-elevatedcards w-full p-5"
-        >
-          <div className="flex items-center gap-3">
-            <span className="bg-mist-gray flex h-10 w-10 shrink-0 items-center justify-center rounded-smallcards">
-              <img
-                src={ngambegLogoUrl}
-                alt=""
-                width={28}
-                height={28}
-                loading="lazy"
-                className="h-7 w-7 object-contain"
-              />
-            </span>
-            <div className="min-w-0">
-              <p className="text-ink-black truncate text-caption font-medium">
-                {content.products.groups.ngambeg.label}
-              </p>
-              <p className="text-ash-gray truncate text-caption">
-                {content.products.groups.ngambeg.brand}
-              </p>
-            </div>
-          </div>
-        </Artifact>
-
-        {/* Avatar bubble: satu orang sungguhan di balik studio ini. Lingkaran
-            40px dengan monogram dan kursor kecil di tepinya — motif "seseorang
-            sedang bekerja di sini" yang dipakai referensi. */}
-        <div className="animate-float [animation-delay:2.6s] absolute bottom-[7%] start-[16%] motion-reduce:animate-none">
-          <motion.div style={reduce ? undefined : { y: artifactY }}>
-            <motion.span
-              className="bg-blush-peach text-sienna-brown relative flex h-10 w-10 items-center justify-center rounded-full text-caption font-medium"
-              initial={reduce ? false : { opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.95, ease: EASE }}
-            >
-              FN
-              <svg
-                viewBox="0 0 10 10"
-                aria-hidden="true"
-                className="fill-ink-black absolute -end-1 -top-1 h-2.5 w-2.5"
-              >
-                <path d="M0 0 L10 0 L10 10 Z" />
-              </svg>
-            </motion.span>
-          </motion.div>
-        </div>
-      </div>
-
-      <div className="mx-auto w-full max-w-page px-5 py-24 sm:px-8 lg:py-28">
+      <div className="mx-auto w-full max-w-page px-5 py-28 sm:px-8 lg:py-32">
         <motion.div
-          className="mx-auto flex max-w-4xl flex-col items-center gap-7 text-center"
+          className="mx-auto flex max-w-5xl flex-col items-center gap-7 text-center lg:gap-9"
           style={reduce ? undefined : { y: titleY, opacity: titleOpacity }}
         >
-          {/* Pil abu penuh, tanpa border dan tanpa blur. Referensi memakai
-              permukaan abu solid di atas wash; border hairline bikin pil itu
-              terbaca sebagai kotak, bukan sebagai label. */}
-          <motion.p
-            className="bg-mist-gray text-slate-gray rounded-buttons inline-flex flex-wrap items-center justify-center gap-x-2 px-4 py-1.5 text-caption"
-            initial={reduce ? false : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: EASE }}
-          >
-            {hero.chips.map((chip, index) => (
-              <React.Fragment key={chip}>
-                {index > 0 && (
-                  <span aria-hidden="true" className="text-ash-gray">
-                    ·
-                  </span>
-                )}
-                <span>{chip}</span>
-              </React.Fragment>
-            ))}
-          </motion.p>
-
-          {/* 92px, bukan 100px seperti referensi: baris "We keep it running."
-              lebih panjang daripada headline referensi, dan 100px memecahnya
-              jadi tiga baris. Kontainer diperlebar ke max-w-4xl supaya ukuran
-              itu muat tanpa wrap. */}
-          <motion.h1
-            className="hero-title text-ink-black font-display text-heading font-normal md:text-heading-lg xl:text-[92px] xl:leading-[1.08] xl:tracking-[-2px]"
-            initial={reduce ? false : { opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, delay: 0.08, ease: EASE }}
-          >
-            {hero.titleLead}
-            <br />
-            <em>{hero.titleAccent}</em>
-          </motion.h1>
+          {/* 100px di xl, bukan 92px: tanpa kartu di kiri dan kanan, judulnya
+              punya seluruh lebar kontainer untuk diri sendiri. Dua baris
+              dipisah elemen sendiri supaya mask-nya bisa berjalan berurutan. */}
+          <h1 className="hero-title text-ink-black font-display text-heading font-normal md:text-heading-lg xl:text-[100px] xl:leading-[1.06] xl:tracking-[-2.5px]">
+            <MaskLine delay={0}>{hero.titleLead}</MaskLine>
+            <MaskLine delay={0.1}>
+              <em>{hero.titleAccent}</em>
+            </MaskLine>
+          </h1>
 
           <motion.p
             className="text-slate-gray max-w-xl text-body-lg"
             initial={reduce ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.16, ease: EASE }}
+            transition={{ duration: 0.8, delay: reduce ? 0 : 0.3, ease: EASE }}
           >
             {hero.description}
           </motion.p>
@@ -295,7 +94,7 @@ export default function Hero({
             className="mt-1 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:gap-3"
             initial={reduce ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.24, ease: EASE }}
+            transition={{ duration: 0.8, delay: reduce ? 0 : 0.4, ease: EASE }}
           >
             <Link
               href={`${basePath}#contact`}
@@ -319,51 +118,33 @@ export default function Hero({
 }
 
 /**
- * Satu kartu artifact.
+ * Satu baris judul yang terangkat dari balik mask.
  *
- * Tiga lapis, masing-masing dengan satu transform:
- * 1. Lapis luar: hanyutan CSS (`animate-float`). Keyframe CSS menulis
- *    `transform`, jadi tidak boleh ada yang lain di elemen yang sama.
- * 2. Lapis tengah: parallax scroll lewat MotionValue.
- * 3. Lapis dalam: entrance (opacity, geser, putar).
- *
- * Kalau ketiganya digabung di satu elemen, transform saling menimpa:
- * keyframe CSS menang atas inline style, dan motion menghitung ulang target
- * dari `initial` setiap kali parallax berubah — hasilnya kartu berkedip dan
- * server rendering tidak cocok dengan hidrasi.
+ * Inset negatif di keadaan akhir (-40% atas dan bawah, -14% kiri dan kanan)
+ * sengaja lebih besar dari glyph box: huruf italic miring keluar dari kotak
+ * baris di kedua ujung, dan Arab membawa harakat jauh di atas ascent. Tanpa
+ * ruang itu, baris yang sudah "selesai" masih terpotong.
  */
-function Artifact({
-  position,
-  surface,
-  delay,
-  rotate,
-  parallax,
-  floatClass,
+function MaskLine({
   children,
+  delay,
 }: {
-  position: string;
-  surface: string;
-  delay: number;
-  rotate: number;
-  parallax: MotionValue<number>;
-  floatClass: string;
   children: React.ReactNode;
+  delay: number;
 }) {
   const reduce = useReducedMotion();
 
   return (
-    <div className={`absolute ${floatClass} ${position} motion-reduce:animate-none`}>
-      <motion.div style={reduce ? undefined : { y: parallax }}>
-        <motion.figure
-          className={surface}
-          initial={reduce ? false : { opacity: 0, y: 28, rotate }}
-          animate={{ opacity: 1, y: 0, rotate: 0 }}
-          transition={{ duration: 0.9, delay, ease: EASE }}
-        >
-          {children}
-        </motion.figure>
-      </motion.div>
-    </div>
+    <motion.span
+      className="block"
+      initial={
+        reduce ? false : { clipPath: "inset(0% 0% 100% 0%)", y: "16%" }
+      }
+      animate={{ clipPath: "inset(-40% -14% -40% -14%)", y: "0%" }}
+      transition={{ duration: 1.05, delay: reduce ? 0 : delay, ease: EASE }}
+    >
+      {children}
+    </motion.span>
   );
 }
 

@@ -121,16 +121,6 @@ export default {
           "0%": { transform: "scaleY(0.3)" },
           "100%": { transform: "scaleY(1)" },
         },
-        // Hanyut sangat lambat untuk artifact di hero. Dua fase berlawanan
-        // supaya kartu-kartu tidak bergerak serempak seperti satu benda.
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
-        "float-slow": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(8px)" },
-        },
       },
       animation: {
         "fade-up": "fade-up 650ms cubic-bezier(0.22, 1, 0.36, 1) both",
@@ -138,8 +128,6 @@ export default {
         "panel-in": "panel-in 160ms cubic-bezier(0.22, 1, 0.36, 1) both",
         marquee: "marquee 50s linear infinite",
         sweep: "sweep 400ms ease-out both",
-        float: "float 9s ease-in-out infinite",
-        "float-slow": "float-slow 11s ease-in-out infinite",
       },
     },
   },

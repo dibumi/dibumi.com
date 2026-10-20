@@ -242,8 +242,6 @@
   .animate-fade-up,
   .animate-panel-in,
   .animate-marquee,
-  .animate-float,
-  .animate-float-slow,
   .hero-atmosphere {
     animation: none;
   }
