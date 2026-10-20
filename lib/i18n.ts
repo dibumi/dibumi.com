@@ -83,7 +83,11 @@ export type SiteContent = {
     hub: string;
     groups: Record<"platforms" | "ngambeg", ProductGroupCopy>;
     platforms: Record<
-      "aiGateway" | "paymentOrchestration" | "adserverExchange",
+      | "aiGateway"
+      | "paymentOrchestration"
+      | "adserverExchange"
+      | "cloudHostingBilling"
+      | "trafficAnalytics",
       { description: string }
     >;
   };
@@ -287,6 +291,14 @@ const en: SiteContent = {
       adserverExchange: {
         description:
           "Campaigns, placements, creatives, targeting rules, and daily stats in a single ad server.",
+      },
+      cloudHostingBilling: {
+        description:
+          "White-label billing and provisioning for hosting businesses: orders, invoices, domains, tickets.",
+      },
+      trafficAnalytics: {
+        description:
+          "Visits, referrers, and conversion funnels in a single dashboard.",
       },
     },
   },
@@ -552,6 +564,14 @@ const id: SiteContent = {
       adserverExchange: {
         description:
           "Kampanye, placement, creative, aturan penargetan, dan statistik harian dalam satu ad server.",
+      },
+      cloudHostingBilling: {
+        description:
+          "Billing white-label untuk bisnis hosting: order, invoice, domain, tiket, dan provisioning server otomatis.",
+      },
+      trafficAnalytics: {
+        description:
+          "Kunjungan, referrer, dan funnel konversi dalam satu dashboard.",
       },
     },
   },
@@ -819,6 +839,13 @@ const ar: SiteContent = {
         description:
           "الحملات والمواضع والتصاميم وقواعد الاستهداف والإحصاءات اليومية في خادم إعلانات واحد.",
       },
+      cloudHostingBilling: {
+        description:
+          "فواتير بعلامة بيضاء ولوحة عميل وتجهيز لشركات الاستضافة: الطلبات والفواتير والنطاقات والتذاكر.",
+      },
+      trafficAnalytics: {
+        description: "الزيارات والمصادر ومسارات التحويل في لوحة واحدة.",
+      },
     },
   },
   clients: {
@@ -1067,6 +1094,12 @@ const zh: SiteContent = {
       },
       adserverExchange: {
         description: "广告系列、广告位、创意、定向规则与每日统计，集中在一个广告服务器。",
+      },
+      cloudHostingBilling: {
+        description: "面向主机业务的白标账单、客户中心与开通：订单、发票、域名、工单与服务器自动部署。",
+      },
+      trafficAnalytics: {
+        description: "访问量、来源与转化漏斗，集中在一个面板。",
       },
     },
   },
@@ -1319,6 +1352,13 @@ const pl: SiteContent = {
       adserverExchange: {
         description:
           "Kampanie, miejsca emisji, kreacje, reguły targetowania i dzienne statystyki w jednym serwerze reklam.",
+      },
+      cloudHostingBilling: {
+        description:
+          "Billing white-label i provisioning dla firm hostingowych: zamówienia, faktury, domeny i zgłoszenia.",
+      },
+      trafficAnalytics: {
+        description: "Odwiedziny, źródła i lejki konwersji w jednym panelu.",
       },
     },
   },

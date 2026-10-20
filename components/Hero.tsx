@@ -18,8 +18,8 @@ export default function Hero({
   const hero = content.hero;
 
   return (
-    <section className="mx-auto max-w-7xl px-5 pb-20 pt-20 sm:px-8 sm:pt-24 lg:pb-28 lg:pt-28">
-      <div className="animate-fade-up mx-auto flex max-w-4xl flex-col items-center gap-7 text-center">
+    <section className="mx-auto max-w-7xl px-5 pb-28 pt-20 sm:px-8 sm:pt-24 lg:pb-36">
+      <div className="animate-fade-up mx-auto flex max-w-4xl flex-col items-center gap-8 text-center">
         {/*
           Skala judul dibatasi oleh panjang baris terpanjang, bukan oleh selera.
           Geist Mono berlebar 0.6em per karakter, dan tracking -0.05em membuat

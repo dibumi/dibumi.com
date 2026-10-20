@@ -52,7 +52,7 @@ export default function Footer({
 
   return (
     <footer className="border-line bg-surface border-t">
-      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1fr_auto] md:py-20">
+      <div className="mx-auto grid max-w-7xl gap-16 px-5 py-24 sm:px-8 md:grid-cols-[1fr_auto] md:py-28">
         <div className="flex flex-col items-start gap-4">
           <Link href={basePath} className="text-ink flex items-center gap-2.5">
             <BrandMark className="text-primary h-9 w-9" />
@@ -78,7 +78,7 @@ export default function Footer({
 
         <div className="grid grid-cols-2 gap-10 text-sm sm:gap-16 md:grid-cols-3">
           {/* Produk */}
-          <nav aria-label={footer.product} className="flex flex-col gap-3.5">
+          <nav aria-label={footer.product} className="flex flex-col gap-4">
             <span className="text-muted mb-1 text-xs font-semibold uppercase tracking-widest">
               {footer.product}
             </span>
@@ -122,7 +122,7 @@ export default function Footer({
           </nav>
 
           {/* Perusahaan */}
-          <nav aria-label={footer.company} className="flex flex-col gap-3.5">
+          <nav aria-label={footer.company} className="flex flex-col gap-4">
             <span className="text-muted mb-1 text-xs font-semibold uppercase tracking-widest">
               {footer.company}
             </span>
@@ -139,7 +139,7 @@ export default function Footer({
           </nav>
 
           {/* Legal */}
-          <nav aria-label={footer.legal} className="flex flex-col gap-3.5">
+          <nav aria-label={footer.legal} className="flex flex-col gap-4">
             <span className="text-muted mb-1 text-xs font-semibold uppercase tracking-widest">
               {footer.legal}
             </span>
@@ -165,7 +165,7 @@ export default function Footer({
           Alamatnya terlalu panjang untuk kolom grid, jadi ia mendapat barisnya
           sendiri. Nomor dan email dikunci ltr supaya tidak terbalik di locale
           Arab, sementara perataan tetap di tengah. */}
-      <div className="border-line-subtle mx-auto max-w-7xl border-t px-5 py-10 sm:px-8">
+      <div className="border-line-subtle mx-auto max-w-7xl border-t px-5 py-14 sm:px-8">
         <div className="flex flex-col items-center gap-3 text-center">
           <h2 className="text-muted text-xs font-semibold uppercase tracking-widest">
             {footer.contact}
@@ -211,7 +211,7 @@ export default function Footer({
           lebar kontainer di semua ukuran, sedangkan clamp hanya mendekati dan
           menyisakan celah di sebagian breakpoint. Hiasan, jadi aria-hidden:
           brand yang bisa diklik sudah ada di atas footer. */}
-      <div className="mx-auto max-w-7xl px-5 pb-8 sm:px-8">
+      <div className="mx-auto max-w-7xl px-5 pb-10 sm:px-8">
         <svg
           viewBox="0 0 1000 104"
           className="text-ink block w-full"

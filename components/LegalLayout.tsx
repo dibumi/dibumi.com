@@ -17,7 +17,7 @@ export default function LegalLayout({
   const dict = getDictionary(locale);
 
   return (
-    <article className="mx-auto max-w-3xl px-5 py-14 sm:px-8 sm:py-20">
+    <article className="mx-auto max-w-3xl px-5 py-20 sm:px-8 sm:py-28">
       <Link
         href={`/${locale}`}
         className="text-muted hover:text-primary mb-8 inline-flex items-center gap-2 text-xs font-medium transition"

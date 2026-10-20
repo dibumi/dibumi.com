@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { ArrowUpRight, type LucideIcon } from "lucide-react";
 import { serviceAnchor } from "@/lib/services";
+import { iconTints, rowTints, tintAt } from "@/lib/tints";
 import type { SiteContent } from "@/lib/i18n";
 
 /**
@@ -30,10 +31,12 @@ function ServiceRow({
   item,
   basePath,
   onNavigate,
+  tint,
 }: {
   item: ServiceItem;
   basePath: string;
   onNavigate?: () => void;
+  tint: number;
 }) {
   const Icon = item.Icon;
 
@@ -41,16 +44,18 @@ function ServiceRow({
     <Link
       href={`${basePath}#${serviceAnchor(item.slug)}`}
       onClick={onNavigate}
-      className="hover:bg-elevated group flex items-start gap-3 rounded-lg px-2.5 py-2.5 transition"
+      className={`group flex h-full items-start gap-3 rounded-xl border px-4 py-4 transition ${rowTints[tint]}`}
     >
-      <span className="bg-primary-soft text-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
+      <span
+        className={`bg-surface mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm ${iconTints[tint]}`}
+      >
         <Icon className="h-4 w-4" aria-hidden="true" />
       </span>
       <span className="min-w-0 flex-1">
         <span className="text-ink group-hover:text-primary block text-sm font-semibold transition">
           {item.title}
         </span>
-        <span className="text-muted mt-0.5 line-clamp-2 block text-[11px] leading-4">
+        <span className="text-muted mt-0.5 line-clamp-2 block text-xs leading-5">
           {item.description}
         </span>
       </span>
@@ -88,10 +93,15 @@ export function ServicesMenu({ content, basePath, items, onNavigate }: MenuProps
         </p>
         <AllServicesLink content={content} basePath={basePath} onNavigate={onNavigate} />
       </div>
-      <ul className="mt-1.5 grid gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((item) => (
+      <ul className="mt-2 grid auto-rows-fr gap-x-6 gap-y-2.5 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((item, index) => (
           <li key={item.slug}>
-            <ServiceRow item={item} basePath={basePath} onNavigate={onNavigate} />
+            <ServiceRow
+              item={item}
+              basePath={basePath}
+              onNavigate={onNavigate}
+              tint={tintAt(index)}
+            />
           </li>
         ))}
       </ul>
@@ -102,10 +112,15 @@ export function ServicesMenu({ content, basePath, items, onNavigate }: MenuProps
 export function ServicesMenuList({ content, basePath, items, onNavigate }: MenuProps) {
   return (
     <div>
-      <ul>
-        {items.map((item) => (
+      <ul className="grid auto-rows-fr gap-2.5">
+        {items.map((item, index) => (
           <li key={item.slug}>
-            <ServiceRow item={item} basePath={basePath} onNavigate={onNavigate} />
+            <ServiceRow
+              item={item}
+              basePath={basePath}
+              onNavigate={onNavigate}
+              tint={tintAt(index)}
+            />
           </li>
         ))}
       </ul>

@@ -47,7 +47,7 @@ export default function TeamPage({
   ];
 
   return (
-    <article className="mx-auto max-w-7xl px-5 pb-20 pt-14 sm:px-8 sm:pt-16 lg:pb-28 lg:pt-20">
+    <article className="mx-auto max-w-7xl px-5 pb-24 pt-20 sm:px-8 sm:pt-24 lg:pb-32 lg:pt-28">
       <div className="grid gap-10 md:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] md:gap-12 lg:gap-16">
         {/* Potret */}
         <div className="border-line bg-tint-mint relative aspect-[4/5] w-full max-w-[19rem] overflow-hidden rounded-2xl border">

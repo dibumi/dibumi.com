@@ -13,7 +13,7 @@ export default function Services({
   basePath: string;
 }) {
   return (
-    <section id="services" className="bg-surface py-20 lg:py-28">
+    <section id="services" className="bg-surface py-28 lg:py-36">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading
           eyebrow={content.servicesSection.eyebrow}
@@ -21,7 +21,11 @@ export default function Services({
           description={content.servicesSection.description}
         />
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* auto-rows-fr: semua baris memakai tinggi yang sama, jadi kartu di
+            baris kedua setinggi kartu tertinggi di baris pertama. Tanpa ini,
+            tiap baris grid diukur sendiri-sendiri. Hanya dari sm ke atas, supaya
+            di mobile satu kolom tidak ada kartu pendek yang dipaksa tinggi. */}
+        <div className="mt-16 grid gap-6 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
           {content.services.map((service, index) => {
             const meta = serviceMeta[index];
             const Icon = meta?.icon ?? Code2;
@@ -30,7 +34,7 @@ export default function Services({
               <article
                 key={service.title}
                 id={meta ? serviceAnchor(meta.slug) : undefined}
-                className="border-line bg-surface hover:border-primary/30 group flex scroll-mt-28 flex-col gap-5 rounded-2xl border p-7 transition"
+                className="border-line bg-surface hover:border-primary/30 group flex scroll-mt-28 flex-col gap-6 rounded-2xl border p-9 transition"
               >
                 <div className="flex items-center justify-between gap-3">
                   <span className="bg-primary-soft text-primary group-hover:bg-primary flex h-12 w-12 items-center justify-center rounded-2xl transition-colors group-hover:text-white">

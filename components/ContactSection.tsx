@@ -30,9 +30,9 @@ export default function ContactSection({
     "flex min-h-12 items-center gap-3 rounded-lg px-3.5 transition active:translate-y-px";
 
   return (
-    <section id="contact" className="bg-surface py-20 lg:py-28">
+    <section id="contact" className="bg-surface py-28 lg:py-36">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-start">
+        <div className="grid gap-x-16 gap-y-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-start">
           <div>
             <h2 className="text-ink text-4xl font-medium leading-[1.08] tracking-tight sm:text-5xl">
               {content.title}
@@ -43,7 +43,7 @@ export default function ContactSection({
           </div>
 
           {/* Dua jalur aksi. WhatsApp satu-satunya elemen berwarna di sini. */}
-          <div className="border-line bg-elevated rounded-2xl border p-5">
+          <div className="border-line bg-elevated rounded-2xl border p-6">
             <a
               href={whatsappUrl}
               target="_blank"
@@ -91,7 +91,7 @@ export default function ContactSection({
         </div>
 
         {/* Fakta operasional: tidak bisa diklik, jadi dipisah dari dua aksi di atas. */}
-        <dl className="border-line mt-14 grid gap-8 border-t pt-10 sm:grid-cols-2">
+        <dl className="border-line mt-20 grid gap-10 border-t pt-12 sm:grid-cols-2">
           <div>
             <dt className="text-muted flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest">
               <Clock className="text-primary h-3.5 w-3.5 shrink-0" aria-hidden="true" />

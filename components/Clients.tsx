@@ -38,7 +38,7 @@ export default function Clients({
   locale: Locale;
 }) {
   return (
-    <section id="clients" className="bg-surface py-20 lg:py-24">
+    <section id="clients" className="bg-surface py-28 lg:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading
           eyebrow={content.eyebrow}
@@ -47,11 +47,11 @@ export default function Clients({
           icon={<Building2 className="h-4 w-4" aria-hidden="true" />}
         />
 
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <ul className="mt-16 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-7">
           {clients.map((client) => (
             <li
               key={client.name}
-              className="border-line bg-surface hover:border-primary/30 relative flex flex-col rounded-2xl border p-5 transition"
+              className="border-line bg-surface hover:border-primary/30 relative flex flex-col rounded-2xl border p-6 transition"
             >
               <img
                 src={`/flags/${client.region}.svg`}

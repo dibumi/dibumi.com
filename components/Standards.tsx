@@ -8,7 +8,7 @@ const commitmentIcons = [KeyRound, Eye, Headset];
 
 export default function Standards({ content }: { content: SiteContent["standards"] }) {
   return (
-    <section id="standards" className="bg-elevated py-20 lg:py-24">
+    <section id="standards" className="bg-elevated py-28 lg:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading
           eyebrow={content.eyebrow}
@@ -16,14 +16,14 @@ export default function Standards({ content }: { content: SiteContent["standards
           description={content.description}
         />
 
-        <div className="mt-12 grid gap-4 lg:grid-cols-3">
+        <div className="mt-16 grid gap-6 lg:grid-cols-3 lg:gap-7">
           {content.items.map((item, index) => {
             const Icon = standardIcons[index] ?? FileCheck2;
 
             return (
               <article
                 key={item.title}
-                className="border-line bg-surface rounded-2xl border p-7"
+                className="border-line bg-surface rounded-2xl border p-9"
               >
                 <span className="bg-primary-soft text-primary mb-5 flex h-11 w-11 items-center justify-center rounded-xl">
                   <Icon className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
@@ -35,7 +35,7 @@ export default function Standards({ content }: { content: SiteContent["standards
           })}
         </div>
 
-        <div className="border-line mt-10 grid gap-8 border-t pt-10 sm:grid-cols-3">
+        <div className="border-line mt-12 grid gap-10 border-t pt-12 sm:grid-cols-3">
           {content.commitments.map((item, index) => {
             const Icon = commitmentIcons[index] ?? KeyRound;
 

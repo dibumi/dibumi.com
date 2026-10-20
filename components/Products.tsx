@@ -1,9 +1,11 @@
 import React from "react";
 import {
   ArrowUpRight,
+  ChartLine,
   CreditCard,
   Layers,
   Megaphone,
+  Receipt,
   Sparkles,
   type LucideIcon,
 } from "lucide-react";
@@ -15,6 +17,8 @@ const platformIcons: Record<string, LucideIcon> = {
   aiGateway: Sparkles,
   paymentOrchestration: CreditCard,
   adserverExchange: Megaphone,
+  cloudHostingBilling: Receipt,
+  trafficAnalytics: ChartLine,
 };
 
 export default function Products({ content }: { content: SiteContent }) {
@@ -22,7 +26,7 @@ export default function Products({ content }: { content: SiteContent }) {
   const platformCopy = copy.platforms as Record<string, { description: string }>;
 
   return (
-    <section id="products" className="py-20 lg:py-28">
+    <section id="products" className="py-28 lg:py-36">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading
           eyebrow={copy.eyebrow}
@@ -31,22 +35,25 @@ export default function Products({ content }: { content: SiteContent }) {
           icon={<Sparkles className="h-4 w-4" aria-hidden="true" />}
         />
 
-        <div className="mt-12 flex flex-col gap-4">
+        <div className="mt-16 flex flex-col gap-6 lg:gap-7">
           {/* Platforms: produk milik dibumi.com, situsnya belum tayang */}
           <div>
             <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
               <h3 className="text-ink text-sm font-semibold">{copy.groups.platforms.label}</h3>
-              <span className="text-muted text-[11px]">{copy.groups.platforms.brand}</span>
+              <span className="text-muted text-xs">{copy.groups.platforms.brand}</span>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            {/* auto-rows-fr menyamakan tinggi baris pertama dan kedua, jadi
+                lima kartu produk tampil dengan tinggi identik. Dibatasi ke md ke
+                atas karena di mobile kartu bertumpuk satu kolom. */}
+            <div className="grid gap-6 md:auto-rows-fr md:grid-cols-3 lg:gap-7">
               {getPlatformProducts().map((item) => {
                 const Icon = platformIcons[item.id] ?? Sparkles;
 
                 return (
                   <article
                     key={item.id}
-                    className="border-primary/15 bg-tint-mint flex flex-col gap-5 rounded-2xl border p-7"
+                    className="border-primary/15 bg-tint-mint flex flex-col gap-6 rounded-2xl border p-9"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <span className="bg-surface text-primary flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm">
@@ -71,7 +78,7 @@ export default function Products({ content }: { content: SiteContent }) {
 
           {/* Ngambeg Cyber Media: katalog game dan aplikasi tinggal di ngambeg.com,
               jadi kartu ini hanya pintu masuk, bukan daftar yang harus ikut diperbarui. */}
-          <article className="border-line bg-surface flex flex-col gap-6 rounded-2xl border p-7 sm:flex-row sm:items-center sm:justify-between">
+          <article className="border-line bg-surface flex flex-col gap-6 rounded-2xl border p-9 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-100 text-violet-700">
                 <Layers className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
@@ -80,7 +87,7 @@ export default function Products({ content }: { content: SiteContent }) {
                 <h3 className="text-ink text-lg font-semibold tracking-tight">
                   {copy.groups.ngambeg.label}
                 </h3>
-                <p className="text-muted text-[11px]">{copy.groups.ngambeg.brand}</p>
+                <p className="text-muted text-xs">{copy.groups.ngambeg.brand}</p>
                 <p className="text-muted mt-3 max-w-xl text-sm leading-7">
                   {copy.groups.ngambeg.description}
                 </p>

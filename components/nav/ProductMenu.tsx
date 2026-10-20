@@ -1,6 +1,15 @@
 import React from "react";
-import { ArrowUpRight, CreditCard, Layers, Megaphone, Sparkles } from "lucide-react";
+import {
+  ArrowUpRight,
+  ChartLine,
+  CreditCard,
+  Layers,
+  Megaphone,
+  Receipt,
+  Sparkles,
+} from "lucide-react";
 import { getPlatformProducts, ngambegHubUrl, type ProductItem } from "@/lib/products";
+import { iconTints, rowTints, tintAt } from "@/lib/tints";
 import type { SiteContent } from "@/lib/i18n";
 
 /**
@@ -21,6 +30,8 @@ const platformIcons: Record<string, React.ComponentType<{ className?: string }>>
   aiGateway: Sparkles,
   paymentOrchestration: CreditCard,
   adserverExchange: Megaphone,
+  cloudHostingBilling: Receipt,
+  trafficAnalytics: ChartLine,
 };
 
 type MenuProps = {
@@ -51,38 +62,47 @@ function GroupLabel({ children, note }: { children: React.ReactNode; note?: stri
 }
 
 /** Produk platform: ikon, nama, deskripsi satu baris, badge Soon. */
-function PlatformRow({ item, content }: { item: ProductItem; content: SiteContent }) {
+function PlatformRow({
+  item,
+  content,
+  tint,
+}: {
+  item: ProductItem;
+  content: SiteContent;
+  tint: number;
+}) {
   const Icon = platformIcons[item.id] ?? Sparkles;
   const description =
     (content.products.platforms as Record<string, { description: string }>)[item.id]
       ?.description ?? "";
 
+  const shell = `flex h-full items-start gap-3 rounded-xl border px-4 py-4 transition ${rowTints[tint]}`;
+
   const body = (
     <>
-      <span className="bg-primary-soft text-primary mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
+      <span
+        className={`bg-surface mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm ${iconTints[tint]}`}
+      >
         <Icon className="h-4 w-4" aria-hidden="true" />
       </span>
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-2">
-          <bdi className="text-ink text-sm font-semibold">{item.name}</bdi>
+          <bdi className="text-ink group-hover:text-primary text-sm font-semibold transition">
+            {item.name}
+          </bdi>
           {item.status === "soon" && <SoonBadge label={content.products.soon} />}
         </span>
-        <span className="text-muted mt-0.5 block text-[11px] leading-4">{description}</span>
+        <span className="text-muted mt-0.5 line-clamp-2 block text-xs leading-5">{description}</span>
       </span>
     </>
   );
 
   if (!item.href) {
-    return <div className="flex items-start gap-3 px-2.5 py-2.5">{body}</div>;
+    return <div className={shell}>{body}</div>;
   }
 
   return (
-    <a
-      href={item.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="hover:bg-elevated flex items-start gap-3 rounded-lg px-2.5 py-2.5 transition"
-    >
+    <a href={item.href} target="_blank" rel="noopener noreferrer" className={`${shell} group`}>
       {body}
     </a>
   );
@@ -93,7 +113,15 @@ function PlatformRow({ item, content }: { item: ProductItem; content: SiteConten
  * dan aplikasi. Nama grup sekaligus jadi judul tile, jadi tidak ada label grup
  * terpisah di atasnya yang akan mengulang teks yang sama.
  */
-function NgambegTile({ content, onNavigate }: { content: SiteContent; onNavigate?: () => void }) {
+function NgambegTile({
+  content,
+  onNavigate,
+  tint,
+}: {
+  content: SiteContent;
+  onNavigate?: () => void;
+  tint: number;
+}) {
   const group = content.products.groups.ngambeg;
 
   return (
@@ -102,9 +130,11 @@ function NgambegTile({ content, onNavigate }: { content: SiteContent; onNavigate
       target="_blank"
       rel="noopener noreferrer"
       onClick={onNavigate}
-      className="border-line hover:border-primary/40 hover:bg-elevated group flex items-start gap-3 rounded-xl border p-3 transition"
+      className={`group flex h-full items-start gap-3 rounded-xl border px-4 py-4 transition ${rowTints[tint]}`}
     >
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-violet-700">
+      <span
+        className={`bg-surface mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm ${iconTints[tint]}`}
+      >
         <Layers className="h-4 w-4" aria-hidden="true" />
       </span>
       <span className="min-w-0 flex-1">
@@ -114,8 +144,8 @@ function NgambegTile({ content, onNavigate }: { content: SiteContent; onNavigate
           </span>
           <ArrowUpRight className="text-muted h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         </span>
-        <span className="text-muted mt-0.5 block text-[11px] leading-4">{group.brand}</span>
-        <span className="text-muted mt-1.5 block text-[11px] leading-4">{group.description}</span>
+        <span className="text-muted mt-0.5 block text-xs leading-5">{group.brand}</span>
+        <span className="text-muted mt-1.5 block text-xs leading-5">{group.description}</span>
       </span>
     </a>
   );
@@ -126,22 +156,28 @@ export function ProductMenu({ content, onNavigate }: MenuProps) {
   const platforms = getPlatformProducts();
 
   return (
-    <div className="grid gap-8 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] md:gap-0">
+    <div className="grid gap-8 md:grid-cols-2 md:gap-0">
       <div className="md:pe-8">
         <GroupLabel note={content.products.groups.platforms.brand}>
           {content.products.groups.platforms.label}
         </GroupLabel>
-        <ul className="mt-1.5">
-          {platforms.map((item) => (
+        <ul className="mt-2 grid auto-rows-fr gap-2.5">
+          {platforms.map((item, index) => (
             <li key={item.id}>
-              <PlatformRow item={item} content={content} />
+              <PlatformRow item={item} content={content} tint={tintAt(index)} />
             </li>
           ))}
         </ul>
       </div>
 
       <div className="border-line-subtle border-t pt-6 md:border-s md:border-t-0 md:ps-8 md:pt-0">
-        <NgambegTile content={content} onNavigate={onNavigate} />
+        {/* Siklus melanjutkan deret kolom kiri, jadi dua kolom terbaca sebagai
+            satu urutan warna, bukan dua deret yang mulai dari nol. */}
+        <NgambegTile
+          content={content}
+          onNavigate={onNavigate}
+          tint={tintAt(platforms.length)}
+        />
       </div>
     </div>
   );
@@ -157,17 +193,21 @@ export function ProductMenuList({ content, onNavigate }: MenuProps) {
         <GroupLabel note={content.products.groups.platforms.brand}>
           {content.products.groups.platforms.label}
         </GroupLabel>
-        <ul className="mt-1">
-          {platforms.map((item) => (
+        <ul className="mt-2 grid auto-rows-fr gap-2.5">
+          {platforms.map((item, index) => (
             <li key={item.id}>
-              <PlatformRow item={item} content={content} />
+              <PlatformRow item={item} content={content} tint={tintAt(index)} />
             </li>
           ))}
         </ul>
       </div>
 
       <div className="border-line-subtle border-t pt-4">
-        <NgambegTile content={content} onNavigate={onNavigate} />
+        <NgambegTile
+          content={content}
+          onNavigate={onNavigate}
+          tint={tintAt(platforms.length)}
+        />
       </div>
     </div>
   );

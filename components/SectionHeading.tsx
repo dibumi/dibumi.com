@@ -23,10 +23,10 @@ export default function SectionHeading({
         {icon}
         {eyebrow}
       </p>
-      <h2 className="mt-4 text-3xl font-medium leading-tight tracking-tight text-ink sm:text-4xl">
+      <h2 className="mt-5 text-3xl font-medium leading-tight tracking-tight text-ink sm:text-4xl">
         {title}
       </h2>
-      <p className="text-muted mt-4 text-sm leading-7">{description}</p>
+      <p className="text-muted mt-5 text-base leading-8">{description}</p>
     </div>
   );
 }

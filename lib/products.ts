@@ -15,7 +15,12 @@
 
 export type ProductStatus = "live" | "soon";
 
-export type ProductId = "aiGateway" | "paymentOrchestration" | "adserverExchange";
+export type ProductId =
+  | "aiGateway"
+  | "paymentOrchestration"
+  | "adserverExchange"
+  | "cloudHostingBilling"
+  | "trafficAnalytics";
 
 export type ProductItem = {
   id: ProductId;
@@ -32,6 +37,8 @@ export const platformProducts: ProductItem[] = [
   { id: "aiGateway", name: "AI Gateway", href: null, status: "soon" },
   { id: "paymentOrchestration", name: "Payment Orchestration", href: null, status: "soon" },
   { id: "adserverExchange", name: "Adserver Exchange", href: null, status: "soon" },
+  { id: "cloudHostingBilling", name: "Cloud Hosting Billing", href: null, status: "soon" },
+  { id: "trafficAnalytics", name: "Traffic Analytics", href: null, status: "soon" },
 ];
 
 /** Produk platform yang tampil di kartu besar section Products. */

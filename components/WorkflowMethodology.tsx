@@ -13,7 +13,7 @@ export default function WorkflowMethodology({
   const lastIndex = content.steps.length - 1;
 
   return (
-    <section id="process" className="py-20 lg:py-24">
+    <section id="process" className="py-28 lg:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading
           eyebrow={content.eyebrow}
@@ -21,7 +21,7 @@ export default function WorkflowMethodology({
           description={content.description}
         />
 
-        <div className="relative mt-14">
+        <div className="relative mt-16">
           {/* Rail vertikal untuk mobile */}
           <div
             className="bg-line absolute bottom-6 start-[5px] top-2 w-0.5 lg:hidden"
@@ -33,7 +33,7 @@ export default function WorkflowMethodology({
             aria-hidden="true"
           />
 
-          <ol className="grid grid-cols-1 gap-x-8 gap-y-9 lg:grid-cols-4">
+          <ol className="grid grid-cols-1 gap-x-8 gap-y-12 lg:grid-cols-4">
             {content.steps.map((step, index) => {
               const Icon = icons[index] ?? Search;
 
