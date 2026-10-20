@@ -75,7 +75,7 @@ export default function Products({ content }: { content: SiteContent }) {
       id="products"
       className="relative overflow-hidden bg-gradient-to-b from-fog-white to-paper-white py-20 lg:py-40"
     >
-      <div className="column-guides mx-auto max-w-page px-5 sm:px-8">
+      <div className="mx-auto max-w-page px-5 sm:px-8">
         <Reveal>
           <SectionHeading
             eyebrow={copy.eyebrow}

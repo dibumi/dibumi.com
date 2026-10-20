@@ -100,7 +100,10 @@ export default function Services({
           </ul>
 
           {/* Diagram: enam praktik → satu tim → tiga keluaran. */}
-          <Reveal delay={0.12}>
+          {/* Diagram menempel saat daftar digulir: daftar layanan jauh lebih
+              panjang dari diagram, dan tanpa ini sisi kanan menyisakan rongga
+              kosong sepanjang sisa section. */}
+          <Reveal delay={0.12} className="lg:sticky lg:top-28 lg:self-start">
             <figure className="border-paper-white/12 bg-ink-black/40 rounded-elevatedcards relative overflow-hidden border p-6 sm:p-10">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {content.services.map((service, index) => (
@@ -118,31 +121,23 @@ export default function Services({
                 ))}
               </div>
 
-              {/* Konektor: satu garis horizontal dari deretan input, lalu satu
-                  tetes ke kotak tengah. Cukup untuk memberi tahu arahnya,
-                  tanpa perlu geometri yang presisi. */}
-              <div aria-hidden="true" className="relative h-12">
-                <span className="bg-paper-white/25 absolute inset-x-[8%] top-0 h-px" />
-                <span className="bg-paper-white/25 absolute start-1/2 top-0 h-12 w-px" />
-              </div>
+              {/* Konektor: satu garis tegak di tengah dengan node kecil di
+                  ujungnya. Sengaja sesederhana ini — percabangan tiga garis
+                  butuh geometri presisi supaya tidak terlihat patah, dan
+                  diagram ini tugasnya menjelaskan arah, bukan menggambar
+                  skema. */}
+              <Connector />
 
               <div className="border-paper-white/25 rounded-smallcards bg-paper-white/[0.04] px-6 py-7 text-center">
                 <p className="text-paper-white font-display text-subheading font-normal">
                   {copy.oneTeam}
                 </p>
-                <p className="text-paper-white/50 mt-2 mx-auto max-w-[38ch] text-caption">
+                <p className="text-paper-white/50 mx-auto mt-2 max-w-[38ch] text-caption">
                   {copy.oneTeamNote}
                 </p>
               </div>
 
-              {/* Konektor ke tiga keluaran: satu tetes, lalu tiga cabang. */}
-              <div aria-hidden="true" className="relative h-12">
-                <span className="bg-paper-white/25 absolute start-1/2 top-0 h-6 w-px" />
-                <span className="bg-paper-white/25 absolute inset-x-[16%] top-6 h-px" />
-                <span className="bg-paper-white/25 absolute start-[16%] top-6 h-6 w-px" />
-                <span className="bg-paper-white/25 absolute start-1/2 top-6 h-6 w-px" />
-                <span className="bg-paper-white/25 absolute end-[16%] top-6 h-6 w-px" />
-              </div>
+              <Connector />
 
               <div className="grid grid-cols-3 gap-3">
                 {copy.outputs.map((output) => (
@@ -159,5 +154,21 @@ export default function Services({
         </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * Garis penghubung antar blok diagram.
+ *
+ * Satu garis tegak setinggi 2.5rem dengan titik di ujung bawahnya. Dibuat
+ * sebagai komponen, bukan tiga span absolut, supaya jaraknya simetris dan
+ * tidak bergantung pada perhitungan posisi manual.
+ */
+function Connector() {
+  return (
+    <div aria-hidden="true" className="flex flex-col items-center">
+      <span className="bg-paper-white/25 h-10 w-px" />
+      <span className="bg-paper-white/25 h-1.5 w-1.5 rounded-full" />
+    </div>
   );
 }

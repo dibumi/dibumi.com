@@ -110,6 +110,12 @@ export type SiteContent = {
     eyebrow: string;
     title: string;
     description: string;
+    /** Label untuk tiga angka di pita klien. */
+    facts: {
+      clients: string;
+      countries: string;
+      since: string;
+    };
   };
   workflow: {
     eyebrow: string;
@@ -338,6 +344,11 @@ const en: SiteContent = {
     title: "Clients we have worked with",
     description:
       "Teams and networks we have supported across software, mobile, and infrastructure work.",
+    facts: {
+      clients: "Clients",
+      countries: "Countries",
+      since: "Since",
+    },
   },
   workflow: {
     eyebrow: "Process",
@@ -627,6 +638,11 @@ const id: SiteContent = {
     title: "Klien yang pernah bekerja sama",
     description:
       "Tim dan jaringan yang pernah kami dukung dalam pekerjaan software, mobile, dan infrastruktur.",
+    facts: {
+      clients: "Klien",
+      countries: "Negara",
+      since: "Sejak",
+    },
   },
   workflow: {
     eyebrow: "Proses",
@@ -916,6 +932,11 @@ const ar: SiteContent = {
     title: "عملاء تعاملنا معهم",
     description:
       "فرق وشبكات دعمناها في أعمال البرمجيات والجوال والبنية التحتية.",
+    facts: {
+      clients: "العملاء",
+      countries: "الدول",
+      since: "منذ",
+    },
   },
   workflow: {
     eyebrow: "المنهجية",
@@ -1185,6 +1206,11 @@ const zh: SiteContent = {
     eyebrow: "客户",
     title: "合作过的客户",
     description: "我们在软件、移动端和基础设施项目中支持过的团队与网络。",
+    facts: {
+      clients: "客户",
+      countries: "国家",
+      since: "始于",
+    },
   },
   workflow: {
     eyebrow: "流程",
@@ -1461,6 +1487,11 @@ const pl: SiteContent = {
     title: "Klienci, z którymi pracowaliśmy",
     description:
       "Zespoły i sieci, które wspieraliśmy w projektach software, mobile i infrastrukturalnych.",
+    facts: {
+      clients: "Klienci",
+      countries: "Kraje",
+      since: "Od",
+    },
   },
   workflow: {
     eyebrow: "Proces",

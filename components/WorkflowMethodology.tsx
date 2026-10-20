@@ -32,7 +32,7 @@ export default function WorkflowMethodology({
   const lastIndex = content.workflow.steps.length - 1;
 
   return (
-    <section id="process" className="py-20 lg:py-36">
+    <section id="process" className="py-20 lg:py-28">
       <div className="column-guides mx-auto max-w-page px-5 sm:px-8">
         <Reveal>
           <SectionHeading
@@ -43,7 +43,7 @@ export default function WorkflowMethodology({
           />
         </Reveal>
 
-        <div className="relative mt-16">
+        <div className="relative mt-12">
           {/* Rail vertikal untuk mobile. Mulai di pusat node pertama (top-3),
               bukan di tepi container, supaya garis tidak menyembul di atasnya.
               `animate-sweep` men-scaleY garis dari 0.3 ke 1, jadi rail terbaca
