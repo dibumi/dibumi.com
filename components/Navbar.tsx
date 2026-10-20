@@ -47,7 +47,7 @@ type OpenPanel = "product" | "services" | null;
 type OpenSection = "product" | "services" | null;
 
 const desktopItem =
-  "group inline-flex h-8 items-center gap-1 rounded-buttons px-3.5 text-xs transition-colors";
+  "group inline-flex h-8 items-center gap-1 rounded-buttons px-2.5 text-caption transition-colors";
 
 /**
  * Keadaan warna item desktop.
@@ -58,6 +58,15 @@ const desktopItem =
  * ada di sistem. Meredupkan teks justru terbaca sebagai "item ini hidup" tanpa
  * menggambar apa pun. Item aktif memakai berat huruf, bukan warna, supaya
  * penandanya tidak hilang saat kursor kebetulan ada di atasnya.
+ *
+ * Ukurannya `text-caption` (15px), sama dengan CTA dan isi dropdown, bukan
+ * `text-xs` seperti markup referensi. Referensi memakai Sohne, yang terbaca
+ * lebih besar dari Inter pada angka yang sama; 12px di sini jadi satu-satunya
+ * teks sekecil itu di halaman. Paddingnya `px-2.5`, lebih sempit dari
+ * referensi, untuk membayar lebar tambahan itu — lima label Polandia
+ * ("Produkty", "Usługi", "Standardy", "Zespół") harus masih muat di 1024,
+ * lebar tersempit sebelum nav berganti jadi hamburger, tanpa mendorong kluster
+ * aksi keluar dari pusat bar. Terukur: sisa 13px di sana.
  */
 function itemState(active: boolean) {
   return active ? "text-ink-black font-medium" : "text-ink-black hover:text-slate-gray";
@@ -397,7 +406,7 @@ export default function Navbar({
 
             <Link
               href={`${basePath}#contact`}
-              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 ms-1 hidden h-8 items-center justify-center px-3 text-caption transition lg:inline-flex"
+              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 ms-1 hidden h-8 shrink-0 items-center justify-center whitespace-nowrap px-3 text-caption transition lg:inline-flex"
             >
               {nav.cta}
             </Link>
