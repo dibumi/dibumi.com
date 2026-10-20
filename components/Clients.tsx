@@ -1,5 +1,5 @@
 import React from "react";
-import SectionHeading from "@/components/SectionHeading";
+import Reveal from "@/components/motion/Reveal";
 import { clients } from "@/lib/clients";
 import type { Locale, SiteContent } from "@/lib/i18n";
 
@@ -11,6 +11,13 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  * fungsinya sebagai jeda. DESIGN.md memakai tabel wilayah kecil sebagai artifact
  * khasnya, dan daftar dua belas nama memang lebih jujur dibaca sebagai baris
  * daripada dua belas kotak.
+ *
+ * Section ini adalah band warna halaman — padanan bagian customer story biru di
+ * referensi. Warnanya peach penuh, jadi seluruh teks di dalamnya memakai sienna:
+ * abu-abu dingin di atas peach memutus efek kertas kraft dan membuat band ini
+ * terbaca sebagai panel abu-abu yang kebetulan berwarna, bukan sebagai kertas
+ * berwarna. Karena itu SectionHeading tidak dipakai di sini; ia membawa slate
+ * dan ash yang tidak boleh masuk ke dalam band.
  *
  * Logo memakai <img> biasa, bukan next/image, karena separuhnya SVG dan
  * beberapa di antaranya aset pihak ketiga berukuran kecil. Dengan begitu tidak
@@ -54,58 +61,77 @@ export default function Clients({
   const columns = [clients.slice(0, midpoint), clients.slice(midpoint)];
 
   return (
-    <section id="clients" className="bg-fog-white py-20 lg:py-24">
+    <section id="clients" className="bg-blush-peach py-20 lg:py-28">
       <div className="mx-auto max-w-page px-5 sm:px-8">
-        <SectionHeading
-          eyebrow={content.eyebrow}
-          title={content.title}
-          description={content.description}
-        />
+        {/* Judul masuk lebih dulu, dua kolom menyusul dengan jeda: band ini
+            panjang, dan tanpa jeda semuanya muncul sekaligus seperti gambar. */}
+        <Reveal className="max-w-[58ch]">
+          <p className="text-sienna-brown/70 flex items-center gap-1.5 text-caption">
+            {content.eyebrow}
+            <span aria-hidden="true" className="rtl:-scale-x-100">
+              ›
+            </span>
+          </p>
+          <h2 className="text-sienna-brown font-display mt-4 text-heading font-normal sm:text-heading-lg">
+            {content.title}
+          </h2>
+          <p className="text-sienna-brown/80 mt-5 max-w-[52ch] text-body">
+            {content.description}
+          </p>
+        </Reveal>
 
         <div className="mt-16 grid gap-x-10 sm:grid-cols-2">
           {columns.map((column, columnIndex) => (
-            <ul key={columnIndex} className="divide-y divide-hairline">
-              {column.map((client) => (
-                <li key={client.name} className="flex items-center gap-4 py-4">
-                  <img
-                    src={`/flags/${client.region}.svg`}
-                    alt={regionName(client.region, locale)}
-                    width={18}
-                    height={12}
-                    loading="lazy"
-                    className="h-3 w-[18px] shrink-0 rounded-[2px] object-cover"
-                  />
-
-                  {client.logo ? (
+            <Reveal key={columnIndex} delay={columnIndex === 0 ? 0.1 : 0.18}>
+              <ul className="divide-sienna-brown/15 divide-y">
+                {column.map((client) => (
+                  <li
+                    key={client.name}
+                    // Margin negatif menarik wash hover sedikit ke luar kolom
+                    // teks, supaya barisnya terbaca sebagai baris yang disorot
+                    // dan bukan sebagai kotak yang menempel di tepi.
+                    className="hover:bg-sienna-brown/5 -mx-3 flex items-center gap-4 px-3 py-4 transition-colors"
+                  >
                     <img
-                      src={client.logo}
-                      alt=""
-                      width={client.width}
-                      height={client.height}
+                      src={`/flags/${client.region}.svg`}
+                      alt={regionName(client.region, locale)}
+                      width={18}
+                      height={12}
                       loading="lazy"
-                      className="max-h-8 w-auto max-w-[120px] shrink-0 object-contain opacity-75 grayscale transition hover:opacity-100 hover:grayscale-0"
+                      className="h-3 w-[18px] shrink-0 rounded-[2px] object-cover"
                     />
-                  ) : (
-                    <span className="text-ink-black shrink-0 text-caption font-medium uppercase tracking-tight">
-                      {client.name}
-                    </span>
-                  )}
 
-                  {/* Label nama hanya muncul kalau logonya ada. Untuk Wap2Cash
-                      namanya sudah jadi wordmark di slot logo, jadi mengulangnya
-                      di sini akan menulis nama yang sama dua kali. */}
-                  {client.logo ? (
-                    <span className="text-slate-gray min-w-0 truncate text-caption">
-                      {client.name}
-                    </span>
-                  ) : null}
+                    {client.logo ? (
+                      <img
+                        src={client.logo}
+                        alt=""
+                        width={client.width}
+                        height={client.height}
+                        loading="lazy"
+                        className="max-h-8 w-auto max-w-[120px] shrink-0 object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0"
+                      />
+                    ) : (
+                      <span className="text-sienna-brown shrink-0 text-caption font-medium uppercase tracking-tight">
+                        {client.name}
+                      </span>
+                    )}
 
-                  <span className="text-ash-gray tabular ms-auto shrink-0 text-caption uppercase">
-                    {client.region}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                    {/* Label nama hanya muncul kalau logonya ada. Untuk Wap2Cash
+                        namanya sudah jadi wordmark di slot logo, jadi mengulangnya
+                        di sini akan menulis nama yang sama dua kali. */}
+                    {client.logo ? (
+                      <span className="text-sienna-brown min-w-0 truncate text-caption">
+                        {client.name}
+                      </span>
+                    ) : null}
+
+                    <span className="text-sienna-brown/60 tabular ms-auto shrink-0 text-caption uppercase">
+                      {client.region}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
           ))}
         </div>
       </div>

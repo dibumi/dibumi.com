@@ -1,94 +1,109 @@
 import React from "react";
-import SectionHeading from "@/components/SectionHeading";
 import { getPlatformProducts, ngambegHubUrl } from "@/lib/products";
+import SectionHeading from "@/components/SectionHeading";
+import Reveal from "@/components/motion/Reveal";
 import type { SiteContent } from "@/lib/i18n";
 
 /**
- * Produk sendiri, dibagi dua grup.
+ * Showcase produk: satu panel besar yang mengapung di atas pita fog.
  *
- * Kartu platform memakai mist-gray datar tanpa border, shadow, dan ikon: status
- * "Soon" cukup dibawa pill hairline tipis di atas nama produk. Baris judul grup
- * dipertahankan supaya "Platforms" dan "Ngambeg Cyber Media" tetap terbaca
- * sebagai dua katalog berbeda, bukan satu daftar panjang.
+ * Referensinya menaruh satu tangkapan dashboard besar di tengah section, dan
+ * seluruh section dibangun sebagai gradien dari abu muda ke putih supaya panel
+ * itu terlihat mengambang. Di sini panelnya bukan tangkapan layar karangan:
+ * isinya katalog produk platform yang memang ada di lib/products.ts, disusun
+ * sebagai daftar berkode urut — jadi yang tampil adalah data situs ini sendiri,
+ * hanya dipresentasikan sebagai antarmuka.
  *
- * Kartu Ngambeg adalah satu-satunya entri selebar penuh dan memakai fog-white
- * ber-border hairline, bukan mist-gray: ia pintu keluar situs, jadi permukaan
- * yang berbeda menandainya sebagai penutup daftar. Tautannya pill ghost dengan
- * panah di dalam label — glyph dekoratif lain sudah dihapus dari sistem ini.
+ * Satu-satunya kartu yang ber-elevasi di section ini adalah panel itu; kartu
+ * kecil di dalamnya memakai latar mist tanpa shadow.
  */
 export default function Products({ content }: { content: SiteContent }) {
   const copy = content.products;
   const platformCopy = copy.platforms as Record<string, { description: string }>;
+  const platforms = getPlatformProducts();
 
   return (
-    <section id="products" className="py-20 lg:py-24">
+    <section
+      id="products"
+      className="relative overflow-hidden bg-gradient-to-b from-fog-white to-paper-white py-20 lg:py-28"
+    >
       <div className="mx-auto max-w-page px-5 sm:px-8">
-        <SectionHeading
-          eyebrow={copy.eyebrow}
-          title={copy.title}
-          description={copy.description}
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow={copy.eyebrow}
+            title={copy.title}
+            description={copy.description}
+          />
+        </Reveal>
 
-        <div className="mt-16 flex flex-col gap-6">
-          {/* Platforms: produk milik dibumi.com, situsnya belum tayang */}
-          <div>
-            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-              <h3 className="text-ink-black text-body font-medium">
-                {copy.groups.platforms.label}
-              </h3>
-              <span className="text-ash-gray text-caption">{copy.groups.platforms.brand}</span>
-            </div>
+        {/* Panel besar. Bingkai luar hanya memberi jarak 2px antara panel dan
+            isinya, supaya terbaca sebagai perangkat, bukan sebagai kartu biasa. */}
+        <Reveal delay={0.1} className="mt-14">
+          <div className="bg-paper-white shadow-subtle-3 rounded-elevatedcards p-2">
+            <div className="bg-fog-white rounded-cards px-5 py-4 sm:px-7 sm:py-6">
+              {/* Bar judul panel: nama katalog dan jumlah produk. */}
+              <div className="border-hairline flex flex-wrap items-center justify-between gap-3 border-b pb-4">
+                <p className="text-ink-black text-body font-medium">
+                  {copy.groups.platforms.label}
+                </p>
+                <p className="text-ash-gray tabular text-caption">
+                  {copy.groups.platforms.brand}
+                </p>
+              </div>
 
-            {/* auto-rows-fr menyamakan tinggi baris pertama dan kedua, jadi
-                enam kartu produk tampil dengan tinggi identik. Dibatasi ke md ke
-                atas karena di mobile kartu bertumpuk satu kolom. */}
-            <div className="grid gap-6 md:auto-rows-fr md:grid-cols-3">
-              {getPlatformProducts().map((item) => (
-                <article
-                  key={item.id}
-                  className="bg-mist-gray rounded-cards flex flex-col gap-6 p-8"
-                >
-                  <span className="border-hairline text-ash-gray rounded-full w-fit border px-2.5 py-0.5 text-caption">
-                    {copy.soon}
-                  </span>
+              <ul className="divide-hairline divide-y">
+                {platforms.map((item, index) => (
+                  <li
+                    key={item.id}
+                    className="group flex items-start gap-4 py-5 transition-colors hover:bg-paper-white sm:items-center sm:gap-6"
+                  >
+                    <span className="text-ash-gray tabular w-6 shrink-0 text-caption">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
 
-                  <div>
-                    <h4 className="text-ink-black text-body-lg font-medium">{item.name}</h4>
-                    <p className="text-slate-gray mt-2 text-body">
+                    <span className="text-ink-black min-w-0 flex-1 text-body font-medium">
+                      {item.name}
+                    </span>
+
+                    {/* Deskripsi hanya di layar lebar: di panel sempit ia akan
+                        memaksa baris jadi tiga tingkat dan panel kehilangan
+                        bentuk tabelnya. */}
+                    <span className="text-slate-gray hidden max-w-[38ch] flex-1 text-caption sm:block">
                       {platformCopy[item.id]?.description}
-                    </p>
-                  </div>
-                </article>
-              ))}
+                    </span>
+
+                    <span className="border-hairline text-ash-gray rounded-full border px-2.5 py-0.5 text-caption">
+                      {copy.soon}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Ngambeg Cyber Media: satu pintu keluar ke katalognya sendiri,
+                  karena daftar game dan aplikasi hidup di sana. */}
+              <div className="border-hairline mt-2 flex flex-wrap items-center justify-between gap-3 border-t pt-5">
+                <div className="min-w-0">
+                  <p className="text-ink-black text-body font-medium">
+                    {copy.groups.ngambeg.label}
+                  </p>
+                  <p className="text-ash-gray text-caption">{copy.groups.ngambeg.brand}</p>
+                </div>
+
+                <a
+                  href={ngambegHubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border-ink-black text-ink-black rounded-buttons hover:bg-mist-gray inline-flex h-10 shrink-0 items-center gap-1.5 border px-4 text-caption transition"
+                >
+                  {copy.hub}
+                  <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
+                    →
+                  </span>
+                </a>
+              </div>
             </div>
           </div>
-
-          {/* Ngambeg Cyber Media: katalog game dan aplikasi tinggal di ngambeg.com,
-              jadi kartu ini hanya pintu masuk, bukan daftar yang harus ikut diperbarui. */}
-          <article className="bg-fog-white rounded-cards border-hairline flex flex-col gap-6 border p-8 sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <h3 className="text-ink-black text-body-lg font-medium">
-                {copy.groups.ngambeg.label}
-              </h3>
-              <p className="text-ash-gray text-caption">{copy.groups.ngambeg.brand}</p>
-              <p className="text-slate-gray mt-3 max-w-xl text-body">
-                {copy.groups.ngambeg.description}
-              </p>
-            </div>
-
-            <a
-              href={ngambegHubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border-ink-black text-ink-black rounded-buttons hover:bg-mist-gray inline-flex h-11 w-fit shrink-0 items-center gap-1.5 border px-5 text-caption transition"
-            >
-              {copy.hub}
-              <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
-                →
-              </span>
-            </a>
-          </article>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
