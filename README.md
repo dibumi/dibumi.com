@@ -37,15 +37,18 @@ Legal documents are written in English and Indonesian. Other locales render the 
 
 ## Sections
 
-1. **Hero** — a soft gradient wash with a fine grain, a small pill of guarantees above the headline, a centred serif headline with one italicised phrase, a filled and a ghost pill button side by side, and three floating artifact cards (client region table, services list, counts) that bleed past the viewport edge at `xl` and above.
-2. **Highlights** — three cards: discover, build, operate. The first is the page's single peach card and carries an oversized serif ordinal in place of an illustration; the other two are mist. No icons.
-3. **Services** — six practices, each with an ordinal `01`–`06`, a points list, and a text link with an arrow; the navbar Services panel links straight to each card anchor.
-4. **Products** — six platform products owned by dibumi.com (all `Soon`, no public site yet), then one full-width Ngambeg Cyber Media card that links out to ngambeg.com.
-5. **Clients** — twelve clients as a two-column hairline region table, each row carrying a flag, the logo, and the ISO country code.
-6. **Process** — four steps on an achromatic rail.
-7. **Standards** — three standards as hairline rows, then three commitments.
-8. **Contact** — a neutral mist panel with WhatsApp as a filled pill and email as a ghost pill, followed by a band of operational facts. The page's peach card is in Highlights, not here.
-9. **Footer** — the mark alone, four link columns, and a single closing row on a fog-white surface with no divider line and no oversized wordmark.
+1. **Hero** — a soft gradient wash with a fine grain, a small pill of guarantees above the headline, a centred serif headline with one italicised phrase, a filled and a ghost pill button side by side, and three floating artifact cards (client region table, services list, counts with a gestural line) that bleed past the viewport edge at `xl` and above. One full screen, no pin; the entrance is choreographed and the cards then drift on a slow loop.
+2. **Client marquee** — twelve real client logos on a 50-second CSS marquee with edge fades, paused on hover and stopped under reduced motion.
+3. **Products** — a single elevated panel on a fog-to-white gradient, listing the six platform products with ordinals and a `Soon` pill, then the Ngambeg Cyber Media exit.
+4. **Highlights** — three cards: discover, build, operate. The first is the page's single peach card and carries an oversized serif ordinal in place of an illustration; the other two are mist.
+5. **Clients** — the peach band: twelve clients as a two-column hairline table, everything in sienna on blush, each row carrying a flag, the logo, and the ISO country code.
+6. **Services** — the dark band: six practices on ink with hairline rules, an ordinal `01`–`06`, a points list, and a text link with an arrow.
+7. **Process** — four steps on an achromatic rail.
+8. **Standards** — three standards as hairline rows, then three commitments.
+9. **Contact** — a centred closing call to action on fog with a single peach radial, WhatsApp as a filled pill and email as a ghost pill, then the operational facts.
+10. **Footer** — the mark alone, four link columns, and a single closing row on a fog-white surface with no divider line and no oversized wordmark.
+
+Sections reveal their headers and stagger their items on scroll through `components/motion/Reveal.tsx`. The band order (white, fog, peach, ink) is deliberate: without alternating surfaces the page reads as one flat colour from top to bottom.
 
 The 404 page is styled in the same system.
 
@@ -81,6 +84,7 @@ The wordmark inside the lockup is outlined from Geist Mono at weight 600, so the
 
 - **Framework:** Next.js 16 (App Router, static generation per locale)
 - **Styling:** Tailwind CSS 3 with design tokens in `tailwind.config.ts`, mirroring the CSS custom properties in `app/globals.css`
+- **Motion:** `motion` (formerly Framer Motion) for entrance choreography and scroll reveals, plus CSS keyframes for the marquee, the artifact drift, and the nav panel. Everything collapses to static under `prefers-reduced-motion`
 - **Icons:** Lucide React, kept for functional glyphs only (chevrons, arrows, the language icon), not for decorative icons
 - **Fonts:** Source Serif 4 (display) and Inter (body), both via `next/font`; IBM Plex Sans Arabic and Noto Sans SC as the Arabic and Chinese companions. Source Serif 4 and Inter stand in for the commercial Signifier and Sohne faces named in DESIGN.md
 - **Cloudflare:** `@opennextjs/cloudflare` + `wrangler` (Workers Static Assets)
