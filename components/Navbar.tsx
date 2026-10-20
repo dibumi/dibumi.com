@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, ArrowUpRight, ChevronDown, Code2, Menu, X } from "lucide-react";
+import { ChevronDown, Code2, Menu, X } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import BrandMark from "@/components/BrandMark";
 import { ProductMenu, ProductMenuList } from "@/components/nav/ProductMenu";
@@ -17,35 +17,41 @@ import { serviceMeta } from "@/lib/services";
 import type { Locale, SiteContent } from "@/lib/i18n";
 
 /**
- * Navigasi utama: satu bar datar tanpa pill pembungkus.
+ * Navigasi utama: bar yang berbisik, tanpa garis dan tanpa bayangan.
  *
  * Aturan yang dijaga di sini:
  * - Tinggi bar 64px di bawah lg dan 72px mulai lg. Offset anchor di globals.css
  *   mengikuti angka ini, jadi ubah keduanya bersamaan.
+ * - Tidak ada border bawah maupun shadow. Bar hanya dibedakan dari isi halaman
+ *   oleh latar putih yang sedikit tembus pandang plus backdrop-blur. Begitu ada
+ *   garis 1px, nav berhenti terasa sebagai lapisan yang mengambang.
+ * - Item aktif dinyatakan lewat warna saja (slate -> ink), bukan garis bawah.
+ *   Warna sudah cukup; garis menambah satu elemen visual yang tidak dibutuhkan.
  * - Panel menempel langsung ke bawah bar (tanpa jarak), supaya kursor tidak
  *   pernah melewati celah yang menutup menu.
- * - Radius: kontrol 8px, popover 12px, panel 0 karena penuh ke tepi layar.
- * - Semua posisi memakai properti logis (ms/me/start/end) agar locale Arab
- *   otomatis tercermin.
+ * - Semua posisi memakai properti logis (ms/me/ps/pe/start/end) agar locale
+ *   Arab otomatis tercermin.
  */
 
 type OpenPanel = "product" | "services" | null;
 type OpenSection = "product" | "services" | null;
 
-/** Garis bawah penanda item aktif, tumbuh dari sisi awal teks. */
-function Underline({ active }: { active: boolean }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`pointer-events-none absolute inset-x-2.5 bottom-0.5 h-[2px] origin-left rounded-full transition-transform duration-200 ease-out group-hover:scale-x-100 rtl:origin-right ${
-        active ? "bg-primary scale-x-100" : "bg-line scale-x-0"
-      }`}
-    />
-  );
+const desktopItem =
+  "group inline-flex h-9 items-center gap-1.5 rounded-smallcards px-2.5 text-caption transition-colors hover:bg-mist-gray";
+
+/** Keadaan warna item desktop: diam itu slate, aktif atau hover itu ink. */
+function itemState(active: boolean) {
+  return active ? "text-ink-black" : "text-slate-gray hover:text-ink-black";
 }
 
-const desktopItem =
-  "group relative inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium transition-colors";
+/** Panah teks untuk affordance tautan. Dibalik di RTL supaya tetap menunjuk maju. */
+function Arrow() {
+  return (
+    <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
+      →
+    </span>
+  );
+}
 
 export default function Navbar({
   locale,
@@ -72,6 +78,8 @@ export default function Navbar({
   const nav = content.nav;
 
   // Judul dan deskripsi layanan ada di i18n; slug dan ikon di lib/services.ts.
+  // Ikon masih ikut dirakit karena tipe ServiceItem membawanya, tetapi tidak
+  // lagi dirender: ikon dekoratif sudah dihapus dari seluruh menu.
   const serviceItems: ServiceItem[] = content.services.map((service, index) => ({
     title: service.title,
     description: service.description,
@@ -238,21 +246,15 @@ export default function Navbar({
 
   return (
     <>
-      {/* Header memakai surface (putih), bukan canvas seperti latar halaman:
-          kalau keduanya sama, bar ini menyatu dengan isi dan yang tersisa hanya
-          garis 1px. Putih membuatnya terbaca sebagai lapisan UI, sewarna dengan
-          mega panel yang menempel di bawahnya. */}
-      <header className="border-line bg-surface/95 sticky top-0 z-50 border-b backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-5 sm:px-8 lg:h-[4.5rem]">
-          {/* Brand: sekaligus link ke beranda, jadi tidak ada item "Home". */}
-          <Link
-            href={basePath}
-            className="text-ink flex shrink-0 items-center gap-2.5"
-          >
-            <BrandMark className="text-primary h-8 w-8 shrink-0" />
-            <span className="truncate text-base font-semibold tracking-tight">
-              dibumi<span className="text-primary">.com</span>
-            </span>
+      {/* Tanpa border dan tanpa shadow: bar hanya dibaca sebagai lapisan UI
+          karena latarnya putih tembus pandang di atas isi halaman. */}
+      <header className="bg-paper-white/85 sticky top-0 z-50 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-page items-center gap-2 px-5 sm:px-8 lg:h-[4.5rem]">
+          {/* Brand: sekaligus link ke beranda, jadi tidak ada item "Home".
+              Wordmark satu warna; titik ".com" tidak lagi diberi aksen. */}
+          <Link href={basePath} className="text-ink-black flex shrink-0 items-center gap-2.5">
+            <BrandMark className="h-8 w-8 shrink-0" />
+            <span className="text-body truncate font-medium">dibumi.com</span>
           </Link>
 
           {/* Desktop navigation */}
@@ -271,9 +273,7 @@ export default function Navbar({
                 }}
                 aria-expanded={openPanel === "product"}
                 aria-controls="product-menu"
-                className={`${desktopItem} ${
-                  openPanel === "product" ? "text-ink" : "text-muted hover:text-ink"
-                }`}
+                className={`${desktopItem} ${itemState(openPanel === "product")}`}
               >
                 {nav.product}
                 <ChevronDown
@@ -282,7 +282,6 @@ export default function Navbar({
                   }`}
                   aria-hidden="true"
                 />
-                <Underline active={openPanel === "product"} />
               </button>
             </div>
 
@@ -296,9 +295,7 @@ export default function Navbar({
                 }}
                 aria-expanded={openPanel === "services"}
                 aria-controls="services-menu"
-                className={`${desktopItem} ${
-                  openPanel === "services" ? "text-ink" : "text-muted hover:text-ink"
-                }`}
+                className={`${desktopItem} ${itemState(openPanel === "services")}`}
               >
                 {nav.services}
                 <ChevronDown
@@ -307,7 +304,6 @@ export default function Navbar({
                   }`}
                   aria-hidden="true"
                 />
-                <Underline active={openPanel === "services"} />
               </button>
             </div>
 
@@ -320,10 +316,9 @@ export default function Navbar({
                   href={link.href}
                   onClick={() => setOpenPanel(null)}
                   aria-current={active ? "location" : undefined}
-                  className={`${desktopItem} ${active ? "text-ink" : "text-muted hover:text-ink"}`}
+                  className={`${desktopItem} ${itemState(active)}`}
                 >
                   {link.name}
-                  <Underline active={active} />
                 </Link>
               );
             })}
@@ -332,10 +327,9 @@ export default function Navbar({
               href={teamHref}
               onClick={() => setOpenPanel(null)}
               aria-current={teamActive ? "page" : undefined}
-              className={`${desktopItem} ${teamActive ? "text-ink" : "text-muted hover:text-ink"}`}
+              className={`${desktopItem} ${itemState(teamActive)}`}
             >
               {nav.team}
-              <Underline active={teamActive} />
             </Link>
           </nav>
 
@@ -345,10 +339,9 @@ export default function Navbar({
 
             <Link
               href={`${basePath}#contact`}
-              className="bg-primary hover:bg-primary-hover ms-1 hidden min-h-10 items-center justify-center gap-2 rounded-lg px-4 text-[13px] font-semibold text-white transition lg:inline-flex"
+              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 ms-1 hidden h-10 items-center justify-center px-4 text-caption transition lg:inline-flex"
             >
               {nav.cta}
-              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
             </Link>
 
             <button
@@ -361,21 +354,22 @@ export default function Navbar({
               aria-label={mobileOpen ? nav.closeMenu : nav.menu}
               aria-expanded={mobileOpen}
               aria-controls="mobile-navigation"
-              className="text-ink hover:bg-elevated inline-flex h-10 w-10 items-center justify-center rounded-lg transition lg:hidden"
+              className="text-ink-black hover:bg-mist-gray rounded-smallcards inline-flex h-10 w-10 items-center justify-center transition lg:hidden"
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mega panel: selebar viewport, menempel ke bawah bar. */}
+        {/* Mega panel: selebar viewport, menempel ke bawah bar, tanpa border
+            dan tanpa radius. Bayangan modal yang memisahkannya dari isi. */}
         {openPanel && (
           <div
             ref={panelRef}
             id={`${openPanel}-menu`}
-            className="border-line bg-surface shadow-float animate-panel-in absolute inset-x-0 top-full hidden max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain border-b lg:block"
+            className="bg-paper-white shadow-subtle-2 animate-panel-in absolute inset-x-0 top-full hidden max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain lg:block"
           >
-            <div className="mx-auto max-w-7xl px-8 py-6">
+            <div className="mx-auto max-w-page px-5 py-6 sm:px-8">
               {openPanel === "product" ? (
                 <ProductMenu content={content} onNavigate={() => setOpenPanel(null)} />
               ) : (
@@ -398,7 +392,7 @@ export default function Navbar({
           id="mobile-navigation"
           ref={sheetRef}
           aria-label="Mobile navigation"
-          className="bg-canvas fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col lg:hidden"
+          className="bg-paper-white fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col lg:hidden"
         >
           <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-1">
             <MobileSection
@@ -435,10 +429,12 @@ export default function Navbar({
                 key={link.href}
                 href={link.href}
                 onClick={closeMobile}
-                className="text-ink border-line flex items-center justify-between gap-3 border-b py-4 text-sm font-semibold"
+                className="text-ink-black border-hairline text-body flex items-center justify-between gap-3 border-b py-4 font-medium"
               >
                 {link.name}
-                <ArrowRight className="text-muted h-4 w-4 rtl:rotate-180" aria-hidden="true" />
+                <span className="text-ash-gray text-caption">
+                  <Arrow />
+                </span>
               </Link>
             ))}
 
@@ -446,21 +442,22 @@ export default function Navbar({
               href={teamHref}
               onClick={closeMobile}
               aria-current={teamActive ? "page" : undefined}
-              className="text-ink border-line flex items-center justify-between gap-3 border-b py-4 text-sm font-semibold last:border-b-0"
+              className="text-ink-black border-hairline text-body flex items-center justify-between gap-3 border-b py-4 font-medium last:border-b-0"
             >
               {nav.team}
-              <ArrowRight className="text-muted h-4 w-4 rtl:rotate-180" aria-hidden="true" />
+              <span className="text-ash-gray text-caption">
+                <Arrow />
+              </span>
             </Link>
           </div>
 
-          <div className="border-line bg-canvas border-t px-5 py-3">
+          <div className="border-hairline bg-paper-white border-t px-5 py-3">
             <Link
               href={`${basePath}#contact`}
               onClick={closeMobile}
-              className="bg-primary hover:bg-primary-hover flex min-h-11 w-full items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white transition"
+              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 flex h-11 w-full items-center justify-center px-4 text-caption transition"
             >
               {nav.cta}
-              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
         </nav>
@@ -486,19 +483,19 @@ function MobileSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border-line border-b">
+    <div className="border-hairline border-b">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={open}
         aria-controls={`mobile-${id}`}
-        className="text-ink flex w-full items-center justify-between gap-3 py-4 text-start text-sm font-semibold"
+        className="flex w-full items-center justify-between gap-3 py-4 text-start"
       >
-        <span>{label}</span>
+        <span className="text-ink-black text-body font-medium">{label}</span>
         <span className="flex items-center gap-2">
-          <span className="text-muted tabular text-[10px] font-medium">{meta}</span>
+          <span className="text-ash-gray tabular text-caption">{meta}</span>
           <ChevronDown
-            className={`text-muted h-4 w-4 transition-transform duration-200 ${
+            className={`text-slate-gray h-4 w-4 transition-transform duration-200 ${
               open ? "rotate-180" : ""
             }`}
             aria-hidden="true"

@@ -8,6 +8,11 @@ import { localeLabels, localeNames, locales, type Locale } from "@/lib/i18n";
 /**
  * Pemilih bahasa. Path dipertahankan saat berpindah locale, jadi
  * /en/privacy menjadi /id/privacy, bukan kembali ke beranda.
+ *
+ * Ikon yang tersisa di sini semuanya fungsional: globe (penanda bahasa),
+ * chevron (pembuka daftar), dan centang (locale aktif). Tidak ada glyph hiasan.
+ * Dropdown tidak memakai border: ring 1px dari shadow-subtle sudah memisahkannya
+ * dari latar, dan border tambahan hanya menggandakan garis itu.
  */
 export default function LanguageSwitcher({
   locale,
@@ -73,8 +78,8 @@ export default function LanguageSwitcher({
         aria-label={label}
         className={
           variant === "bare"
-            ? "text-muted hover:bg-elevated hover:text-ink inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium transition"
-            : "border-line text-muted hover:border-primary/40 hover:text-ink inline-flex min-h-10 items-center gap-1.5 rounded-lg border bg-surface px-2.5 text-xs font-medium transition"
+            ? "text-slate-gray hover:bg-mist-gray hover:text-ink-black rounded-smallcards inline-flex min-h-9 items-center gap-1.5 px-2.5 text-caption transition"
+            : "border-hairline bg-paper-white text-slate-gray hover:text-ink-black rounded-smallcards inline-flex min-h-10 items-center gap-1.5 border px-2.5 text-caption transition"
         }
       >
         <Languages className="h-4 w-4" aria-hidden="true" />
@@ -89,7 +94,7 @@ export default function LanguageSwitcher({
         <ul
           role="listbox"
           aria-label={label}
-          className="border-line bg-surface shadow-card animate-panel-in absolute end-0 top-full z-50 mt-2 w-48 rounded-xl border p-1.5"
+          className="bg-paper-white shadow-subtle rounded-elevatedcards animate-panel-in absolute end-0 top-full z-50 mt-2 w-48 p-1.5"
         >
           {locales.map((item) => {
             const active = item === locale;
@@ -98,17 +103,15 @@ export default function LanguageSwitcher({
                 <button
                   type="button"
                   onClick={() => switchTo(item)}
-                  className={`hover:bg-elevated flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-start text-sm transition ${
-                    active ? "text-primary font-semibold" : "text-ink"
+                  className={`hover:bg-mist-gray rounded-smallcards flex w-full items-center justify-between gap-2 px-2.5 py-2 text-start text-caption transition ${
+                    active ? "text-ink-black font-medium" : "text-slate-gray"
                   }`}
                 >
                   <span className="flex items-center gap-2">
-                    <span className="text-muted w-7 text-[10px] font-semibold tracking-wider uppercase">
-                      {localeLabels[item]}
-                    </span>
+                    <span className="text-ash-gray text-caption w-7">{localeLabels[item]}</span>
                     {localeNames[item]}
                   </span>
-                  {active && <Check className="text-primary h-4 w-4" aria-hidden="true" />}
+                  {active && <Check className="text-ink-black h-4 w-4" aria-hidden="true" />}
                 </button>
               </li>
             );

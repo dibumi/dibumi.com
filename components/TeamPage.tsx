@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, FolderGit2, Mail, MessageSquare } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import { teamMember, whatsappLink } from "@/lib/team";
 import type { SiteContent } from "@/lib/i18n";
@@ -12,6 +11,12 @@ import type { SiteContent } from "@/lib/i18n";
  *
  * Tanpa state, jadi server component. `photo` di lib/team.ts masih null, dan
  * selama itu kolom kiri memakai tile monogram supaya halaman tetap utuh.
+ *
+ * Hierarki tipografinya mengikuti DESIGN.md: tag 15px ash, nama serif weight
+ * 400 (serif tidak pernah bold di sistem ini), peran dan bio 17px. Tidak ada
+ * ikon dekoratif di tautan kontak: ketiganya pill hantu, jadi bentuknya sendiri
+ * yang menandakan bisa diklik. Yang tersisa hanya panah di CTA penutup, dan
+ * panah itu bagian dari label, bukan ikon.
  */
 export default function TeamPage({
   content,
@@ -24,21 +29,18 @@ export default function TeamPage({
 
   const links = [
     {
-      Icon: Mail,
       label: page.emailLabel,
       value: teamMember.email,
       href: `mailto:${teamMember.email}`,
       external: false,
     },
     {
-      Icon: MessageSquare,
       label: page.whatsappLabel,
       value: "WhatsApp",
       href: whatsappLink(teamMember.whatsapp, content.contact.whatsappMessage),
       external: true,
     },
     {
-      Icon: FolderGit2,
       label: page.githubLabel,
       value: "fatkulnurk",
       href: teamMember.github,
@@ -47,10 +49,11 @@ export default function TeamPage({
   ];
 
   return (
-    <article className="mx-auto max-w-7xl px-5 pb-24 pt-20 sm:px-8 sm:pt-24 lg:pb-32 lg:pt-28">
+    <article className="mx-auto max-w-page px-5 pb-20 pt-16 sm:px-8 sm:pt-20 lg:pb-24 lg:pt-24">
       <div className="grid gap-10 md:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] md:gap-12 lg:gap-16">
-        {/* Potret */}
-        <div className="border-line bg-tint-mint relative aspect-[4/5] w-full max-w-[19rem] overflow-hidden rounded-2xl border">
+        {/* Potret. Bingkainya hairline di atas mist, bukan kartu: fotonya
+            sendiri yang mengisi bidang, jadi tidak butuh elevasi. */}
+        <div className="border-hairline bg-mist-gray rounded-images relative aspect-[4/5] w-full max-w-[19rem] overflow-hidden border">
           {teamMember.photo ? (
             <Image
               src={teamMember.photo}
@@ -62,50 +65,43 @@ export default function TeamPage({
             />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-4">
-              <BrandMark className="text-primary/25 h-24 w-24" />
-              <span className="text-primary/50 text-[10px] font-semibold uppercase tracking-[0.2em]">
-                dibumi.com
-              </span>
+              <BrandMark className="text-ink-black/20 h-24 w-24" />
+              <span className="text-ash-gray text-caption">dibumi.com</span>
             </div>
           )}
         </div>
 
         {/* Nama, peran, bio, tautan */}
         <div className="min-w-0 md:pt-1">
-          <p className="text-primary text-xs font-semibold uppercase tracking-[0.16em]">
-            {page.eyebrow}
-          </p>
+          <p className="text-ash-gray text-caption">{page.eyebrow}</p>
 
-          <h1 className="text-ink mt-4 text-3xl font-medium leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl">
+          <h1 className="text-ink-black font-display text-heading font-normal sm:text-heading-lg mt-4">
             {teamMember.name}
           </h1>
 
-          <p className="text-muted mt-2 text-sm font-medium">{page.role}</p>
+          <p className="text-slate-gray text-body mt-2">{page.role}</p>
 
           <div className="mt-7 max-w-[65ch] space-y-4">
             {page.bio.map((paragraph, index) => (
-              <p key={index} className="text-ink text-sm leading-7">
+              <p key={index} className="text-ink-black text-body">
                 {paragraph}
               </p>
             ))}
           </div>
 
           <div className="mt-8">
-            <p className="text-muted text-[10px] font-semibold uppercase tracking-wider">
-              {page.linksLabel}
-            </p>
-            <ul className="mt-2 flex flex-wrap gap-2">
-              {links.map(({ Icon, label, value, href, external }) => (
+            <p className="text-ash-gray text-caption">{page.linksLabel}</p>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {links.map(({ label, value, href, external }) => (
                 <li key={label}>
                   <a
                     href={href}
                     target={external ? "_blank" : undefined}
                     rel={external ? "noopener noreferrer" : undefined}
-                    className="border-line hover:border-primary/40 hover:bg-elevated inline-flex min-h-10 items-center gap-2 rounded-lg border px-3 text-xs font-medium transition"
+                    className="border-ink-black text-ink-black rounded-buttons hover:bg-mist-gray inline-flex h-11 items-center gap-2 border px-4 text-caption transition"
                   >
-                    <Icon className="text-primary h-3.5 w-3.5" aria-hidden="true" />
-                    <span className="text-ink">{label}</span>
-                    <span className="text-muted hidden sm:inline">{value}</span>
+                    <span>{label}</span>
+                    <span className="text-slate-gray hidden sm:inline">{value}</span>
                   </a>
                 </li>
               ))}
@@ -114,26 +110,28 @@ export default function TeamPage({
         </div>
       </div>
 
-      {/* Fakta: satu blok, dipisah garis tipis, bukan daftar panjang. */}
-      <dl className="border-line bg-line mt-14 grid gap-px overflow-hidden rounded-2xl border sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
+      {/* Fakta: satu blok, dipisah garis tipis, bukan daftar panjang. Trik
+          gap-px di atas latar hairline menghasilkan garis 1px tanpa menulis
+          border di tiap sel, jadi tepi luarnya tetap satu garis. */}
+      <dl className="bg-hairline rounded-cards border-hairline mt-14 grid gap-px overflow-hidden border sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
         {page.facts.map((fact) => (
-          <div key={fact.label} className="bg-surface px-5 py-4">
-            <dt className="text-muted text-[10px] font-semibold uppercase tracking-wider">
-              {fact.label}
-            </dt>
-            <dd className="text-ink mt-1.5 text-[13px] leading-5">{fact.value}</dd>
+          <div key={fact.label} className="bg-paper-white px-5 py-4">
+            <dt className="text-ash-gray text-caption">{fact.label}</dt>
+            <dd className="text-ink-black text-body mt-1.5">{fact.value}</dd>
           </div>
         ))}
       </dl>
 
-      <div className="border-line mt-10 flex flex-wrap items-center justify-between gap-4 border-t pt-8">
-        <p className="text-muted max-w-md text-xs leading-6">{content.contact.description}</p>
+      <div className="border-hairline mt-10 flex flex-wrap items-center justify-between gap-4 border-t pt-8">
+        <p className="text-slate-gray max-w-md text-caption">{content.contact.description}</p>
         <Link
           href={`${basePath}#contact`}
-          className="bg-primary hover:bg-primary-hover inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold text-white transition"
+          className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 inline-flex h-11 items-center justify-center gap-2 px-5 text-caption transition"
         >
           {page.cta}
-          <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
+            →
+          </span>
         </Link>
       </div>
     </article>

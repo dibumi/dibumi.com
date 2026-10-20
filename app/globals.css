@@ -2,11 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    color-scheme: light;
-  }
+/*
+ * Custom properties for the Steep system, transcribed from DESIGN.md.
+ * Nilainya sama dengan token di tailwind.config.ts; yang di sini dipakai kalau
+ * sebuah nilai butuh dipakai di CSS biasa (misalnya SVG atau gradient).
+ */
+:root {
+  color-scheme: light;
 
+  /* Colors */
+  --color-ink-black: #17191c;
+  --color-paper-white: #ffffff;
+  --color-mist-gray: #f2f2f3;
+  --color-fog-white: #fafafb;
+  --color-slate-gray: #777b86;
+  --color-ash-gray: #979799;
+  --color-smoke-gray: #a3a6af;
+  --color-blush-peach: #fbe1d1;
+  --color-sienna-brown: #5d2a1a;
+
+  /* Typography — Scale */
+  --text-caption: 15px;
+  --leading-caption: 1.5;
+  --text-body: 17px;
+  --leading-body: 1.35;
+  --text-body-lg: 20px;
+  --leading-body-lg: 1.35;
+  --text-subheading: 22px;
+  --leading-subheading: 1.5;
+  --text-heading-sm: 26px;
+  --leading-heading-sm: 1.18;
+  --tracking-heading-sm: -0.23px;
+  --text-heading: 44px;
+  --leading-heading: 1.3;
+  --tracking-heading: -0.66px;
+  --text-heading-lg: 64px;
+  --leading-heading-lg: 1.3;
+  --tracking-heading-lg: -0.96px;
+  --text-display: 90px;
+  --leading-display: 1.3;
+  --tracking-display: -2.25px;
+
+  /* Layout */
+  --page-max-width: 1200px;
+  --section-gap: 80px;
+  --card-padding: 20px;
+  --element-gap: 8px;
+
+  /* Named Radii */
+  --radius-cards: 24px;
+  --radius-images: 12px;
+  --radius-inputs: 16px;
+  --radius-buttons: 9999px;
+  --radius-smallcards: 16px;
+  --radius-elevatedcards: 20px;
+
+  /* Surfaces */
+  --surface-canvas: #ffffff;
+  --surface-card-mist: #f2f2f3;
+  --surface-section-fog: #fafafb;
+  --surface-accent-blush: #fbe1d1;
+  --surface-elevated-white: #ffffff;
+}
+
+@layer base {
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -19,21 +78,23 @@
   }
 
   body {
-    @apply bg-canvas font-sans text-ink antialiased;
+    @apply bg-paper-white text-ink-black font-sans antialiased;
   }
 
   ::selection {
-    background-color: #e4f2eb;
-    color: #0b4a43;
+    background-color: #fbe1d1;
+    color: #5d2a1a;
   }
 
-  /* Satu gaya fokus untuk seluruh situs, supaya navigasi keyboard konsisten. */
+  /* Satu gaya fokus untuk seluruh situs, supaya navigasi keyboard konsisten.
+     Ink black, bukan warna aksen: sistem ini tidak punya warna fungsional
+     selain peach, dan peach gagal kontras sebagai outline di atas putih. */
   :focus-visible {
-    outline: 2px solid #0a7668;
+    outline: 2px solid #17191c;
     outline-offset: 3px;
   }
 
-  /* Angka pada kartu dan tabel tetap rata walau font mono. */
+  /* Angka pada tabel dan kartu data tetap rata. */
   .tabular {
     font-variant-numeric: tabular-nums;
   }
@@ -59,5 +120,5 @@
  * locale Arab. Spesifisitasnya mengalahkan utility `leading-*` di elemennya.
  */
 :lang(ar) .hero-title {
-  line-height: 1.35;
+  line-height: 1.45;
 }

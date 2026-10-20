@@ -1,109 +1,91 @@
 import React from "react";
-import {
-  ArrowUpRight,
-  ChartLine,
-  CreditCard,
-  Layers,
-  Megaphone,
-  Receipt,
-  Sparkles,
-  Store,
-  type LucideIcon,
-} from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { getPlatformProducts, ngambegHubUrl } from "@/lib/products";
 import type { SiteContent } from "@/lib/i18n";
 
-const platformIcons: Record<string, LucideIcon> = {
-  aiGateway: Sparkles,
-  paymentOrchestration: CreditCard,
-  adserverExchange: Megaphone,
-  cloudHostingBilling: Receipt,
-  trafficAnalytics: ChartLine,
-  selfHostedOnlineStore: Store,
-};
-
+/**
+ * Produk sendiri, dibagi dua grup.
+ *
+ * Kartu platform memakai mist-gray datar tanpa border, shadow, dan ikon: status
+ * "Soon" cukup dibawa pill hairline tipis di atas nama produk. Baris judul grup
+ * dipertahankan supaya "Platforms" dan "Ngambeg Cyber Media" tetap terbaca
+ * sebagai dua katalog berbeda, bukan satu daftar panjang.
+ *
+ * Kartu Ngambeg adalah satu-satunya entri selebar penuh dan memakai fog-white
+ * ber-border hairline, bukan mist-gray: ia pintu keluar situs, jadi permukaan
+ * yang berbeda menandainya sebagai penutup daftar. Tautannya pill ghost dengan
+ * panah di dalam label — glyph dekoratif lain sudah dihapus dari sistem ini.
+ */
 export default function Products({ content }: { content: SiteContent }) {
   const copy = content.products;
   const platformCopy = copy.platforms as Record<string, { description: string }>;
 
   return (
-    <section id="products" className="py-28 lg:py-36">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+    <section id="products" className="py-20 lg:py-24">
+      <div className="mx-auto max-w-page px-5 sm:px-8">
         <SectionHeading
           eyebrow={copy.eyebrow}
           title={copy.title}
           description={copy.description}
-          icon={<Sparkles className="h-4 w-4" aria-hidden="true" />}
         />
 
-        <div className="mt-16 flex flex-col gap-6 lg:gap-7">
+        <div className="mt-16 flex flex-col gap-6">
           {/* Platforms: produk milik dibumi.com, situsnya belum tayang */}
           <div>
             <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-              <h3 className="text-ink text-sm font-semibold">{copy.groups.platforms.label}</h3>
-              <span className="text-muted text-xs">{copy.groups.platforms.brand}</span>
+              <h3 className="text-ink-black text-body font-medium">
+                {copy.groups.platforms.label}
+              </h3>
+              <span className="text-ash-gray text-caption">{copy.groups.platforms.brand}</span>
             </div>
 
             {/* auto-rows-fr menyamakan tinggi baris pertama dan kedua, jadi
-                lima kartu produk tampil dengan tinggi identik. Dibatasi ke md ke
+                enam kartu produk tampil dengan tinggi identik. Dibatasi ke md ke
                 atas karena di mobile kartu bertumpuk satu kolom. */}
-            <div className="grid gap-6 md:auto-rows-fr md:grid-cols-3 lg:gap-7">
-              {getPlatformProducts().map((item) => {
-                const Icon = platformIcons[item.id] ?? Sparkles;
+            <div className="grid gap-6 md:auto-rows-fr md:grid-cols-3">
+              {getPlatformProducts().map((item) => (
+                <article
+                  key={item.id}
+                  className="bg-mist-gray rounded-cards flex flex-col gap-6 p-8"
+                >
+                  <span className="border-hairline text-ash-gray rounded-full w-fit border px-2.5 py-0.5 text-caption">
+                    {copy.soon}
+                  </span>
 
-                return (
-                  <article
-                    key={item.id}
-                    className="border-primary/15 bg-tint-mint flex flex-col gap-6 rounded-2xl border p-9"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <span className="bg-surface text-primary flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm">
-                        <Icon className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
-                      </span>
-                      <span className="border-primary/20 text-primary bg-surface/80 rounded-md border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider">
-                        {copy.soon}
-                      </span>
-                    </div>
-
-                    <div>
-                      <h4 className="text-ink text-lg font-semibold tracking-tight">{item.name}</h4>
-                      <p className="text-muted mt-2 text-sm leading-7">
-                        {platformCopy[item.id]?.description}
-                      </p>
-                    </div>
-                  </article>
-                );
-              })}
+                  <div>
+                    <h4 className="text-ink-black text-body-lg font-medium">{item.name}</h4>
+                    <p className="text-slate-gray mt-2 text-body">
+                      {platformCopy[item.id]?.description}
+                    </p>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
 
           {/* Ngambeg Cyber Media: katalog game dan aplikasi tinggal di ngambeg.com,
               jadi kartu ini hanya pintu masuk, bukan daftar yang harus ikut diperbarui. */}
-          <article className="border-line bg-surface flex flex-col gap-6 rounded-2xl border p-9 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-3">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-100 text-violet-700">
-                <Layers className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
-              </span>
-              <div className="min-w-0">
-                <h3 className="text-ink text-lg font-semibold tracking-tight">
-                  {copy.groups.ngambeg.label}
-                </h3>
-                <p className="text-muted text-xs">{copy.groups.ngambeg.brand}</p>
-                <p className="text-muted mt-3 max-w-xl text-sm leading-7">
-                  {copy.groups.ngambeg.description}
-                </p>
-              </div>
+          <article className="bg-fog-white rounded-cards border-hairline flex flex-col gap-6 border p-8 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <h3 className="text-ink-black text-body-lg font-medium">
+                {copy.groups.ngambeg.label}
+              </h3>
+              <p className="text-ash-gray text-caption">{copy.groups.ngambeg.brand}</p>
+              <p className="text-slate-gray mt-3 max-w-xl text-body">
+                {copy.groups.ngambeg.description}
+              </p>
             </div>
 
             <a
               href={ngambegHubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="border-line bg-elevated text-ink hover:border-primary/40 hover:text-primary inline-flex w-fit shrink-0 items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-semibold transition"
+              className="border-ink-black text-ink-black rounded-buttons hover:bg-mist-gray inline-flex h-11 w-fit shrink-0 items-center gap-1.5 border px-5 text-caption transition"
             >
               {copy.hub}
-              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+              <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
+                →
+              </span>
             </a>
           </article>
         </div>

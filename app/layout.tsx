@@ -1,17 +1,36 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, IBM_Plex_Sans_Arabic, Noto_Sans_SC } from "next/font/google";
+import {
+  IBM_Plex_Sans_Arabic,
+  Inter,
+  Noto_Sans_SC,
+  Source_Serif_4,
+} from "next/font/google";
 import "./globals.css";
 import { locales } from "@/lib/i18n";
 
-// Geist Mono dipakai untuk seluruh teks, sama seperti situs referensi.
-const mono = Geist_Mono({
+/*
+ * Dua wajah huruf, sesuai DESIGN.md.
+ *
+ * Signifier dan Sohne adalah lisensi komersial, jadi substitusinya Source
+ * Serif 4 dan Inter. Source Serif 4 dimuat sebagai variable font supaya
+ * display tetap bisa duduk di weight 400 di semua ukuran, dan italic-nya
+ * tersedia untuk frasa miring di judul.
+ */
+const display = Source_Serif_4({
   subsets: ["latin"],
+  style: ["normal", "italic"],
   display: "swap",
-  variable: "--font-geist-mono",
+  variable: "--font-display",
 });
 
-// Geist Mono tidak punya glyph Arab dan CJK, jadi dua locale ini memakai
-// font pendamping agar teks tetap terbaca.
+const sans = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
+});
+
+// Source Serif 4 dan Inter tidak punya glyph Arab dan CJK, jadi dua locale ini
+// memakai font pendamping agar teks tetap terbaca.
 const arabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
   weight: ["300", "400", "600", "700"],
@@ -73,7 +92,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a7668",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };
@@ -86,9 +105,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${mono.variable} ${arabic.variable} ${chinese.variable} scroll-smooth motion-reduce:scroll-auto`}
+      className={`${display.variable} ${sans.variable} ${arabic.variable} ${chinese.variable} scroll-smooth motion-reduce:scroll-auto`}
     >
-      <body className="bg-canvas text-ink font-sans antialiased">{children}</body>
+      <body className="bg-paper-white text-ink-black font-sans antialiased">{children}</body>
     </html>
   );
 }

@@ -33,7 +33,7 @@ export default async function LocaleLayout({
   return (
     <div lang={locale} dir={getDirection(locale)} className={localeFontClass[locale]}>
       <HtmlLangSync locale={locale} />
-      <div className="bg-canvas flex min-h-dvh flex-col">
+      <div className="bg-paper-white flex min-h-dvh flex-col">
         <Navbar locale={locale} content={content} basePath={basePath} />
         <main className="flex-grow">{children}</main>
         <Footer content={content} locale={locale} basePath={basePath} />
