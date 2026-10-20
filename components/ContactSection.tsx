@@ -3,19 +3,16 @@ import { contactEmail, contactWhatsapp, whatsappLink } from "@/lib/contact";
 import type { SiteContent } from "@/lib/i18n";
 
 /**
- * Section penutup: klaim di kiri, satu kartu peach berisi dua jalur aksi di
- * kanan, fakta operasional di band bawah.
+ * Section penutup: klaim di kiri, satu panel aksi di kanan, fakta operasional
+ * di band bawah.
  *
- * Kartu peach adalah SATU-SATUNYA kartu berwarna di seluruh halaman. DESIGN.md
- * membatasinya satu per halaman supaya tetap terbaca sebagai penekanan
- * editorial, bukan sebagai latar. Karena itu section ini wajib tetap
- * bg-paper-white: peach hanya bekerja di atas putih, bukan di atas mist atau
- * fog.
+ * Panel di kanan sekarang netral (mist), bukan peach. Kartu peach satu-satunya
+ * per halaman sudah dipakai kartu fitur pertama di Highlights, tempat ia
+ * menerangkan hal pertama yang dikerjakan studio; DESIGN.md membatasi peach
+ * satu per halaman supaya tetap terbaca sebagai penekanan, bukan latar.
  *
- * Di dalam kartu peach semua teks dan garis memakai sienna-brown; slate, ash,
- * dan ink dilarang di sana karena akan memecah efek "tinta di atas kertas
- * kraft". Satu-satunya pengecualian adalah pill WhatsApp yang terisi ink
- * dengan teks paper, sesuai pasangan pill di DESIGN.md.
+ * Hierarki dua jalur tetap: WhatsApp adalah pill terisi ink, email adalah pill
+ * bergaris. Yang membedakan tingkat, bukan warna.
  *
  * Nomor, email, dan URL wa.me dibaca dari lib/contact.ts, jadi tidak ada nilai
  * kontak yang ditulis ulang di komponen ini.
@@ -30,11 +27,11 @@ export default function ContactSection({
   const whatsappUrl = whatsappLink(contactWhatsapp.number, content.whatsappMessage);
 
   /* Dua pill dengan geometri sama supaya terbaca sebagai pasangan, bukan dua
-     tombol berbeda tingkat. Yang membedakan hanya isi dan warnanya. */
+     tombol berbeda tingkat. Yang membedakan hanya isi dan garisnya. */
   const filledPill =
     "bg-ink-black text-paper-white rounded-buttons inline-flex h-12 w-full items-center justify-between px-5 text-body transition hover:bg-ink-black/90";
   const ghostPill =
-    "border-sienna-brown text-sienna-brown rounded-buttons hover:bg-sienna-brown/5 inline-flex h-12 w-full items-center justify-between border px-5 text-body transition";
+    "border-ink-black text-ink-black rounded-buttons hover:bg-mist-gray inline-flex h-12 w-full items-center justify-between border px-5 text-body transition";
 
   return (
     <section id="contact" className="bg-paper-white py-20 lg:py-24">
@@ -51,9 +48,8 @@ export default function ContactSection({
             </p>
           </div>
 
-          {/* Kartu peach: tanpa border, tanpa shadow. Kartu konten selalu datar;
-              elevasi hanya milik floating artifact di hero. */}
-          <div className="bg-blush-peach rounded-cards p-8">
+          {/* Panel aksi: mist, tanpa border, tanpa shadow. */}
+          <div className="bg-mist-gray rounded-cards p-8">
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-2">
                 <a
@@ -69,10 +65,10 @@ export default function ContactSection({
                 </a>
                 {/* Nilai kontak dikunci ltr supaya tidak terbalik di locale Arab;
                     tabular menjaga angka tetap rata. */}
-                <p className="text-sienna-brown tabular text-body" dir="ltr">
+                <p className="text-ink-black tabular text-body" dir="ltr">
                   {contactWhatsapp.display}
                 </p>
-                <p className="text-sienna-brown/80 text-caption">{content.whatsappHint}</p>
+                <p className="text-slate-gray text-caption">{content.whatsappHint}</p>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -82,10 +78,10 @@ export default function ContactSection({
                     →
                   </span>
                 </a>
-                <p className="text-sienna-brown text-body break-words" dir="ltr">
+                <p className="text-ink-black text-body break-words" dir="ltr">
                   {contactEmail}
                 </p>
-                <p className="text-sienna-brown/80 text-caption">{content.emailHint}</p>
+                <p className="text-slate-gray text-caption">{content.emailHint}</p>
               </div>
             </div>
           </div>
