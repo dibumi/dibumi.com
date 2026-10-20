@@ -12,7 +12,7 @@ import {
   ServicesMenuList,
   type ServiceItem,
 } from "@/components/nav/ServicesMenu";
-import { getProductGroup } from "@/lib/products";
+import { getPlatformProducts } from "@/lib/products";
 import { serviceMeta } from "@/lib/services";
 import type { Locale, SiteContent } from "@/lib/i18n";
 
@@ -87,8 +87,9 @@ export default function Navbar({
   const teamHref = `${basePath}/teams`;
   const teamActive = pathname === teamHref;
 
-  const productCount =
-    getProductGroup("platforms").items.length + getProductGroup("ngambeg").items.length;
+  // Panel Product berisi tiga produk platform plus satu tautan ke ngambeg.com,
+  // bukan dua belas item, jadi hitungannya mengikuti isi panel.
+  const productCount = getPlatformProducts().length + 1;
 
   // Rute berubah: semua panel dan sheet ditutup.
   useEffect(() => {
@@ -372,12 +373,13 @@ export default function Navbar({
           >
             <div className="mx-auto max-w-7xl px-8 py-7">
               {openPanel === "product" ? (
-                <ProductMenu content={content} />
+                <ProductMenu content={content} onNavigate={() => setOpenPanel(null)} />
               ) : (
                 <ServicesMenu
                   content={content}
                   basePath={basePath}
                   items={serviceItems}
+                  onNavigate={() => setOpenPanel(null)}
                 />
               )}
             </div>

@@ -8,11 +8,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
-import {
-  getNgambegProducts,
-  getPlatformProducts,
-  ngambegHubUrl,
-} from "@/lib/products";
+import { getPlatformProducts, ngambegHubUrl } from "@/lib/products";
 import type { SiteContent } from "@/lib/i18n";
 
 const platformIcons: Record<string, LucideIcon> = {
@@ -24,7 +20,6 @@ const platformIcons: Record<string, LucideIcon> = {
 export default function Products({ content }: { content: SiteContent }) {
   const copy = content.products;
   const platformCopy = copy.platforms as Record<string, { description: string }>;
-  const ngambegItems = getNgambegProducts();
 
   return (
     <section id="products" className="py-20 lg:py-28">
@@ -74,59 +69,29 @@ export default function Products({ content }: { content: SiteContent }) {
             </div>
           </div>
 
-          {/* Ngambeg Cyber Media: game dan aplikasi dalam satu kartu */}
-          <article className="border-line bg-surface flex flex-col gap-5 rounded-2xl border p-7">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-100 text-violet-700">
-                  <Layers className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
-                </span>
-                <div className="min-w-0">
-                  <h3 className="text-ink text-lg font-semibold tracking-tight">
-                    {copy.groups.ngambeg.label}
-                  </h3>
-                  <p className="text-muted text-[11px]">{copy.groups.ngambeg.brand}</p>
-                </div>
-              </div>
-              <span className="text-muted font-mono text-[10px] tabular">
-                {String(ngambegItems.length).padStart(2, "0")}
+          {/* Ngambeg Cyber Media: katalog game dan aplikasi tinggal di ngambeg.com,
+              jadi kartu ini hanya pintu masuk, bukan daftar yang harus ikut diperbarui. */}
+          <article className="border-line bg-surface flex flex-col gap-6 rounded-2xl border p-7 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-100 text-violet-700">
+                <Layers className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
               </span>
+              <div className="min-w-0">
+                <h3 className="text-ink text-lg font-semibold tracking-tight">
+                  {copy.groups.ngambeg.label}
+                </h3>
+                <p className="text-muted text-[11px]">{copy.groups.ngambeg.brand}</p>
+                <p className="text-muted mt-3 max-w-xl text-sm leading-7">
+                  {copy.groups.ngambeg.description}
+                </p>
+              </div>
             </div>
-
-            <p className="text-muted text-sm leading-7">{copy.groups.ngambeg.description}</p>
-
-            <ul className="flex flex-wrap gap-2">
-              {ngambegItems.map((item) =>
-                item.href ? (
-                  <li key={item.id}>
-                    <a
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="border-line bg-elevated text-ink hover:border-primary/40 hover:text-primary inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs transition"
-                    >
-                      {item.name}
-                      <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
-                    </a>
-                  </li>
-                ) : (
-                  <li key={item.id}>
-                    <span className="border-line text-muted inline-flex items-center gap-1.5 rounded-lg border border-dashed px-2.5 py-1.5 text-xs">
-                      {item.name}
-                      <span className="text-[9px] font-semibold uppercase tracking-wider">
-                        {copy.soon}
-                      </span>
-                    </span>
-                  </li>
-                ),
-              )}
-            </ul>
 
             <a
               href={ngambegHubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary inline-flex w-fit items-center gap-1.5 text-sm font-semibold"
+              className="border-line bg-elevated text-ink hover:border-primary/40 hover:text-primary inline-flex w-fit shrink-0 items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-semibold transition"
             >
               {copy.hub}
               <ArrowUpRight className="h-4 w-4" aria-hidden="true" />

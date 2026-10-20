@@ -1,34 +1,21 @@
 /**
  * Satu sumber data untuk produk yang tampil di navbar, section Products, dan footer.
  *
- * Dua tingkat: grup (platforms, ngambeg) dan item di dalamnya. Nama produk
- * tidak diterjemahkan (nama merek), sedangkan label grup dan deskripsi tiap
- * produk ada di lib/i18n.ts dan dicari lewat `id`. Kalau situs sebuah produk
- * sudah terbit, cukup isi `href` di bawah dan seluruh link ikut aktif tanpa
- * menyentuh komponen.
+ * Hanya produk platform milik dibumi.com yang didaftar di sini. Seluruh katalog
+ * Ngambeg Cyber Media (game dan aplikasi) tidak lagi dijabarkan satu per satu:
+ * navbar dan section Products cukup menautkan ke `ngambegHubUrl`, dan daftar
+ * lengkapnya hidup di ngambeg.com. Label dan deskripsi grup Ngambeg tetap di
+ * lib/i18n.ts karena harus diterjemahkan.
  *
- * Semua produk Ngambeg Cyber Media (game maupun aplikasi) berada dalam satu
- * grup karena tampil sebagai satu daftar di bawah ngambeg.com.
+ * Nama produk tidak diterjemahkan (nama merek), sedangkan label grup dan
+ * deskripsi tiap produk ada di lib/i18n.ts dan dicari lewat `id`. Kalau situs
+ * sebuah produk sudah terbit, cukup isi `href` di bawah dan seluruh link ikut
+ * aktif tanpa menyentuh komponen.
  */
 
 export type ProductStatus = "live" | "soon";
 
-export type ProductId =
-  | "aiGateway"
-  | "paymentOrchestration"
-  | "adserverExchange"
-  | "blockIqPuzzle"
-  | "smashFest"
-  | "bounce"
-  | "bangun"
-  | "financialToolkit"
-  | "compoundInterestCalculator"
-  | "netmeter"
-  | "pdfToolkit"
-  | "psikotes"
-  | "seberapaIndonesia"
-  | "vela"
-  | "wetonku";
+export type ProductId = "aiGateway" | "paymentOrchestration" | "adserverExchange";
 
 export type ProductItem = {
   id: ProductId;
@@ -37,79 +24,17 @@ export type ProductItem = {
   status: ProductStatus;
 };
 
-export type ProductGroupId = "platforms" | "ngambeg";
-
-export type ProductGroup = {
-  id: ProductGroupId;
-  items: ProductItem[];
-};
-
 /** Halaman hub semua produk Ngambeg Cyber Media. */
 export const ngambegHubUrl = "https://www.ngambeg.com";
 
-export const productGroups: ProductGroup[] = [
-  {
-    id: "platforms",
-    items: [
-      // Produk platform milik dibumi.com, situsnya belum dipublikasikan.
-      { id: "aiGateway", name: "AI Gateway", href: null, status: "soon" },
-      { id: "paymentOrchestration", name: "Payment Orchestration", href: null, status: "soon" },
-      { id: "adserverExchange", name: "Adserver Exchange", href: null, status: "soon" },
-    ],
-  },
-  {
-    id: "ngambeg",
-    items: [
-      {
-        id: "blockIqPuzzle",
-        name: "Block IQ Puzzle",
-        href: "https://blockiqpuzzle.ngambeg.com",
-        status: "live",
-      },
-      { id: "smashFest", name: "SmashFest", href: "https://smashfest.ngambeg.com", status: "live" },
-      { id: "bounce", name: "Bounce", href: null, status: "soon" },
-      { id: "bangun", name: "Bangun!", href: "https://alarm.ngambeg.com", status: "live" },
-      {
-        id: "financialToolkit",
-        name: "Financial Toolkit",
-        href: "https://financialtoolkit.ngambeg.com",
-        status: "live",
-      },
-      {
-        id: "compoundInterestCalculator",
-        name: "Compound Interest Calculator",
-        href: "https://compoundinterestcalculator.ngambeg.com",
-        status: "live",
-      },
-      { id: "netmeter", name: "NetMeter", href: "https://netmeter.ngambeg.com", status: "live" },
-      { id: "pdfToolkit", name: "PDF Toolkit", href: "https://pdftoolkit.ngambeg.com", status: "live" },
-      { id: "psikotes", name: "Psikotes", href: "https://psikotes.ngambeg.com", status: "live" },
-      {
-        id: "seberapaIndonesia",
-        name: "Seberapa Indonesia Kamu?",
-        href: "https://seberapaindonesia.ngambeg.com",
-        status: "live",
-      },
-      { id: "vela", name: "Vela Browser", href: "https://vela.ngambeg.com", status: "live" },
-      { id: "wetonku", name: "WetonKu", href: "https://wetonku.ngambeg.com", status: "live" },
-    ],
-  },
+export const platformProducts: ProductItem[] = [
+  // Produk platform milik dibumi.com, situsnya belum dipublikasikan.
+  { id: "aiGateway", name: "AI Gateway", href: null, status: "soon" },
+  { id: "paymentOrchestration", name: "Payment Orchestration", href: null, status: "soon" },
+  { id: "adserverExchange", name: "Adserver Exchange", href: null, status: "soon" },
 ];
-
-export function getProductGroup(id: ProductGroupId): ProductGroup {
-  const group = productGroups.find((item) => item.id === id);
-  if (!group) {
-    throw new Error(`Unknown product group: ${id}`);
-  }
-  return group;
-}
 
 /** Produk platform yang tampil di kartu besar section Products. */
 export function getPlatformProducts(): ProductItem[] {
-  return getProductGroup("platforms").items;
-}
-
-/** Seluruh produk Ngambeg Cyber Media: game dan aplikasi dalam satu daftar. */
-export function getNgambegProducts(): ProductItem[] {
-  return getProductGroup("ngambeg").items;
+  return platformProducts;
 }

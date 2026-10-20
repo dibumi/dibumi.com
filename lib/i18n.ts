@@ -43,7 +43,6 @@ export type SiteContent = {
     closeMenu: string;
     language: string;
     soon: string;
-    allProducts: string;
     allServices: string;
   };
   hero: {
@@ -156,7 +155,6 @@ const en: SiteContent = {
     closeMenu: "Close navigation",
     language: "Language",
     soon: "Soon",
-    allProducts: "All products",
     allServices: "All services",
   },
   hero: {
@@ -422,7 +420,6 @@ const id: SiteContent = {
     closeMenu: "Tutup navigasi",
     language: "Bahasa",
     soon: "Segera",
-    allProducts: "Semua produk",
     allServices: "Semua layanan",
   },
   hero: {
@@ -689,7 +686,6 @@ const ar: SiteContent = {
     closeMenu: "أغلق القائمة",
     language: "اللغة",
     soon: "قريباً",
-    allProducts: "جميع المنتجات",
     allServices: "جميع الخدمات",
   },
   hero: {
@@ -951,7 +947,6 @@ const zh: SiteContent = {
     closeMenu: "关闭菜单",
     language: "语言",
     soon: "即将上线",
-    allProducts: "全部产品",
     allServices: "全部服务",
   },
   hero: {
@@ -1192,7 +1187,6 @@ const pl: SiteContent = {
     closeMenu: "Zamknij nawigację",
     language: "Język",
     soon: "Wkrótce",
-    allProducts: "Wszystkie produkty",
     allServices: "Wszystkie usługi",
   },
   hero: {
