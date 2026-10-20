@@ -238,7 +238,11 @@ export default function Navbar({
 
   return (
     <>
-      <header className="border-line/70 bg-canvas/90 sticky top-0 z-50 border-b backdrop-blur-md">
+      {/* Header memakai surface (putih), bukan canvas seperti latar halaman:
+          kalau keduanya sama, bar ini menyatu dengan isi dan yang tersisa hanya
+          garis 1px. Putih membuatnya terbaca sebagai lapisan UI, sewarna dengan
+          mega panel yang menempel di bawahnya. */}
+      <header className="border-line bg-surface/95 sticky top-0 z-50 border-b backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-5 sm:px-8 lg:h-[4.5rem]">
           {/* Brand: sekaligus link ke beranda, jadi tidak ada item "Home". */}
           <Link
