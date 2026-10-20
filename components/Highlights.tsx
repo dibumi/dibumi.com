@@ -5,26 +5,28 @@ import type { SiteContent } from "@/lib/i18n";
 /**
  * Tiga kartu fase kerja, tepat di bawah Products.
  *
- * Bentuknya mengikuti baris kartu USP di referensi: kartu tinggi beraspek 3/4
- * di desktop, disusun sebagai kipas — kartu kiri dan kanan menyusut ke 90% dan
- * kartu tengah membesar ke 110%, semuanya berpangkal di bawah sehingga
- * membesarnya terasa seperti kartu yang terangkat ke depan, bukan kotak yang
- * membengkak. Di bawah `md` baris itu jadi carousel snap: satu kartu per layar,
- * digeser jari, tanpa tombol dan tanpa JavaScript — karena itu komponen ini
- * tetap server component.
+ * Bentuknya mengikuti baris kartu USP di referensi: tiga kartu tinggi beraspek
+ * 3/4 di desktop, bertinggi sama dan sejajar tepi. Tidak ada skala bawaan —
+ * zoom hanya terjadi pada kartu yang sedang ditunjuk kursor. Kartu itu membesar
+ * sedikit, naik ke atas tetangganya, dan menggeser permukaannya, jadi "menunjuk"
+ * terasa seperti mengangkat satu kartu dari barisnya, bukan seperti tiga kartu
+ * yang memang beda ukuran. Di bawah `md` baris itu jadi carousel snap: satu
+ * kartu per layar, digeser jari, tanpa tombol dan tanpa JavaScript — karena itu
+ * komponen ini tetap server component.
  *
  * Isi kartu dibagi tiga seperti di referensi: tag di atas, satu visual besar di
  * tengah, judul dan deskripsi di bawah. Slot visualnya diisi ordinal serif
- * raksasa, bukan ilustrasi. Referensi menaruh SVG botol parfum, balok lego, dan
- * roket di slot itu; ketiganya aset produk Steep sendiri dan tidak berarti apa
- * pun untuk Discover/Build/Operate. Menggambar penggantinya berarti mengarang
- * gambar, dan aturan halaman ini melarangnya, jadi yang bekerja adalah angka —
- * bahan yang sudah dipakai rail Process dan nomor kartu versi sebelumnya.
+ * raksasa — 01, 02, 03 — bukan ilustrasi. Referensi menaruh SVG botol parfum,
+ * balok lego, dan roket di slot itu; ketiganya aset produk Steep sendiri dan
+ * tidak berarti apa pun untuk Discover/Build/Operate. Menggambar penggantinya
+ * berarti mengarang gambar, dan aturan halaman ini melarangnya, jadi yang
+ * bekerja adalah angka — bahan yang sudah dipakai rail Process dan nomor kartu
+ * versi sebelumnya.
  *
  * Teks kartu selalu terlihat. Di referensi isinya disembunyikan (opacity-0)
  * sampai kursor menyentuh kartu; untuk section yang tugasnya menjelaskan cara
  * kerja, itu menahan informasi di balik mouse dan membuatnya tak pernah terbaca
- * di layar sentuh. Hover di sini hanya mengangkat kartu satu piksel.
+ * di layar sentuh.
  *
  * Kartu pertama peach, dua lainnya mist. Referensi mewarnai kartu ketiga hijau
  * (#D8EFDF); palet halaman ini tidak punya warna fungsional selain pasangan
@@ -33,21 +35,9 @@ import type { SiteContent } from "@/lib/i18n";
  *
  * Satu jebakan yang harus dijaga: `Reveal` menulis `transform` inline untuk
  * animasi masuknya, dan inline style mengalahkan utility Tailwind. Karena itu
- * skala kipas TIDAK boleh menempel di elemen `Reveal` — ia dipegang `<div>` di
- * dalamnya, sementara `Reveal` hanya membawa kotak tata letaknya (`flex-1` dan
- * `aspect`). Kalau keduanya digabung, `scale-90` akan diam-diam tidak berlaku.
- *
- * Transform kipas memakai varian `rtl:` karena geseran horizontal mengikuti
- * sumbu baca: di Arab kartu pertama harus bergeser ke kiri agar busurnya tetap
- * simetris.
+ * zoom hover dipegang `<div>` di dalam kartu, bukan elemen `Reveal` — kalau
+ * keduanya digabung, `hover:scale` akan diam-diam tidak berlaku.
  */
-
-/** Kelas kipas per posisi kartu. Dipakai carousel dan baris desktop. */
-const fan = [
-  "md:scale-90 md:translate-x-[6%] rtl:md:-translate-x-[6%]",
-  "md:scale-90 md:-translate-x-[2%] rtl:md:translate-x-[2%]",
-  "md:scale-110",
-];
 
 export default function Highlights({ content }: { content: SiteContent }) {
   return (
@@ -78,12 +68,11 @@ export default function Highlights({ content }: { content: SiteContent }) {
         ))}
       </ul>
 
-      {/* Desktop: satu baris kipas. `items-end` menjaga ketiga kartu berpangkal
-          di garis bawah yang sama, jadi yang berbeda hanyalah skalanya.
-          Barisnya sendiri digeser -3% seperti di referensi: kartu pertama
-          bergeser +6% dan kartu ketiga membesar 110%, dan tanpa imbangan itu
-          pusat komposisinya condong ke kanan. */}
-      <ul className="mt-14 hidden items-end gap-6 md:flex md:-translate-x-[3%] rtl:md:translate-x-[3%]">
+      {/* Desktop: satu baris, tiga kartu bertinggi sama. `items-stretch` (bawaan
+          flex) yang menyamakan tingginya: tiap `<li>` mengambil lebar `flex-1`
+          dengan aspek 3/4, jadi tingginya otomatis identik. Tanpa skala bawaan
+          apa pun — zoom hanya pada kartu yang di-hover. */}
+      <ul className="mt-14 hidden gap-6 md:flex">
         {content.highlights.map((item, index) => (
           <Reveal
             as="li"
@@ -91,7 +80,7 @@ export default function Highlights({ content }: { content: SiteContent }) {
             delay={index * 0.08}
             className="aspect-[3/4] flex-1"
           >
-            <Card item={item} index={index} className={`h-full ${fan[index]}`} />
+            <Card item={item} index={index} className="h-full" />
           </Reveal>
         ))}
       </ul>
@@ -102,8 +91,15 @@ export default function Highlights({ content }: { content: SiteContent }) {
 /**
  * Satu kartu: tag, ordinal, judul, deskripsi.
  *
- * `className` membawa aspek dan skala kipas, bukan `Card` sendiri, karena
- * carousel memakai aspek 4/5 dan baris desktop 3/4.
+ * `className` membawa aspek dan tinggi, bukan `Card` sendiri, karena carousel
+ * memakai aspek 4/5 dan baris desktop 3/4.
+ *
+ * Zoom hover ada di sini, di `<div>` kartu — bukan di `Reveal` pembungkusnya,
+ * karena motion menulis `transform` inline untuk animasi masuk dan inline style
+ * mengalahkan utility Tailwind. `relative` + `z-10` saat hover membuat kartu
+ * yang membesar naik di atas tetangganya, bukan tertutup olehnya. `origin-bottom`
+ * membuat zoom tumbuh dari garis bawah, jadi barisnya tetap terasa berpangkal
+ * pada satu lantai.
  */
 function Card({
   item,
@@ -120,7 +116,7 @@ function Card({
 
   return (
     <div
-      className={`rounded-cards group flex origin-bottom flex-col overflow-hidden p-[9%] transition-transform duration-500 hover:-translate-y-1 ${className} ${
+      className={`rounded-cards group relative flex origin-bottom flex-col justify-between overflow-hidden p-[9%] transition-transform duration-500 ease-out md:hover:z-10 md:hover:scale-[1.04] ${className} ${
         accent ? "bg-blush-peach" : "bg-mist-gray"
       }`}
     >
@@ -132,15 +128,21 @@ function Card({
         {item.tag}
       </p>
 
-      {/* Ordinal serif di tengah: pengganti ilustrasi. Ukurannya relatif
-          terhadap lebar kartu (`text-[28vw]` di mobile, dibatasi `lg:text-[8rem]`)
-          supaya tidak meluber saat kartu menyempit di antara breakpoint.
-          Dibungkus `flex-1` agar ia benar-benar duduk di tengah sisa ruang
-          antara tag di atas dan teks di bawah, bukan sekadar di antaranya. */}
-      <span className="flex flex-1 items-center justify-center" aria-hidden="true">
+      {/* Ordinal serif: pengganti ilustrasi. Diletakkan absolut pada persentase
+          tinggi kartu, bukan di tengah sisa ruang flex. Alasannya terlihat saat
+          judul kartu berbeda panjang: "Scope before code" satu baris,
+          "Handover without handcuffs" dua baris, jadi ruang sisa di tengah tiap
+          kartu berbeda dan ordinalnya turun-naik sendiri. Dengan `top-[38%]`
+          ketiga angka duduk di garis yang sama, seperti slot ilustrasi di
+          referensi (`top-[35%]`). Ukurannya relatif terhadap lebar layar di
+          mobile (`text-[28vw]`) lalu dipatok supaya tidak meluber. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-[38%] flex justify-center"
+      >
         <span
           className={`font-display text-center text-[28vw] leading-none font-normal sm:text-[10rem] md:text-[7rem] lg:text-[8rem] ${
-            accent ? "text-sienna-brown/25" : "text-ink-black/[0.08]"
+            accent ? "text-sienna-brown/25" : "text-ink-black/[0.12]"
           }`}
         >
           {String(index + 1).padStart(2, "0")}
