@@ -29,7 +29,7 @@ export default function Services({
   basePath: string;
 }) {
   return (
-    <section id="services" className="bg-ink-black py-20 lg:py-28">
+    <section id="services" className="bg-ink-black py-20 lg:py-40">
       <div className="mx-auto max-w-page px-5 sm:px-8">
         <Reveal>
           <div className="max-w-[58ch]">

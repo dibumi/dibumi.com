@@ -39,7 +39,7 @@ export default function ClientMarquee({ content }: { content: SiteContent["clien
           className="from-paper-white pointer-events-none absolute inset-y-0 end-0 z-10 w-[12%] bg-gradient-to-l to-transparent"
         />
 
-        <ul className="animate-marquee flex w-max items-center gap-14 group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+        <ul className="animate-marquee flex w-max items-center gap-10 group-hover:[animation-play-state:paused] motion-reduce:animate-none lg:gap-14">
           {row.map((client, index) => (
             <li
               key={`${client.name}-${index}`}
@@ -55,10 +55,10 @@ export default function ClientMarquee({ content }: { content: SiteContent["clien
                   width={client.width}
                   height={client.height}
                   loading="lazy"
-                  className="h-7 w-auto max-w-[130px] object-contain opacity-45 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0"
+                  className="h-8 w-auto max-w-[140px] object-contain opacity-55 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0 lg:h-9"
                 />
               ) : (
-                <span className="text-slate-gray text-caption font-medium uppercase tracking-wide">
+                <span className="text-slate-gray text-body font-medium uppercase tracking-wide">
                   {client.name}
                 </span>
               )}
