@@ -54,6 +54,15 @@ export type SiteContent = {
     description: string;
     primaryCta: string;
     secondaryCta: string;
+    /**
+     * Baris kredensial di bawah tombol: kota/provinsi dan tahun berdiri.
+     *
+     * Sengaja mengulang `footer.location` dalam bentuk pendek (tanpa negara)
+     * karena baris ini harus muat satu baris di 390px, sementara footer menyebut
+     * "Indonesia" lengkap. Ditulis utuh per locale, termasuk pemisah `·`, supaya
+     * urutan dan arah bacanya diatur penerjemah, bukan komponen.
+     */
+    established: string;
     chips: string[];
   };
   teamPage: {
@@ -198,6 +207,7 @@ const en: SiteContent = {
       "Custom software, Android apps, and the servers they run on. One team ships it and stays on call.",
     primaryCta: "Start a project",
     secondaryCta: "View services",
+    established: "Lamongan, East Java · Since 2013",
     chips: ["Fixed scope", "Full code ownership", "24/7 SLA for servers"],
   },
   teamPage: {
@@ -497,6 +507,7 @@ const id: SiteContent = {
       "Software kustom, aplikasi Android, dan server yang menjalankannya. Satu tim yang sama merilis dan berjaga setelahnya.",
     primaryCta: "Mulai proyek",
     secondaryCta: "Lihat layanan",
+    established: "Lamongan, Jawa Timur · Sejak 2013",
     chips: ["Lingkup tetap", "Kode sepenuhnya milik Anda", "SLA server 24/7"],
   },
   teamPage: {
@@ -797,6 +808,7 @@ const ar: SiteContent = {
       "برمجيات مخصصة وتطبيقات Android والخوادم التي تعمل عليها. فريق واحد يسلّمها ويبقى في الخدمة بعد الإطلاق.",
     primaryCta: "ابدأ مشروعاً",
     secondaryCta: "استكشف الخدمات",
+    established: "لامونجان، جاوة الشرقية · منذ 2013",
     chips: ["نطاق ثابت", "ملكية كاملة للكود", "دعم خوادم 24/7"],
   },
   teamPage: {
@@ -1091,6 +1103,7 @@ const zh: SiteContent = {
       "定制软件、Android 应用，以及运行它们的服务器。同一个团队交付，并在上线后继续值守。",
     primaryCta: "开始项目",
     secondaryCta: "查看服务",
+    established: "东爪哇拉蒙岸 · 自 2013 年起",
     chips: ["范围固定", "代码完全归属你", "服务器 24/7 SLA"],
   },
   teamPage: {
@@ -1362,6 +1375,7 @@ const pl: SiteContent = {
       "Dedykowane oprogramowanie, aplikacje Android i serwery, na których działają. Jeden zespół wdraża je i pozostaje w gotowości po premierze.",
     primaryCta: "Rozpocznij projekt",
     secondaryCta: "Zobacz usługi",
+    established: "Lamongan, Jawa Wschodnia · Od 2013",
     chips: ["Stały zakres", "Pełna własność kodu", "SLA serwerów 24/7"],
   },
   teamPage: {

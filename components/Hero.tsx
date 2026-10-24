@@ -23,10 +23,10 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  *
  * Gerak yang ada di sini tiga, dan semuanya halus:
  * 1. Entrance berjenjang. Tiap baris judul muncul dari balik mask (clip-path
- *    yang membuka dari atas ke bawah sambil naik sedikit), lalu paragraf dan
- *    tombol menyusul. Mask dipakai, bukan fade biasa, karena baris yang
- *    "terangkat dari balik garis" terbaca sebagai tipografi yang disusun, bukan
- *    teks yang sekadar muncul.
+ *    yang membuka dari atas ke bawah sambil naik sedikit), lalu paragraf,
+ *    tombol, dan baris kredensial menyusul. Mask dipakai, bukan fade biasa,
+ *    karena baris yang "terangkat dari balik garis" terbaca sebagai tipografi
+ *    yang disusun, bukan teks yang sekadar muncul.
  * 2. Wash yang tidak pernah diam — `hero-drift` di globals.css, 26 detik.
  * 3. Parallax keluar yang DIBATASI: judul naik 40px dan memudar ke 0.35 saat
  *    hero ditinggalkan. Rentangnya pendek karena section-nya hanya 100dvh.
@@ -111,6 +111,21 @@ export default function Hero({
               <ArrowGlyph />
             </Link>
           </motion.div>
+
+          {/* Baris kredensial: kota/provinsi dan tahun berdiri. Satu-satunya
+              bukti pengalaman yang bisa diklaim tanpa mengarang metrik, jadi
+              ia duduk di layar pertama, bukan hanya di pita Clients dan footer
+              yang jauh di bawah. `-mt-3` memotong gap-7/gap-9 induknya: 16px di
+              mobile dan 24px di desktop, cukup dekat untuk terbaca sebagai
+              bagian dari blok CTA, bukan paragraf keempat. */}
+          <motion.p
+            className="text-ash-gray -mt-3 text-caption"
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: reduce ? 0 : 0.52, ease: EASE }}
+          >
+            {hero.established}
+          </motion.p>
         </motion.div>
       </div>
     </section>
