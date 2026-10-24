@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { getPlatformProducts, ngambegCatalogUrl, ngambegHubUrl } from "@/lib/products";
+import { getPlatformProducts, ngambegCatalogUrl, ngambegHubUrl, ngambegSlug, productPath } from "@/lib/products";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/motion/Reveal";
 import type { SiteContent } from "@/lib/i18n";
@@ -26,14 +26,26 @@ import type { SiteContent } from "@/lib/i18n";
  * Pita background-nya tetap gradien fog ke putih, supaya panel terasa
  * mengambang di atasnya — persis seperti dashboard yang berdiri sendiri di
  * referensi.
+ *
+ * Setiap tab punya halaman sendiri di `/{locale}/products/{slug}`, dan tautan
+ * "Learn more" di samping badge Soon itulah pintunya. Tanpa itu, produk yang
+ * situsnya belum terbit hanya berhenti di badge dan tidak bisa diklik.
  */
-export default function Products({ content }: { content: SiteContent }) {
+export default function Products({
+  content,
+  basePath,
+}: {
+  content: SiteContent;
+  basePath: string;
+}) {
   const copy = content.products;
   const platforms = getPlatformProducts();
   const platformCopy = copy.platforms as Record<string, { description: string }>;
 
   // Tab terakhir adalah grup Ngambeg, bukan produk platform, jadi daftar tab
   // dibangun dari dua sumber: katalog platform dan satu pintu keluar.
+  // `pageHref` selalu menuju halaman internal; `href` hanya terisi kalau
+  // produknya memang punya situs sendiri yang bisa dibuka.
   const tabs = [
     ...platforms.map((item) => ({
       key: item.id,
@@ -43,6 +55,7 @@ export default function Products({ content }: { content: SiteContent }) {
       description: platformCopy[item.id]?.description ?? "",
       status: copy.soon as string | null,
       href: null as string | null,
+      pageHref: `${basePath}${productPath(item.slug)}`,
     })),
     {
       key: "ngambeg",
@@ -52,6 +65,7 @@ export default function Products({ content }: { content: SiteContent }) {
       description: copy.groups.ngambeg.description,
       status: null,
       href: ngambegHubUrl,
+      pageHref: `${basePath}${productPath(ngambegSlug)}`,
     },
   ];
 
@@ -189,6 +203,18 @@ export default function Products({ content }: { content: SiteContent }) {
                       {current.status}
                     </span>
                   )}
+                  {/* Panel ini dulu berhenti di badge atau tautan keluar saja:
+                      produk yang situsnya belum terbit tidak bisa diklik ke mana
+                      pun. Sekarang setiap produk punya halaman sendiri. */}
+                  <Link
+                    href={current.pageHref}
+                    className="text-ink-black text-caption inline-flex items-center gap-1 hover:underline"
+                  >
+                    {content.common.learnMore}
+                    <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
+                      →
+                    </span>
+                  </Link>
                 </div>
 
                 <p className="text-slate-gray mt-5 max-w-[54ch] text-body-lg">

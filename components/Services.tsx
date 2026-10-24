@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { serviceAnchor, serviceMeta } from "@/lib/services";
+import { serviceAnchor, serviceMeta, servicePath } from "@/lib/services";
 import Reveal from "@/components/motion/Reveal";
 import type { SiteContent } from "@/lib/i18n";
 
@@ -77,7 +77,17 @@ export default function Services({
                       <span className="text-paper-white/40 tabular text-caption">
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <h3 className="text-paper-white text-body font-medium">{service.title}</h3>
+                      <h3 className="text-body font-medium">
+                        {/* Judul sekaligus pintu masuk halaman detail: di pita
+                            gelap ini tidak ada ruang untuk tautan kedua tanpa
+                            memecah ritme barisnya. */}
+                        <Link
+                          href={`${basePath}${servicePath(meta.slug)}`}
+                          className="text-paper-white underline-offset-4 transition hover:underline"
+                        >
+                          {service.title}
+                        </Link>
+                      </h3>
                     </div>
 
                     <p className="text-paper-white/60 mt-2 ps-8 text-caption">

@@ -26,6 +26,8 @@ Built with **Next.js 16 (App Router)** and deployed as a **Cloudflare Worker** (
 | `/` | Redirects to `/en` |
 | `/[locale]` | Landing page: hero, marquee, products, highlights, clients, services, process, standards, contact |
 | `/[locale]/teams` | The team: one engineer, facts, and direct contact links |
+| `/[locale]/services/[slug]` | One page per practice: intro, what's included, the four-step process, related services, contact CTA. Seven slugs, identical in every locale |
+| `/[locale]/products/[slug]` | One page per product: six platform products (title, Soon badge, status note, what it does, other products) and one page for the Ngambeg Cyber Media group (domain, Games/Apps catalog links, the six platform products). Seven slugs, identical in every locale |
 | `/[locale]/privacy` | Privacy policy |
 | `/[locale]/terms` | Terms & conditions |
 
@@ -49,6 +51,10 @@ Legal documents are written in English and Indonesian. Other locales render the 
 10. **Footer** — the mark alone, four link columns, and a single closing row on a fog-white surface with no divider line and no oversized wordmark.
 
 Sections reveal their headers and stagger their items on scroll through `components/motion/Reveal.tsx`, and the white sections draw three vertical hairlines at 25/50/75% of the container (`.column-guides` in `app/globals.css`). The band order (white, fog, peach, ink) is deliberate: without alternating surfaces the page reads as one flat colour from top to bottom.
+
+Service pages (`/[locale]/services/[slug]`) follow the team page's calmer shape instead: one reading column, no wash and no parallax, hairline-separated blocks. They reuse `workflow.steps` for "How it runs" and derive "Other services" by walking the same list, so the process and the cross-links cannot drift from the rest of the site. Copy is deliberately lean — one intro and four included points per service, no testimonials or invented metrics.
+
+Product pages (`/[locale]/products/[slug]`) follow that same calm shape. The six platform products carry a `Soon` badge and a "no release date yet" status note instead of promising access. The Ngambeg page is the one product page that is already live, so it opens the two catalogs on ngambeg.com and lists the platform products.
 
 The 404 page is styled in the same system.
 

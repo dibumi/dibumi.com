@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { getPlatformProducts, ngambegHubUrl } from "@/lib/products";
+import { getPlatformProducts, ngambegSlug, productPath } from "@/lib/products";
 import { contactEmail, contactPhone } from "@/lib/contact";
 import BrandMark from "@/components/BrandMark";
 import type { Locale, SiteContent } from "@/lib/i18n";
@@ -68,37 +68,25 @@ export default function Footer({
             {/* Produk */}
             <nav aria-label={footer.product} className="flex flex-col gap-3">
               <span className={columnLabel}>{footer.product}</span>
-              {getPlatformProducts().map((item) =>
-                item.href ? (
-                  <a
-                    key={item.id}
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={columnLink}
-                  >
-                    {item.name}
-                    <span aria-hidden="true" className="ms-1 inline-block rtl:-scale-x-100">
-                      ↗
-                    </span>
-                  </a>
-                ) : (
-                  <span key={item.id} className="text-slate-gray text-caption">
-                    {item.name}
-                  </span>
-                ),
-              )}
-              <a
-                href={ngambegHubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              {/* Produk: semuanya menuju halaman internal. Tautan keluar ke
+                  ngambeg.com hidup di halaman grupnya, bukan di footer — satu
+                  tujuan per baris, dan tidak ada teks mati untuk produk yang
+                  situsnya belum terbit. */}
+              {getPlatformProducts().map((item) => (
+                <Link
+                  key={item.id}
+                  href={`${basePath}${productPath(item.slug)}`}
+                  className={columnLink}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <Link
+                href={`${basePath}${productPath(ngambegSlug)}`}
                 className={columnLink}
               >
                 {content.products.groups.ngambeg.label}
-                <span aria-hidden="true" className="ms-1 inline-block rtl:-scale-x-100">
-                  ↗
-                </span>
-              </a>
+              </Link>
             </nav>
 
             {/* Perusahaan */}

@@ -108,11 +108,20 @@ export default function Navbar({
   const nav = content.nav;
 
   // Judul dan deskripsi layanan ada di i18n; slug di lib/services.ts.
-  const serviceItems: ServiceItem[] = content.services.map((service, index) => ({
-    title: service.title,
-    description: service.description,
-    slug: serviceMeta[index]?.slug ?? "",
-  }));
+  // `flatMap` menjaga dua array itu tetap sejajar tanpa fallback slug kosong.
+  const serviceItems: ServiceItem[] = content.services.flatMap((service, index) => {
+    const meta = serviceMeta[index];
+    return meta
+      ? [{ title: service.title, description: service.description, slug: meta.slug }]
+      : [];
+  });
+
+  // Halaman detail layanan adalah anak dari menu Services, jadi tombolnya tetap
+  // menyala saat pembaca sudah berada di salah satunya.
+  const servicesActive = pathname?.startsWith(`${basePath}/services`) ?? false;
+  // Alasan yang sama untuk produk: menu Product adalah pintu masuk tujuh
+  // halaman `/{locale}/products/{slug}`.
+  const productsActive = pathname?.startsWith(`${basePath}/products`) ?? false;
 
   const anchorLinks = [
     { name: nav.process, href: `${basePath}#process`, hash: "#process" },
@@ -340,7 +349,7 @@ export default function Navbar({
                 }}
                 aria-expanded={openPanel === "product"}
                 aria-controls="product-menu"
-                className={`${desktopItem} ${itemState(openPanel === "product")}`}
+                className={`${desktopItem} ${itemState(openPanel === "product" || productsActive)}`}
               >
                 {nav.product}
                 <ChevronDown
@@ -362,7 +371,7 @@ export default function Navbar({
                 }}
                 aria-expanded={openPanel === "services"}
                 aria-controls="services-menu"
-                className={`${desktopItem} ${itemState(openPanel === "services")}`}
+                className={`${desktopItem} ${itemState(openPanel === "services" || servicesActive)}`}
               >
                 {nav.services}
                 <ChevronDown
@@ -438,7 +447,11 @@ export default function Navbar({
           >
             <div className="mx-auto max-w-page px-5 py-6 sm:px-8">
               {openPanel === "product" ? (
-                <ProductMenu content={content} onNavigate={() => setOpenPanel(null)} />
+                <ProductMenu
+                  content={content}
+                  basePath={basePath}
+                  onNavigate={() => setOpenPanel(null)}
+                />
               ) : (
                 <ServicesMenu
                   content={content}
@@ -479,7 +492,7 @@ export default function Navbar({
                 setOpenSection((value) => (value === "product" ? null : "product"))
               }
             >
-              <ProductMenuList content={content} onNavigate={closeMobile} />
+              <ProductMenuList content={content} basePath={basePath} onNavigate={closeMobile} />
             </MobileSection>
 
             <MobileSection

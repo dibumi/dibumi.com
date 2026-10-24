@@ -1,9 +1,11 @@
 import React from "react";
+import Link from "next/link";
 import {
   getPlatformProducts,
   ngambegCatalogUrl,
   ngambegHubUrl,
   ngambegLogoUrl,
+  productPath,
   type ProductItem,
 } from "@/lib/products";
 import type { SiteContent } from "@/lib/i18n";
@@ -13,9 +15,11 @@ import type { SiteContent } from "@/lib/i18n";
  * `ProductMenuList` untuk lembar navigasi mobile. Keduanya membaca data yang
  * sama dari lib/products.ts, jadi produk baru cukup ditambah di sana.
  *
- * Katalog Ngambeg Cyber Media tidak dijabarkan lagi di sini: satu tile tautan
- * keluar ke ngambeg.com, karena daftar game dan aplikasinya hidup di sana dan
- * berubah tanpa menyentuh situs ini.
+ * Setiap baris produk platform menuju halaman produknya sendiri di
+ * `/{locale}/products/{slug}`, jadi panel ini tidak lagi berakhir di baris diam
+ * hanya karena situs produknya belum terbit. Panah keluar `↗` tetap milik tile
+ * Ngambeg dan sel katalognya saja, karena keduanya memang meninggalkan situs
+ * ini menuju ngambeg.com.
  *
  * Tidak ada ikon dekoratif dan tidak ada chip ikon. Baris menu adalah baris
  * teks yang tenang: nama, deskripsi, dan latar mist saat hover. Satu-satunya
@@ -25,6 +29,8 @@ import type { SiteContent } from "@/lib/i18n";
 
 type MenuProps = {
   content: SiteContent;
+  /** Prefix locale, mis. `/en`; dipakai merakit tautan halaman produk. */
+  basePath: string;
   /** Dipanggil setelah link diklik, dipakai untuk menutup panel atau sheet. */
   onNavigate?: () => void;
 };
@@ -60,7 +66,17 @@ function GroupLabel({ children, note }: { children: React.ReactNode; note?: stri
 }
 
 /** Produk platform: nama, deskripsi dua baris, badge Soon. */
-function PlatformRow({ item, content }: { item: ProductItem; content: SiteContent }) {
+function PlatformRow({
+  item,
+  content,
+  basePath,
+  onNavigate,
+}: {
+  item: ProductItem;
+  content: SiteContent;
+  basePath: string;
+  onNavigate?: () => void;
+}) {
   const description =
     (content.products.platforms as Record<string, { description: string }>)[item.id]
       ?.description ?? "";
@@ -77,14 +93,10 @@ function PlatformRow({ item, content }: { item: ProductItem; content: SiteConten
     </span>
   );
 
-  if (!item.href) {
-    return <div className={rowClass}>{body}</div>;
-  }
-
   return (
-    <a href={item.href} target="_blank" rel="noopener noreferrer" className={rowClass}>
+    <Link href={`${basePath}${productPath(item.slug)}`} onClick={onNavigate} className={rowClass}>
       {body}
-    </a>
+    </Link>
   );
 }
 
@@ -208,7 +220,7 @@ function NgambegCatalog({
 }
 
 /** Mega panel desktop: platform di kiri, tautan katalog Ngambeg di kanan. */
-export function ProductMenu({ content, onNavigate }: MenuProps) {
+export function ProductMenu({ content, basePath, onNavigate }: MenuProps) {
   const platforms = getPlatformProducts();
 
   return (
@@ -220,7 +232,12 @@ export function ProductMenu({ content, onNavigate }: MenuProps) {
         <ul className="mt-2 grid auto-rows-fr gap-1">
           {platforms.map((item) => (
             <li key={item.id}>
-              <PlatformRow item={item} content={content} />
+              <PlatformRow
+                item={item}
+                content={content}
+                basePath={basePath}
+                onNavigate={onNavigate}
+              />
             </li>
           ))}
         </ul>
@@ -241,7 +258,7 @@ export function ProductMenu({ content, onNavigate }: MenuProps) {
 }
 
 /** Versi mobile: satu kolom, dengan pemisah tipis antar grup. */
-export function ProductMenuList({ content, onNavigate }: MenuProps) {
+export function ProductMenuList({ content, basePath, onNavigate }: MenuProps) {
   const platforms = getPlatformProducts();
 
   return (
@@ -253,7 +270,12 @@ export function ProductMenuList({ content, onNavigate }: MenuProps) {
         <ul className="mt-2 grid auto-rows-fr gap-1">
           {platforms.map((item) => (
             <li key={item.id}>
-              <PlatformRow item={item} content={content} />
+              <PlatformRow
+                item={item}
+                content={content}
+                basePath={basePath}
+                onNavigate={onNavigate}
+              />
             </li>
           ))}
         </ul>

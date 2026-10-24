@@ -1,3 +1,5 @@
+import type { ServiceSlug } from "@/lib/services";
+
 export const locales = ["en", "id", "ar", "zh", "pl"] as const;
 export type Locale = (typeof locales)[number];
 
@@ -106,6 +108,23 @@ export type SiteContent = {
     retired: { title: string; note: string; description: string }[];
   };
   services: { title: string; description: string; points: string[] }[];
+  /**
+   * Label bersama halaman detail layanan. Judul, deskripsi, dan poin singkat
+   * tetap tinggal di `services` supaya beranda dan mega menu tidak punya dua
+   * sumber; di sini hanya kalimat yang khas halaman.
+   */
+  servicePage: {
+    included: string;
+    approach: string;
+    related: string;
+  };
+  /**
+   * Isi panjang per layanan untuk halaman `/[locale]/services/[slug]`.
+   *
+   * Kuncinya slug dari lib/services.ts, jadi urutan `services` tidak lagi
+   * menentukan — dua array itu boleh bergeser tanpa memutus halaman.
+   */
+  servicePages: Record<ServiceSlug, { intro: string; included: string[] }>;
   products: {
     eyebrow: string;
     title: string;
@@ -121,12 +140,28 @@ export type SiteContent = {
       | "cloudHostingBilling"
       | "trafficAnalytics"
       | "selfHostedOnlineStore",
-      { description: string }
+      { description: string; intro: string; points: string[] }
     >;
     catalog: {
       heading: string;
       games: string;
       apps: string;
+      /** Satu baris di bawah label tile katalog halaman Ngambeg. */
+      gamesNote: string;
+      appsNote: string;
+    };
+    /**
+     * Label bersama halaman detail produk. Deskripsi dan intro per produk
+     * tinggal di `platforms` supaya menu dan halaman tidak punya dua sumber.
+     */
+    page: {
+      included: string;
+      related: string;
+      discuss: string;
+      /** Tautan balik ke daftar produk di beranda. */
+      all: string;
+      /** Ditampilkan di bawah deskripsi produk yang belum terbit. */
+      statusNote: string;
     };
   };
   clients: {
@@ -335,6 +370,83 @@ const en: SiteContent = {
       points: ["Regular monitoring", "Priority incident response"],
     },
   ],
+  servicePage: {
+    included: "What's included",
+    approach: "How it runs",
+    related: "Other services",
+  },
+  servicePages: {
+    "custom-software": {
+      intro:
+        "For work that no off-the-shelf product fits: internal tools, ERP and CRM modules, and the integrations that connect them. We scope it, build it, and hand over the code.",
+      included: [
+        "Process mapping before the first line of code",
+        "Modular architecture with tests",
+        "API and payment gateway integration",
+        "Source code and documentation handed over",
+      ],
+    },
+    "custom-web-development": {
+      intro:
+        "Web applications that follow your workflow instead of the other way around: dashboards, customer portals, and admin tools that talk to the systems you already run.",
+      included: [
+        "Laravel or Next.js, API-first",
+        "Authentication, roles, and audit trails",
+        "Integration with existing services",
+        "Deployment on infrastructure we also maintain",
+      ],
+    },
+    "android-webview": {
+      intro:
+        "If the service already lives on the web, a WebView build puts it on Google Play without a second codebase to maintain. We handle the shell, the store listing, and the release.",
+      included: [
+        "Play Store ready package",
+        "1–2 day delivery",
+        "Push, deep links, and an offline fallback",
+        "Store listing assets and signing",
+      ],
+    },
+    "company-profile": {
+      intro:
+        "A company site that loads fast, reads clearly, and gives the sales team somewhere to send people. Built for search from the first commit, not patched afterwards.",
+      included: [
+        "On-page SEO and Core Web Vitals",
+        "Dynamic schema and metadata",
+        "Contact and WhatsApp routing",
+        "Editing guidance for your team",
+      ],
+    },
+    "android-apps": {
+      intro:
+        "Native or cross-platform Android apps for work that needs the device: offline data, background sync, and an interface that stays responsive on cheap hardware.",
+      included: [
+        "MVVM and clean architecture",
+        "Offline-first database",
+        "Background sync and notifications",
+        "Release build and Play Console handover",
+      ],
+    },
+    "server-devops": {
+      intro:
+        "Servers set up to be boring: hardened, monitored, backed up, and documented, so the next incident is a log line rather than an outage.",
+      included: [
+        "Hardening and Fail2ban",
+        "Nginx, reverse proxy, and TLS",
+        "Encrypted off-site backups",
+        "Runbook and access handover",
+      ],
+    },
+    "maintenance-sla": {
+      intro:
+        "After launch, someone has to watch it. We monitor, patch, and answer, with a response time agreed in writing before the first ticket.",
+      included: [
+        "Uptime and error monitoring",
+        "Security patches and updates",
+        "Restore drills on backups",
+        "Priority incident response",
+      ],
+    },
+  },
   products: {
     eyebrow: "Products",
     title: "Our own products",
@@ -361,32 +473,89 @@ const en: SiteContent = {
       aiGateway: {
         description:
           "One API key, one wallet, and a catalogue of models for builders.",
+        intro:
+          "One endpoint in front of many model providers: one key, one wallet, and per-model routing, so a small team can switch providers without rewriting its code.",
+        points: [
+          "One API key for every model",
+          "Per-model quota and wallet",
+          "Provider fallback when one is down",
+          "Usage logs per project",
+        ],
       },
       paymentOrchestration: {
         description:
           "One API for every payment gateway: automatic routing, fallback, idempotency, and normalized webhooks.",
+        intro:
+          "One integration for every payment gateway. Routing, fallback, and idempotency are handled in the middle, so a declining provider does not become a lost order.",
+        points: [
+          "One API across multiple gateways",
+          "Automatic routing and fallback",
+          "Idempotent charges and webhooks",
+          "Normalized events to your app",
+        ],
       },
       adserverExchange: {
         description:
           "Campaigns, placements, creatives, targeting rules, and daily stats in a single ad server.",
+        intro:
+          "A self-hosted ad server for direct campaigns: placements, creatives, targeting rules, and daily stats in one place instead of a spreadsheet and a script.",
+        points: [
+          "Campaigns, placements, and creatives",
+          "Targeting rules per placement",
+          "Daily impressions and clicks",
+          "Self-hosted, data stays with you",
+        ],
       },
       cloudHostingBilling: {
         description:
           "White-label billing and provisioning for hosting businesses: orders, invoices, domains, tickets.",
+        intro:
+          "Billing and provisioning for hosting businesses: orders, invoices, domains, and tickets in one panel, so a new customer no longer needs four manual steps.",
+        points: [
+          "Orders and invoices",
+          "Domain and service provisioning",
+          "Client area and support tickets",
+          "White-label under your own brand",
+        ],
       },
       trafficAnalytics: {
         description:
           "Visits, referrers, and conversion funnels in a single dashboard.",
+        intro:
+          "Visits, referrers, and conversion funnels in one dashboard, hosted on your own server so the numbers never leave the infrastructure you control.",
+        points: [
+          "Visits and referrers",
+          "Funnel and conversion tracking",
+          "Per-page and per-campaign views",
+          "Self-hosted on your own server",
+        ],
       },
       selfHostedOnlineStore: {
         description:
           "A storefront you install and own: catalogue, cart, checkout, and orders on your own server.",
+        intro:
+          "A storefront you install and own: catalogue, cart, checkout, and orders on your own server, with the code and the customer data in your hands.",
+        points: [
+          "Catalogue and cart",
+          "Checkout and order management",
+          "Installable on your own server",
+          "Data and code stay with you",
+        ],
       },
     },
     catalog: {
       heading: "Games & Apps",
       games: "Games",
       apps: "Apps",
+      gamesNote: "Games for phones, built and published in-house.",
+      appsNote: "Everyday Android utilities with a small footprint.",
+    },
+    page: {
+      included: "What it does",
+      related: "Other products",
+      discuss: "Discuss this product",
+      all: "All products",
+      statusNote: "In development — no release date yet.",
     },
   },
   clients: {
@@ -655,6 +824,83 @@ const id: SiteContent = {
       points: ["Monitoring berkala", "Respons darurat prioritas"],
     },
   ],
+  servicePage: {
+    included: "Yang termasuk",
+    approach: "Cara kerjanya",
+    related: "Layanan lain",
+  },
+  servicePages: {
+    "custom-software": {
+      intro:
+        "Untuk pekerjaan yang tidak cocok dengan produk jadi: alat internal, modul ERP dan CRM, serta integrasi yang menyambungkannya. Kami susun lingkupnya, bangun, lalu serahkan kodenya.",
+      included: [
+        "Pemetaan proses sebelum baris kode pertama",
+        "Arsitektur modular dengan pengujian",
+        "Integrasi API dan payment gateway",
+        "Kode sumber dan dokumentasi diserahkan",
+      ],
+    },
+    "custom-web-development": {
+      intro:
+        "Aplikasi web yang mengikuti alur kerja Anda, bukan sebaliknya: dasbor, portal pelanggan, dan alat admin yang terhubung ke sistem yang sudah berjalan.",
+      included: [
+        "Laravel atau Next.js, API-first",
+        "Autentikasi, peran, dan jejak audit",
+        "Integrasi dengan layanan yang sudah ada",
+        "Deploy di infrastruktur yang kami rawat juga",
+      ],
+    },
+    "android-webview": {
+      intro:
+        "Kalau layanannya sudah hidup di web, build WebView menaruhnya di Google Play tanpa codebase kedua yang harus dirawat. Kami urus shell, listing, dan rilisnya.",
+      included: [
+        "Paket siap Play Store",
+        "Pengerjaan 1–2 hari",
+        "Push, deep link, dan fallback offline",
+        "Aset listing dan signing",
+      ],
+    },
+    "company-profile": {
+      intro:
+        "Situs perusahaan yang cepat dimuat, jelas dibaca, dan memberi tim sales tempat untuk mengarahkan orang. Disiapkan untuk mesin pencari sejak commit pertama, bukan ditambal belakangan.",
+      included: [
+        "SEO on-page dan Core Web Vitals",
+        "Schema dan metadata dinamis",
+        "Rute kontak dan WhatsApp",
+        "Panduan penyuntingan untuk tim Anda",
+      ],
+    },
+    "android-apps": {
+      intro:
+        "Aplikasi Android native atau cross-platform untuk pekerjaan yang butuh perangkatnya: data offline, sinkronisasi latar, dan antarmuka yang tetap responsif di perangkat murah.",
+      included: [
+        "MVVM dan clean architecture",
+        "Database offline-first",
+        "Sinkronisasi latar dan notifikasi",
+        "Build rilis dan serah terima Play Console",
+      ],
+    },
+    "server-devops": {
+      intro:
+        "Server yang disiapkan supaya membosankan: di-hardening, dipantau, di-backup, dan didokumentasikan, sehingga insiden berikutnya jadi satu baris log, bukan outage.",
+      included: [
+        "Hardening dan Fail2ban",
+        "Nginx, reverse proxy, dan TLS",
+        "Backup terenkripsi di luar server",
+        "Runbook dan serah terima akses",
+      ],
+    },
+    "maintenance-sla": {
+      intro:
+        "Setelah rilis, harus ada yang mengawasi. Kami memantau, menambal, dan menjawab, dengan waktu respons yang disepakati tertulis sebelum tiket pertama.",
+      included: [
+        "Monitoring uptime dan error",
+        "Patch keamanan dan pembaruan",
+        "Uji restore dari backup",
+        "Respons insiden prioritas",
+      ],
+    },
+  },
   products: {
     eyebrow: "Produk",
     title: "Produk milik kami sendiri",
@@ -681,32 +927,89 @@ const id: SiteContent = {
       aiGateway: {
         description:
           "Satu API key, satu dompet, dan katalog model untuk para builder.",
+        intro:
+          "Satu endpoint di depan banyak penyedia model: satu key, satu dompet, dan routing per model, supaya tim kecil bisa berganti penyedia tanpa menulis ulang kodenya.",
+        points: [
+          "Satu API key untuk semua model",
+          "Kuota dan dompet per model",
+          "Fallback penyedia saat salah satunya mati",
+          "Log pemakaian per proyek",
+        ],
       },
       paymentOrchestration: {
         description:
           "Satu API untuk semua payment gateway: routing otomatis, fallback, idempotency, dan webhook ternormalisasi.",
+        intro:
+          "Satu integrasi untuk semua payment gateway. Routing, fallback, dan idempotency diurus di tengah, jadi penyedia yang menolak tidak berubah jadi pesanan yang hilang.",
+        points: [
+          "Satu API untuk beberapa gateway",
+          "Routing otomatis dan fallback",
+          "Charge dan webhook idempoten",
+          "Event ternormalisasi ke aplikasi Anda",
+        ],
       },
       adserverExchange: {
         description:
           "Kampanye, placement, creative, aturan penargetan, dan statistik harian dalam satu ad server.",
+        intro:
+          "Ad server self-hosted untuk kampanye langsung: placement, creative, aturan penargetan, dan statistik harian di satu tempat, bukan di spreadsheet dan skrip terpisah.",
+        points: [
+          "Kampanye, placement, dan creative",
+          "Aturan penargetan per placement",
+          "Impresi dan klik harian",
+          "Self-hosted, data tetap di tangan Anda",
+        ],
       },
       cloudHostingBilling: {
         description:
           "Billing white-label untuk bisnis hosting: order, invoice, domain, tiket, dan provisioning server otomatis.",
+        intro:
+          "Billing dan provisioning untuk bisnis hosting: order, invoice, domain, dan tiket dalam satu panel, supaya pelanggan baru tidak lagi butuh empat langkah manual.",
+        points: [
+          "Order dan invoice",
+          "Provisioning domain dan layanan",
+          "Area klien dan tiket dukungan",
+          "White-label dengan merek Anda",
+        ],
       },
       trafficAnalytics: {
         description:
           "Kunjungan, referrer, dan funnel konversi dalam satu dashboard.",
+        intro:
+          "Kunjungan, referrer, dan funnel konversi dalam satu dashboard, dijalankan di server Anda sendiri supaya angkanya tidak keluar dari infrastruktur yang Anda kendalikan.",
+        points: [
+          "Kunjungan dan referrer",
+          "Pelacakan funnel dan konversi",
+          "Tampilan per halaman dan per kampanye",
+          "Self-hosted di server Anda",
+        ],
       },
       selfHostedOnlineStore: {
         description:
           "Toko online yang Anda pasang dan miliki sendiri: katalog, keranjang, checkout, dan pesanan di server Anda.",
+        intro:
+          "Toko online yang Anda pasang dan miliki sendiri: katalog, keranjang, checkout, dan pesanan di server Anda, dengan kode dan data pelanggan di tangan Anda.",
+        points: [
+          "Katalog dan keranjang",
+          "Checkout dan pengelolaan pesanan",
+          "Bisa dipasang di server sendiri",
+          "Data dan kode tetap milik Anda",
+        ],
       },
     },
     catalog: {
       heading: "Game & Aplikasi",
       games: "Game",
       apps: "Aplikasi",
+      gamesNote: "Game untuk ponsel, dibangun dan diterbitkan sendiri.",
+      appsNote: "Utilitas Android sehari-hari yang ringan.",
+    },
+    page: {
+      included: "Yang bisa dilakukannya",
+      related: "Produk lain",
+      discuss: "Diskusikan produk ini",
+      all: "Semua produk",
+      statusNote: "Sedang dikembangkan — belum ada tanggal rilis.",
     },
   },
   clients: {
@@ -976,6 +1279,83 @@ const ar: SiteContent = {
       points: ["مراقبة دورية", "استجابة أولوية للحوادث"],
     },
   ],
+  servicePage: {
+    included: "ما يشمله",
+    approach: "كيف يسير العمل",
+    related: "خدمات أخرى",
+  },
+  servicePages: {
+    "custom-software": {
+      intro:
+        "للعمل الذي لا يناسبه منتج جاهز: أدوات داخلية ووحدات ERP وCRM والتكاملات التي تربطها. نحدد النطاق، نبنيه، ثم نسلّم الشيفرة.",
+      included: [
+        "رسم سير العمل قبل أول سطر شيفرة",
+        "بنية مرنة مع اختبارات",
+        "تكامل API وبوابات الدفع",
+        "تسليم الشيفرة والتوثيق",
+      ],
+    },
+    "custom-web-development": {
+      intro:
+        "تطبيقات ويب تتبع سير عملك لا العكس: لوحات تحكم وبوابات عملاء وأدوات إدارة تتصل بالأنظمة التي تشغّلها.",
+      included: [
+        "Laravel أو Next.js، واجهات API أولاً",
+        "مصادقة وأدوار وسجل تدقيق",
+        "تكامل مع الخدمات القائمة",
+        "نشر على بنية تحتية نصونها أيضًا",
+      ],
+    },
+    "android-webview": {
+      intro:
+        "إذا كانت خدمتك تعمل على الويب، فبناء WebView يضعها على Google Play دون قاعدة شيفرة ثانية للصيانة. نتولى الغلاف والمتجر والإصدار.",
+      included: [
+        "حزمة جاهزة لمتجر Play",
+        "تسليم خلال يوم أو يومين",
+        "إشعارات وروابط عميقة ووضع دون اتصال",
+        "أصول المتجر والتوقيع",
+      ],
+    },
+    "company-profile": {
+      intro:
+        "موقع شركة يُحمَّل بسرعة ويُقرأ بوضوح ويمنح فريق المبيعات مكانًا يوجّه إليه العملاء. مبني لمحركات البحث من أول سطر شيفرة، لا مُرقَّعًا لاحقًا.",
+      included: [
+        "تحسين SEO والأداء Core Web Vitals",
+        "بيانات وصفية ديناميكية",
+        "مسارات التواصل وWhatsApp",
+        "إرشادات التحرير لفريقك",
+      ],
+    },
+    "android-apps": {
+      intro:
+        "تطبيقات Android أصلية أو متعددة المنصات للعمل الذي يحتاج الجهاز: بيانات دون اتصال ومزامنة في الخلفية وواجهة تبقى سريعة على الأجهزة الرخيصة.",
+      included: [
+        "بنية MVVM نظيفة",
+        "قاعدة بيانات تعمل دون اتصال",
+        "مزامنة خلفية وإشعارات",
+        "بناء الإصدار وتسليم Play Console",
+      ],
+    },
+    "server-devops": {
+      intro:
+        "خوادم مُعدّة لتكون هادئة: محصّنة ومراقبة ومنسوخة احتياطيًا وموثّقة، حتى يصبح العطل التالي سطرًا في السجل لا انقطاعًا.",
+      included: [
+        "تقوية وحماية Fail2ban",
+        "Nginx ووكيل عكسي وTLS",
+        "نسخ احتياطي مشفّر خارج الخادم",
+        "دليل تشغيل وتسليم الوصول",
+      ],
+    },
+    "maintenance-sla": {
+      intro:
+        "بعد الإطلاق لا بد من يراقبه. نراقب ونحدّث ونستجيب، بزمن استجابة متفق عليه كتابةً قبل أول تذكرة.",
+      included: [
+        "مراقبة التوفر والأخطاء",
+        "تحديثات أمنية دورية",
+        "اختبار الاستعادة من النسخ",
+        "استجابة أولوية للحوادث",
+      ],
+    },
+  },
   products: {
     eyebrow: "المنتجات",
     title: "منتجاتنا الخاصة",
@@ -1002,31 +1382,88 @@ const ar: SiteContent = {
       aiGateway: {
         description:
           "مفتاح API واحد ومحفظة واحدة وكتالوج من النماذج للمطورين.",
+        intro:
+          "نقطة واحدة أمام مزوّدي نماذج متعددين: مفتاح واحد ومحفظة واحدة وتوجيه لكل نموذج، حتى يستطيع فريق صغير تبديل المزوّد دون إعادة كتابة الشيفرة.",
+        points: [
+          "مفتاح API واحد لكل النماذج",
+          "حصة ومحفظة لكل نموذج",
+          "بديل احتياطي عند تعطل مزوّد",
+          "سجلات استخدام لكل مشروع",
+        ],
       },
       paymentOrchestration: {
         description:
           "واجهة API واحدة لكل بوابات الدفع: توجيه تلقائي وبديل احتياطي ومنع تكرار الطلبات وتوحيد الـ webhooks.",
+        intro:
+          "تكامل واحد لكل بوابات الدفع. التوجيه والبديل الاحتياطي ومنع التكرار تُدار في الوسط، فلا يتحول مزوّد يرفض العملية إلى طلب مفقود.",
+        points: [
+          "API واحدة لعدة بوابات",
+          "توجيه وبديل احتياطي تلقائي",
+          "عمليات وwebhooks غير قابلة للتكرار",
+          "أحداث موحّدة إلى تطبيقك",
+        ],
       },
       adserverExchange: {
         description:
           "الحملات والمواضع والتصاميم وقواعد الاستهداف والإحصاءات اليومية في خادم إعلانات واحد.",
+        intro:
+          "خادم إعلانات ذاتي الاستضافة للحملات المباشرة: المواضع والتصاميم وقواعد الاستهداف والإحصاءات اليومية في مكان واحد، لا في جدول بيانات وسكربت منفصل.",
+        points: [
+          "الحملات والمواضع والتصاميم",
+          "قواعد استهداف لكل موضع",
+          "ظهور ونقرات يومية",
+          "استضافة ذاتية، البيانات تبقى عندك",
+        ],
       },
       cloudHostingBilling: {
         description:
           "فواتير بعلامة بيضاء ولوحة عميل وتجهيز لشركات الاستضافة: الطلبات والفواتير والنطاقات والتذاكر.",
+        intro:
+          "فواتير وتجهيز لشركات الاستضافة: الطلبات والفواتير والنطاقات والتذاكر في لوحة واحدة، حتى لا يحتاج عميل جديد إلى أربع خطوات يدوية.",
+        points: [
+          "الطلبات والفواتير",
+          "تجهيز النطاقات والخدمات",
+          "منطقة العميل وتذاكر الدعم",
+          "علامة بيضاء باسمك",
+        ],
       },
       trafficAnalytics: {
         description: "الزيارات والمصادر ومسارات التحويل في لوحة واحدة.",
+        intro:
+          "الزيارات والمصادر ومسارات التحويل في لوحة واحدة، تعمل على خادمك أنت حتى لا تخرج الأرقام من البنية التي تتحكم بها.",
+        points: [
+          "الزيارات والمصادر",
+          "تتبع المسارات والتحويل",
+          "عرض لكل صفحة ولكل حملة",
+          "استضافة ذاتية على خادمك",
+        ],
       },
       selfHostedOnlineStore: {
         description:
           "متجر إلكتروني تملكه وتثبّته بنفسك: الكتالوج والسلة والدفع والطلبات على خادمك.",
+        intro:
+          "متجر إلكتروني تملكه وتثبّته بنفسك: الكتالوج والسلة والدفع والطلبات على خادمك، مع بقاء الشيفرة وبيانات العملاء في يدك.",
+        points: [
+          "الكتالوج والسلة",
+          "الدفع وإدارة الطلبات",
+          "قابل للتثبيت على خادمك",
+          "البيانات والشيفرة تبقى لديك",
+        ],
       },
     },
     catalog: {
       heading: "الألعاب والتطبيقات",
       games: "الألعاب",
       apps: "التطبيقات",
+      gamesNote: "ألعاب للهواتف، نطورها وننشرها بأنفسنا.",
+      appsNote: "أدوات Android يومية خفيفة.",
+    },
+    page: {
+      included: "ما يمكنه فعله",
+      related: "منتجات أخرى",
+      discuss: "ناقش هذا المنتج",
+      all: "جميع المنتجات",
+      statusNote: "قيد التطوير — لا موعد إصدار بعد.",
     },
   },
   clients: {
@@ -1282,6 +1719,83 @@ const zh: SiteContent = {
       points: ["定期监控", "优先处理紧急事件"],
     },
   ],
+  servicePage: {
+    included: "包含内容",
+    approach: "如何推进",
+    related: "其他服务",
+  },
+  servicePages: {
+    "custom-software": {
+      intro:
+        "当现成产品不合用时：内部工具、ERP 与 CRM 模块，以及把它们连接起来的集成。我们先界定范围，再构建，最后交付代码。",
+      included: [
+        "写第一行代码前先梳理流程",
+        "带测试的模块化架构",
+        "API 与支付网关集成",
+        "交付源码与文档",
+      ],
+    },
+    "custom-web-development": {
+      intro:
+        "让 Web 应用跟随你的流程，而不是反过来：仪表盘、客户门户与管理工具，与现有系统对接。",
+      included: [
+        "Laravel 或 Next.js，API 优先",
+        "认证、角色与审计日志",
+        "与现有服务集成",
+        "部署在我们同样维护的基础设施上",
+      ],
+    },
+    "android-webview": {
+      intro:
+        "如果服务已经跑在 Web 上，WebView 封装可以直接上架 Google Play，无需维护第二套代码。外壳、商店资料和发布由我们处理。",
+      included: [
+        "可直接上架 Play Store",
+        "1–2 天交付",
+        "推送、深度链接与离线兜底",
+        "商店资料与签名",
+      ],
+    },
+    "company-profile": {
+      intro:
+        "加载快、读得清、能给销售团队一个可推送的落点。从第一行代码就为搜索而建，而不是事后打补丁。",
+      included: [
+        "页面 SEO 与 Core Web Vitals",
+        "动态 Schema 与元数据",
+        "联系与 WhatsApp 路由",
+        "给团队的编辑指引",
+      ],
+    },
+    "android-apps": {
+      intro:
+        "需要用到设备的场景：离线数据、后台同步，以及在低端机上依然流畅的界面。原生或跨平台皆可。",
+      included: [
+        "MVVM 与清晰架构",
+        "离线优先数据库",
+        "后台同步与通知",
+        "发布构建与 Play Console 交付",
+      ],
+    },
+    "server-devops": {
+      intro:
+        "把服务器做得平淡可靠：加固、监控、备份并有文档，让下一次故障只是一行日志，而不是停机。",
+      included: [
+        "安全加固与 Fail2ban",
+        "Nginx、反向代理与 TLS",
+        "加密的异地备份",
+        "运行手册与权限交接",
+      ],
+    },
+    "maintenance-sla": {
+      intro:
+        "上线之后总得有人盯着。我们负责监控、补丁与响应，响应时间在第一个工单之前以书面约定。",
+      included: [
+        "可用性与错误监控",
+        "安全补丁与更新",
+        "备份恢复演练",
+        "优先处理紧急事件",
+      ],
+    },
+  },
   products: {
     eyebrow: "产品",
     title: "我们自有的产品",
@@ -1304,28 +1818,85 @@ const zh: SiteContent = {
     platforms: {
       aiGateway: {
         description: "一个 API Key、一个钱包，以及面向开发者的模型目录。",
+        intro:
+          "在多个模型提供方前面放一个端点：一个 Key、一个钱包与按模型路由，让小团队无需重写代码就能切换提供方。",
+        points: [
+          "一个 API Key 覆盖所有模型",
+          "按模型计费与额度",
+          "提供方故障时自动回退",
+          "按项目记录用量",
+        ],
       },
       paymentOrchestration: {
         description:
           "一个 API 覆盖所有支付网关：自动路由、故障回退、幂等处理与统一 Webhook。",
+        intro:
+          "一套集成对接所有支付网关。路由、回退与幂等都在中间层处理，提供方拒绝不会变成丢失的订单。",
+        points: [
+          "一个 API 对接多个网关",
+          "自动路由与回退",
+          "幂等的扣款与 Webhook",
+          "统一事件推送到你的应用",
+        ],
       },
       adserverExchange: {
         description: "广告系列、广告位、创意、定向规则与每日统计，集中在一个广告服务器。",
+        intro:
+          "面向直投广告的自托管广告服务器：广告位、创意、定向规则与每日统计集中在一处，而不是散在表格和脚本里。",
+        points: [
+          "广告系列、广告位与创意",
+          "按广告位设置定向规则",
+          "每日曝光与点击",
+          "自托管，数据留在你手里",
+        ],
       },
       cloudHostingBilling: {
         description: "面向主机业务的白标账单、客户中心与开通：订单、发票、域名、工单与服务器自动部署。",
+        intro:
+          "为主机业务准备的账单与开通流程：订单、发票、域名与工单集中在一个面板，新客户不再需要四步手工操作。",
+        points: [
+          "订单与发票",
+          "域名与服务开通",
+          "客户中心与支持工单",
+          "以你的品牌白标运行",
+        ],
       },
       trafficAnalytics: {
         description: "访问量、来源与转化漏斗，集中在一个面板。",
+        intro:
+          "访问量、来源与转化漏斗集中在一个面板，运行在你自己的服务器上，数据不会离开你掌控的基础设施。",
+        points: [
+          "访问量与来源",
+          "漏斗与转化跟踪",
+          "按页面与按渠道查看",
+          "自托管在你的服务器上",
+        ],
       },
       selfHostedOnlineStore: {
         description: "自托管的在线商店：目录、购物车、结账与订单，全部运行在您自己的服务器上。",
+        intro:
+          "一个你自行安装并拥有的商店：目录、购物车、结账与订单都在你的服务器上，代码与客户数据都在你手里。",
+        points: [
+          "目录与购物车",
+          "结账与订单管理",
+          "可安装在自己的服务器上",
+          "数据与代码都归你所有",
+        ],
       },
     },
     catalog: {
       heading: "游戏与应用",
       games: "游戏",
       apps: "应用",
+      gamesNote: "面向手机的游戏，由我们自己开发与发行。",
+      appsNote: "轻量的日常 Android 工具。",
+    },
+    page: {
+      included: "它能做什么",
+      related: "其他产品",
+      discuss: "讨论这个产品",
+      all: "全部产品",
+      statusNote: "开发中 — 尚无发布日期。",
     },
   },
   clients: {
@@ -1581,6 +2152,83 @@ const pl: SiteContent = {
       points: ["Regularny monitoring", "Priorytetowa reakcja na awarie"],
     },
   ],
+  servicePage: {
+    included: "Co obejmuje",
+    approach: "Jak przebiega praca",
+    related: "Inne usługi",
+  },
+  servicePages: {
+    "custom-software": {
+      intro:
+        "Dla pracy, do której nie pasuje gotowy produkt: narzędzia wewnętrzne, moduły ERP i CRM oraz integracje, które je łączą. Ustalamy zakres, budujemy, przekazujemy kod.",
+      included: [
+        "Mapowanie procesu przed pierwszą linią kodu",
+        "Modułowa architektura z testami",
+        "Integracje API i płatności",
+        "Przekazanie kodu i dokumentacji",
+      ],
+    },
+    "custom-web-development": {
+      intro:
+        "Aplikacje webowe, które podążają za Twoim procesem, a nie odwrotnie: pulpity, portale klientów i narzędzia administracyjne połączone z systemami, których już używasz.",
+      included: [
+        "Laravel lub Next.js, API-first",
+        "Uwierzytelnianie, role i dziennik zmian",
+        "Integracja z istniejącymi usługami",
+        "Wdrożenie na infrastrukturze, którą też utrzymujemy",
+      ],
+    },
+    "android-webview": {
+      intro:
+        "Jeśli usługa działa już w sieci, opakowanie WebView trafia do Google Play bez drugiej bazy kodu do utrzymania. Zajmujemy się powłoką, sklepem i wydaniem.",
+      included: [
+        "Pakiet gotowy do Play Store",
+        "Realizacja w 1–2 dni",
+        "Powiadomienia, deep linki i tryb offline",
+        "Materiały do sklepu i podpis",
+      ],
+    },
+    "company-profile": {
+      intro:
+        "Strona firmowa, która szybko się ładuje, jasno czyta i daje działowi sprzedaży miejsce, do którego można odesłać klienta. Budowana pod wyszukiwarki od pierwszej linii kodu, nie łatana później.",
+      included: [
+        "SEO on-page i Core Web Vitals",
+        "Dynamiczne schema i metadane",
+        "Ścieżki kontaktu i WhatsApp",
+        "Wskazówki edycyjne dla Twojego zespołu",
+      ],
+    },
+    "android-apps": {
+      intro:
+        "Natywne lub wieloplatformowe aplikacje Android do pracy, która potrzebuje urządzenia: dane offline, synchronizacja w tle i interfejs, który pozostaje płynny na tanim sprzęcie.",
+      included: [
+        "MVVM i clean architecture",
+        "Baza offline-first",
+        "Synchronizacja w tle i powiadomienia",
+        "Build wydania i przekazanie Play Console",
+      ],
+    },
+    "server-devops": {
+      intro:
+        "Serwery ustawione tak, by były nudne: utwardzone, monitorowane, z kopiami i dokumentacją, żeby następny incydent był linią w logu, a nie awarią.",
+      included: [
+        "Hardening i Fail2ban",
+        "Nginx, reverse proxy i TLS",
+        "Szyfrowane kopie poza serwerem",
+        "Runbook i przekazanie dostępu",
+      ],
+    },
+    "maintenance-sla": {
+      intro:
+        "Po wdrożeniu ktoś musi tego pilnować. Monitorujemy, łatajemy i odpowiadamy, w czasie reakcji uzgodnionym na piśmie przed pierwszym zgłoszeniem.",
+      included: [
+        "Monitoring dostępności i błędów",
+        "Łatki bezpieczeństwa i aktualizacje",
+        "Próby odtworzenia z kopii",
+        "Priorytetowa reakcja na awarie",
+      ],
+    },
+  },
   products: {
     eyebrow: "Produkty",
     title: "Nasze własne produkty",
@@ -1607,31 +2255,88 @@ const pl: SiteContent = {
       aiGateway: {
         description:
           "Jeden klucz API, jeden portfel i katalog modeli dla twórców.",
+        intro:
+          "Jeden punkt przed wieloma dostawcami modeli: jeden klucz, jeden portfel i routing per model, żeby mały zespół mógł zmienić dostawcę bez przepisywania kodu.",
+        points: [
+          "Jeden klucz API do wszystkich modeli",
+          "Limit i portfel per model",
+          "Fallback dostawcy, gdy jeden zawiedzie",
+          "Logi użycia per projekt",
+        ],
       },
       paymentOrchestration: {
         description:
           "Jedno API do wszystkich bramek płatności: automatyczny routing, fallback, idempotencja i znormalizowane webhooki.",
+        intro:
+          "Jedna integracja do wszystkich bramek płatności. Routing, fallback i idempotencja są obsługiwane pośrodku, więc odrzucenie przez bramkę nie staje się zgubionym zamówieniem.",
+        points: [
+          "Jedno API dla wielu bramek",
+          "Automatyczny routing i fallback",
+          "Idempotentne obciążenia i webhooki",
+          "Znormalizowane zdarzenia do aplikacji",
+        ],
       },
       adserverExchange: {
         description:
           "Kampanie, miejsca emisji, kreacje, reguły targetowania i dzienne statystyki w jednym serwerze reklam.",
+        intro:
+          "Samodzielnie hostowany serwer reklam do kampanii bezpośrednich: miejsca emisji, kreacje, reguły targetowania i dzienne statystyki w jednym miejscu, a nie w arkuszu i skrypcie.",
+        points: [
+          "Kampanie, miejsca emisji i kreacje",
+          "Reguły targetowania per miejsce",
+          "Dzienne wyświetlenia i kliknięcia",
+          "Self-hosted, dane zostają u Ciebie",
+        ],
       },
       cloudHostingBilling: {
         description:
           "Billing white-label i provisioning dla firm hostingowych: zamówienia, faktury, domeny i zgłoszenia.",
+        intro:
+          "Rozliczenia i provisioning dla firm hostingowych: zamówienia, faktury, domeny i zgłoszenia w jednym panelu, żeby nowy klient nie wymagał już czterech ręcznych kroków.",
+        points: [
+          "Zamówienia i faktury",
+          "Provisioning domen i usług",
+          "Panel klienta i zgłoszenia",
+          "White-label pod Twoją marką",
+        ],
       },
       trafficAnalytics: {
         description: "Odwiedziny, źródła i lejki konwersji w jednym panelu.",
+        intro:
+          "Odwiedziny, źródła i lejki konwersji w jednym panelu, uruchomione na Twoim serwerze, żeby liczby nie opuszczały infrastruktury, którą kontrolujesz.",
+        points: [
+          "Odwiedziny i źródła",
+          "Śledzenie lejków i konwersji",
+          "Widoki per strona i per kampania",
+          "Self-hosted na Twoim serwerze",
+        ],
       },
       selfHostedOnlineStore: {
         description:
           "Sklep internetowy, który instalujesz i posiadasz: katalog, koszyk, zamówienia na własnym serwerze.",
+        intro:
+          "Sklep internetowy, który instalujesz i posiadasz: katalog, koszyk, zamówienia na własnym serwerze, z kodem i danymi klientów w Twoich rękach.",
+        points: [
+          "Katalog i koszyk",
+          "Zamówienia i obsługa płatności",
+          "Instalacja na własnym serwerze",
+          "Dane i kod zostają u Ciebie",
+        ],
       },
     },
     catalog: {
       heading: "Gry i aplikacje",
       games: "Gry",
       apps: "Aplikacje",
+      gamesNote: "Gry na telefony, tworzone i wydawane przez nas.",
+      appsNote: "Codzienne, lekkie narzędzia Android.",
+    },
+    page: {
+      included: "Co potrafi",
+      related: "Inne produkty",
+      discuss: "Porozmawiaj o produkcie",
+      all: "Wszystkie produkty",
+      statusNote: "W budowie — brak daty wydania.",
     },
   },
   clients: {

@@ -72,7 +72,7 @@ export default async function LocalizedHomePage({ params }: LocalePageProps) {
     <>
       <Hero content={content} basePath={basePath} />
       <ClientMarquee content={content.clients} />
-      <Products content={content} />
+      <Products content={content} basePath={basePath} />
       <Highlights content={content} />
       <Clients content={content.clients} locale={locale} />
       <Services content={content} basePath={basePath} />
