@@ -11,6 +11,11 @@ import type { SiteContent } from "@/lib/i18n";
  *
  * Barisnya sama tenangnya dengan panel Product: tanpa border, tanpa chip ikon,
  * hanya nama, deskripsi, dan latar mist saat hover.
+ *
+ * Di kaki kedua varian ada `retired`: layanan yang sudah tidak ditawarkan.
+ * Barisnya diam — bukan tautan, karena tidak ada anchor yang bisa dituju dan
+ * tautan mati lebih buruk daripada baris tanpa affordance — dipisah hairline
+ * dan diredupkan seperti baris pensiun di section Services.
  */
 
 export type ServiceItem = {
@@ -19,10 +24,17 @@ export type ServiceItem = {
   slug: string;
 };
 
+/** Layanan yang sudah tidak ditawarkan: tampil di kaki panel, tanpa tautan. */
+export type RetiredServiceItem = {
+  title: string;
+  note: string;
+};
+
 type MenuProps = {
   content: SiteContent;
   basePath: string;
   items: ServiceItem[];
+  retired: RetiredServiceItem[];
   onNavigate?: () => void;
 };
 
@@ -82,7 +94,39 @@ function AllServicesLink({
   );
 }
 
-export function ServicesMenu({ content, basePath, items, onNavigate }: MenuProps) {
+/**
+ * Layanan yang sudah tidak ditawarkan, di kaki panel.
+ *
+ * Sengaja bukan tautan: tidak ada anchor yang bisa dituju, dan baris yang bisa
+ * diklik tapi tidak membawa ke mana-mana lebih buruk daripada baris diam.
+ * Hairline memisahkannya dari yang masih bisa dibeli, dan redupnya mengikuti
+ * baris pensiun di section Services — satu status, satu rupa.
+ */
+function RetiredRows({ retired }: { retired: RetiredServiceItem[] }) {
+  return (
+    <ul className="border-hairline mt-3 grid gap-x-6 gap-y-1 border-t pt-3 sm:grid-cols-2 lg:grid-cols-3">
+      {retired.map((item) => (
+        <li
+          key={item.title}
+          className="flex flex-wrap items-baseline gap-x-2 px-4 py-1.5"
+        >
+          <span className="text-slate-gray text-caption font-medium">{item.title}</span>
+          <span className="text-ash-gray text-caption">
+            <span aria-hidden="true">·</span> {item.note}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export function ServicesMenu({
+  content,
+  basePath,
+  items,
+  retired,
+  onNavigate,
+}: MenuProps) {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
@@ -96,11 +140,18 @@ export function ServicesMenu({ content, basePath, items, onNavigate }: MenuProps
           </li>
         ))}
       </ul>
+      <RetiredRows retired={retired} />
     </div>
   );
 }
 
-export function ServicesMenuList({ content, basePath, items, onNavigate }: MenuProps) {
+export function ServicesMenuList({
+  content,
+  basePath,
+  items,
+  retired,
+  onNavigate,
+}: MenuProps) {
   return (
     <div>
       <ul className="grid auto-rows-fr gap-1">
@@ -113,6 +164,7 @@ export function ServicesMenuList({ content, basePath, items, onNavigate }: MenuP
       <div className="mt-1.5">
         <AllServicesLink content={content} basePath={basePath} onNavigate={onNavigate} />
       </div>
+      <RetiredRows retired={retired} />
     </div>
   );
 }

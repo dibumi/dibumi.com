@@ -444,6 +444,7 @@ export default function Navbar({
                   content={content}
                   basePath={basePath}
                   items={serviceItems}
+                  retired={content.servicesSection.retired}
                   onNavigate={() => setOpenPanel(null)}
                 />
               )}
@@ -494,6 +495,7 @@ export default function Navbar({
                 content={content}
                 basePath={basePath}
                 items={serviceItems}
+                retired={content.servicesSection.retired}
                 onNavigate={closeMobile}
               />
             </MobileSection>

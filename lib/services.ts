@@ -7,7 +7,7 @@
  * anchor-nya selalu sama.
  *
  * Ikon sengaja tidak lagi disimpan di sini. Sistem desain di DESIGN.md tidak
- * punya ikon dekoratif, jadi urutan layanan ditandai nomor 01–06 dan bukan
+ * punya ikon dekoratif, jadi urutan layanan ditandai nomor 01–07 dan bukan
  * glyph. Kalau suatu saat ikon dibutuhkan lagi, tambahkan di sini dan di
  * komponen yang merendernya, bukan di lib/i18n.ts.
  */
@@ -18,6 +18,7 @@ export type ServiceMeta = {
 
 export const serviceMeta: ServiceMeta[] = [
   { slug: "custom-software" },
+  { slug: "custom-web-development" },
   { slug: "android-webview" },
   { slug: "company-profile" },
   { slug: "android-apps" },

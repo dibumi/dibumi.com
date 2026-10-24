@@ -17,11 +17,19 @@ import type { SiteContent } from "@/lib/i18n";
  * adalah putih pada hitam, dengan garis hairline sebagai pemisah.
  *
  * Diagram di kanan bukan gambar. Ia disusun dari data yang sama dengan daftar
- * di kiri: enam praktik yang masuk, satu tim yang mengolahnya, tiga keluaran
+ * di kiri: tujuh praktik yang masuk, satu tim yang mengolahnya, tiga keluaran
  * yang dampaknya. Garis konektor sengaja samar — diagram ini menjelaskan
  * bentuk kerja, bukan mengukur sesuatu.
  *
- * Ikon tetap tidak ada. Urutan ditandai ordinal 01–06.
+ * Di ujung daftar ada `retired`: layanan yang sudah tidak ditawarkan. Barisnya
+ * redup, tanpa nomor, tanpa bullet, dan tanpa CTA, karena menawarkan jasa yang
+ * tidak ada lebih buruk daripada tidak menyebutnya sama sekali. Ia juga tidak
+ * masuk diagram — diagram itu menggambarkan apa yang hari ini masuk ke satu
+ * tim. Di mega menu navbar ia tetap muncul, tapi sebagai baris diam di kaki
+ * panel, bukan tautan. Nomor 01–07 karena itu tetap hanya menghitung yang
+ * masih bisa dibeli.
+ *
+ * Ikon tetap tidak ada. Urutan ditandai ordinal 01–07.
  */
 export default function Services({
   content,
@@ -97,28 +105,60 @@ export default function Services({
                 </Reveal>
               );
             })}
+
+            {/* Baris pensiun: statusnya ditulis sebagai teks, bukan hanya
+                warna, supaya tetap terbaca tanpa warna dan oleh screen reader.
+                Hairline di atasnya sama dengan item lain, jadi ia menyambung
+                daftar, bukan memulai section baru. */}
+            {copy.retired.map((item, index) => (
+              <Reveal
+                key={item.title}
+                as="li"
+                delay={0.28 + index * 0.05}
+                className="border-paper-white/15 border-t py-6"
+              >
+                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h3 className="text-paper-white/60 text-body font-medium">{item.title}</h3>
+                  <span className="text-paper-white/40 text-caption">
+                    <span aria-hidden="true">·</span> {item.note}
+                  </span>
+                </div>
+                <p className="text-paper-white/40 mt-2 text-caption">{item.description}</p>
+              </Reveal>
+            ))}
           </ul>
 
-          {/* Diagram: enam praktik → satu tim → tiga keluaran. */}
+          {/* Diagram: tujuh praktik → satu tim → tiga keluaran. */}
           {/* Diagram menempel saat daftar digulir: daftar layanan jauh lebih
               panjang dari diagram, dan tanpa ini sisi kanan menyisakan rongga
               kosong sepanjang sisa section. */}
           <Reveal delay={0.12} className="lg:sticky lg:top-28 lg:self-start">
             <figure className="border-paper-white/12 bg-ink-black/40 rounded-elevatedcards relative overflow-hidden border p-6 sm:p-10">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {content.services.map((service, index) => (
-                  <div
-                    key={service.title}
-                    className="border-paper-white/15 rounded-smallcards border px-4 py-3"
-                  >
-                    <span className="text-paper-white/40 tabular text-caption">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <p className="text-paper-white mt-1 text-caption leading-snug">
-                      {service.title}
-                    </p>
-                  </div>
-                ))}
+                {content.services.map((service, index) => {
+                  // Dengan tujuh praktik, kotak terakhir duduk sendirian di
+                  // baris ketiga grid tiga kolom. `col-start-2` menaruhnya di
+                  // tengah, bukan menempel kiri dengan rongga di kanan.
+                  const aloneInRow =
+                    content.services.length % 3 === 1 &&
+                    index === content.services.length - 1;
+
+                  return (
+                    <div
+                      key={service.title}
+                      className={`border-paper-white/15 rounded-smallcards border px-4 py-3${
+                        aloneInRow ? " sm:col-start-2" : ""
+                      }`}
+                    >
+                      <span className="text-paper-white/40 tabular text-caption">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <p className="text-paper-white mt-1 text-caption leading-snug">
+                        {service.title}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Konektor: satu garis tegak di tengah dengan node kecil di

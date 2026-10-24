@@ -10,7 +10,7 @@ Built with **Next.js 16 (App Router)** and deployed as a **Cloudflare Worker** (
 
 ## Design system
 
-- `DESIGN.md` holds the reference: palette, type scale, radii, shadows, components, and the do's and don'ts. Its closing section records the six places this build deliberately departs from it.
+- `DESIGN.md` holds the reference: palette, type scale, radii, shadows, components, and the do's and don'ts. Its closing section records the seven places this build deliberately departs from it.
 - `tailwind.config.ts` and `app/globals.css` hold the implemented tokens. They mirror each other by hand, so a token change means changing both files.
 - The palette is intentionally achromatic, with `blush-peach` and `sienna-brown` reserved for one accent card per page. That card is the first one in Highlights.
 - The hero gradient wash lives in `app/globals.css` (`.hero-atmosphere`, `.hero-grain`, `.hero-fade`) rather than in a component, because it is seven stacked gradients plus a grain overlay, drifting on a 26-second loop. It is the only chromatic background on the site.
@@ -42,7 +42,7 @@ Legal documents are written in English and Indonesian. Other locales render the 
 3. **Products** — the reference's device: a vertical tab list of the six platform products plus the Ngambeg group on the left, the selected product in a framed window on the right with a browser chrome and a real `01 / 07` counter. A client component, server-fed. Below `lg` the tab list becomes a scrollable strip.
 4. **Highlights** — a centred serif heading, then the three phases as tall 3/4 cards fanned on desktop (the outer two at 90%, the middle at 110%, all rooted on the bottom edge) and a snap carousel below `md`. Each card is tag, oversized serif ordinal, title, description. The first is the page's single peach card; the reference's green third card is dropped, since the palette has no functional colour beyond peach/sienna.
 5. **Clients** — the peach band: the copy and three fixed facts on the left (100+ clients, 10+ countries, since 2013), a twelve-cell logo wall on the right with 1px gaps showing the band through as hairlines, each cell carrying a flag and the ISO country code. Everything in sienna on blush.
-6. **Services** — the dark band: the six practices as a hairline-separated list on the left, a diagram of the delivery model on the right (six inputs, one team, three outputs) built from the same data, sticky while the list scrolls.
+6. **Services** — the dark band: the seven practices as a hairline-separated list on the left, a diagram of the delivery model on the right (seven inputs, one team, three outputs) built from the same data, sticky while the list scrolls. The list closes with two dimmed retired rows — Digital Marketing (no longer offered) and Penetration Testing (currently inactive) — which are neither numbered nor fed into the diagram; the same two appear as non-clickable rows at the foot of the Services mega menu.
 7. **Process** — four steps on an achromatic rail.
 8. **Standards** — three standards as hairline rows, then three commitments.
 9. **Contact** — a centred closing call to action on fog with a single peach radial, WhatsApp as a filled pill and email as a ghost pill, then the operational facts.

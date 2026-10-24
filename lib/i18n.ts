@@ -94,6 +94,16 @@ export type SiteContent = {
     oneTeamNote: string;
     /** Tiga keluaran model kerja kami. */
     outputs: string[];
+    /**
+     * Layanan yang sudah tidak ditawarkan.
+     *
+     * Dirender redup di ujung daftar, tanpa nomor, tanpa bullet, dan tanpa CTA,
+     * supaya diagram "praktik yang masuk ke satu tim" tetap jujur dan mega menu
+     * navbar tetap hanya berisi yang bisa dibeli. Tiap entri membawa
+     * keterangannya sendiri karena statusnya berbeda: ada yang benar-benar
+     * ditarik, ada yang hanya sedang tidak aktif.
+     */
+    retired: { title: string; note: string; description: string }[];
   };
   services: { title: string; description: string; points: string[] }[];
   products: {
@@ -260,12 +270,26 @@ const en: SiteContent = {
     eyebrow: "Services",
     title: "What we build",
     description:
-      "Six practices, one team. From core business systems to the server room.",
+      "Seven practices, one team. From core business systems to the server room.",
     consult: "Discuss a project",
     oneTeam: "One team",
     oneTeamNote:
       "The code, the servers, and the guarantee ship together, from the same people.",
     outputs: ["Code", "Infrastructure", "SLA"],
+    retired: [
+      {
+        title: "Digital Marketing",
+        note: "No longer offered",
+        description:
+          "Campaigns, social media, and paid search we ran for clients in the studio's early years.",
+      },
+      {
+        title: "Penetration Testing",
+        note: "Currently inactive",
+        description:
+          "Penetration testing of web apps, APIs, and servers, reported with fix priorities.",
+      },
+    ],
   },
   services: [
     {
@@ -273,6 +297,12 @@ const en: SiteContent = {
       description:
         "Custom software for your workflow, from internal automation to modular ERP and CRM platforms.",
       points: ["API & payment gateway integration", "Secure, modular architecture"],
+    },
+    {
+      title: "Custom Web Development",
+      description:
+        "Web applications built around your workflow: dashboards, portals, and integrations that fit the systems you already run.",
+      points: ["Laravel / Next.js, API-first", "Deployed on infrastructure we also maintain"],
     },
     {
       title: "Android WebView Services",
@@ -560,12 +590,26 @@ const id: SiteContent = {
     eyebrow: "Layanan",
     title: "Yang kami bangun",
     description:
-      "Enam praktik, satu tim. Dari sistem inti bisnis sampai ruang server.",
+      "Tujuh praktik, satu tim. Dari sistem inti bisnis sampai ruang server.",
     consult: "Konsultasikan",
     oneTeam: "Satu tim",
     oneTeamNote:
       "Kode, server, dan jaminan dikirim bersama, dari orang yang sama.",
     outputs: ["Kode", "Infrastruktur", "SLA"],
+    retired: [
+      {
+        title: "Digital Marketing",
+        note: "Tidak tersedia lagi",
+        description:
+          "Kampanye, media sosial, dan iklan berbayar yang kami jalankan untuk klien pada tahun-tahun awal studio.",
+      },
+      {
+        title: "Pengujian Penetrasi",
+        note: "Tidak aktif",
+        description:
+          "Uji penetrasi aplikasi web, API, dan server, lengkap dengan laporan prioritas perbaikan.",
+      },
+    ],
   },
   services: [
     {
@@ -573,6 +617,12 @@ const id: SiteContent = {
       description:
         "Perangkat lunak kustom sesuai workflow bisnis Anda, dari automasi internal hingga ERP dan CRM modular.",
       points: ["Integrasi API & payment gateway", "Arsitektur aman & modular"],
+    },
+    {
+      title: "Custom Web Development",
+      description:
+        "Aplikasi web yang dibangun mengikuti alur kerja Anda: dasbor, portal, dan integrasi yang menyambung ke sistem yang sudah berjalan.",
+      points: ["Laravel / Next.js, API-first", "Deploy di infrastruktur yang kami rawat juga"],
     },
     {
       title: "Jasa WebView Android",
@@ -861,12 +911,26 @@ const ar: SiteContent = {
     eyebrow: "الخدمات",
     title: "ما نبنيه",
     description:
-      "ست ممارسات وفريق واحد. من أنظمة الأعمال الأساسية إلى غرفة الخوادم.",
+      "سبع ممارسات وفريق واحد. من أنظمة الأعمال الأساسية إلى غرفة الخوادم.",
     consult: "ناقش مشروعك",
     oneTeam: "فريق واحد",
     oneTeamNote:
       "الشيفرة والخوادم والضمان تُسلَّم معًا، من الفريق نفسه.",
     outputs: ["الشيفرة", "البنية التحتية", "اتفاقية الخدمة"],
+    retired: [
+      {
+        title: "التسويق الرقمي",
+        note: "لم يعد متاحاً",
+        description:
+          "حملات ووسائل تواصل اجتماعي وإعلانات مدفوعة نفّذناها لعملاء في سنوات الاستوديو الأولى.",
+      },
+      {
+        title: "اختبار الاختراق",
+        note: "غير مُفعّل حالياً",
+        description:
+          "اختبار اختراق تطبيقات الويب وواجهات API والخوادم، مع تقرير بأولويات الإصلاح.",
+      },
+    ],
   },
   services: [
     {
@@ -874,6 +938,12 @@ const ar: SiteContent = {
       description:
         "برمجيات مخصصة لسير عملك، من الأتمتة الداخلية إلى منصات ERP وCRM المرنة.",
       points: ["تكامل API وبوابات الدفع", "بنية آمنة ومرنة"],
+    },
+    {
+      title: "تطوير ويب مخصص",
+      description:
+        "تطبيقات ويب مبنية حول سير عملك: لوحات تحكم وبوابات وتكاملات تتصل بالأنظمة التي تستخدمها.",
+      points: ["Laravel / Next.js، واجهات API أولاً", "نشر على بنية تحتية نصونها أيضًا"],
     },
     {
       title: "خدمات Android WebView",
@@ -1152,12 +1222,24 @@ const zh: SiteContent = {
   servicesSection: {
     eyebrow: "服务",
     title: "我们构建什么",
-    description: "六项能力，一个团队。从核心业务系统到服务器机房。",
+    description: "七项能力，一个团队。从核心业务系统到服务器机房。",
     consult: "讨论项目",
     oneTeam: "同一个团队",
     oneTeamNote:
       "代码、服务器和保障由同一批人一起交付。",
     outputs: ["代码", "基础设施", "SLA"],
+    retired: [
+      {
+        title: "数字营销",
+        note: "已不再提供",
+        description: "工作室早期为客户执行的广告投放、社交媒体与付费搜索。",
+      },
+      {
+        title: "渗透测试",
+        note: "暂未开放",
+        description: "针对 Web 应用、API 与服务器的渗透测试，并附修复优先级报告。",
+      },
+    ],
   },
   services: [
     {
@@ -1165,6 +1247,12 @@ const zh: SiteContent = {
       description:
         "根据您的业务流程定制软件，从内部自动化到模块化 ERP 和 CRM 平台。",
       points: ["API 与支付网关集成", "安全、模块化架构"],
+    },
+    {
+      title: "定制 Web 开发",
+      description:
+        "围绕您的业务流程构建的 Web 应用：仪表盘、门户，以及与现有系统对接的集成。",
+      points: ["Laravel / Next.js，API 优先", "部署在我们同样维护的基础设施上"],
     },
     {
       title: "Android WebView 服务",
@@ -1428,12 +1516,26 @@ const pl: SiteContent = {
     eyebrow: "Usługi",
     title: "Co budujemy",
     description:
-      "Sześć praktyk, jeden zespół. Od systemów biznesowych po serwerownię.",
+      "Siedem praktyk, jeden zespół. Od systemów biznesowych po serwerownię.",
     consult: "Porozmawiaj o projekcie",
     oneTeam: "Jeden zespół",
     oneTeamNote:
       "Kod, serwery i gwarancja powstają razem, u tych samych ludzi.",
     outputs: ["Kod", "Infrastruktura", "SLA"],
+    retired: [
+      {
+        title: "Marketing cyfrowy",
+        note: "Nie jest już oferowany",
+        description:
+          "Kampanie, media społecznościowe i płatne wyszukiwanie, które prowadziliśmy dla klientów w pierwszych latach studia.",
+      },
+      {
+        title: "Testy penetracyjne",
+        note: "Obecnie nieaktywne",
+        description:
+          "Testy penetracyjne aplikacji webowych, API i serwerów wraz z raportem priorytetów napraw.",
+      },
+    ],
   },
   services: [
     {
@@ -1441,6 +1543,12 @@ const pl: SiteContent = {
       description:
         "Oprogramowanie dopasowane do Twojego procesu, od automatyzacji po modułowe systemy ERP i CRM.",
       points: ["Integracje API i płatności", "Bezpieczna, modułowa architektura"],
+    },
+    {
+      title: "Dedykowane aplikacje webowe",
+      description:
+        "Aplikacje webowe dopasowane do Twojego procesu: pulpity, portale i integracje z systemami, których już używasz.",
+      points: ["Laravel / Next.js, API-first", "Wdrożenie na infrastrukturze, którą też utrzymujemy"],
     },
     {
       title: "Usługi Android WebView",
