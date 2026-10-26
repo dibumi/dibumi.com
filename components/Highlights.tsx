@@ -45,6 +45,23 @@ import type { SiteContent } from "@/lib/i18n";
  * pecah jadi lima baris. Batasnya sekarang `58ch`, sama dengan SectionHeading,
  * sehingga 585px dan dua baris. `text-balance` menemani batas itu: tanpa
  * penyeimbang, dua baris pecah jadi satu baris penuh plus satu kata.
+ *
+ * Keputusan soal kontras ordinal — sengaja dibiarkan di bawah ambang 3:1.
+ *
+ * Angka 01/02/03 itu `aria-hidden` dan tidak membawa satu bit informasi pun:
+ * urutannya sudah terbaca dari posisi kartu di dalam `<ol>`/`<ul>` dan dari
+ * tag di atasnya. Yang diukur detektor adalah elemen dekoratif, dan teks murni
+ * dekoratif tidak punya ambang kontras — aturan 1.4.3 WCAG mengecualikan
+ * dekorasi justru karena menaikkannya akan mengubah gambar, bukan
+ * membacanya.
+ *
+ * Menaikkan ke 3:1 bukan penyesuaian kecil. Di atas peach, sienna butuh alpha
+ * 0,56 (dari 0,25) dan di atas mist, ink butuh 0,47 (dari 0,12) — lebih dari
+ * dua kali lebih pekat. Pada titik itu angkanya berhenti jadi wash di belakang
+ * teks dan mulai jadi bidang depan yang bersaing dengan judul 26px di
+ * bawahnya. Itu desain ulang, bukan poles. Jadi nilainya tetap, dengan waiver
+ * `impeccable-disable-next-line low-contrast` di dekat kelasnya supaya
+ * keputusan ini terbaca sebagai keputusan, bukan sebagai temuan yang lolos.
  */
 
 export default function Highlights({ content }: { content: SiteContent }) {
@@ -67,7 +84,14 @@ export default function Highlights({ content }: { content: SiteContent }) {
 
       {/* Mobile: carousel snap. `-mx-5`/`px-5` mengembalikan padding kontainer
           di dalam track, supaya kartu pertama tetap sejajar tepi halaman tapi
-          kartu berikutnya bisa menggantung di luar layar. */}
+          kartu berikutnya bisa menggantung di luar layar.
+
+          `w-[88%]` dan `max-w-[440px]` adalah satu keputusan, bukan dua:
+          88% menyisakan 12% kartu berikutnya sebagai petunjuk bahwa barisnya
+          bisa digeser — tanpa itu carousel terbaca sebagai satu kartu yang
+          kebetulan terpotong. Batas 440px menjaga kartu tidak melebar sampai
+          kehilangan bentuknya di tablet, tempat 88% sudah lebih dari cukup.
+          Nilai ini unik untuk track ini; tidak ada carousel lain di halaman. */}
       <ul className="-mx-5 mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 sm:-mx-8 sm:px-8 md:hidden">
         {content.highlights.map((item, index) => (
           <li key={item.title} className="w-[88%] max-w-[440px] shrink-0 snap-center">
@@ -79,14 +103,28 @@ export default function Highlights({ content }: { content: SiteContent }) {
       {/* Desktop: satu baris, tiga kartu bertinggi sama. `items-stretch` (bawaan
           flex) yang menyamakan tingginya: tiap `<li>` mengambil lebar `flex-1`
           dengan aspek 3/4, jadi tingginya otomatis identik. Tanpa skala bawaan
-          apa pun — zoom hanya pada kartu yang di-hover. */}
+          apa pun — zoom hanya pada kartu yang di-hover.
+
+          `z-10` duduk di `<li>`, bukan di kartu. `Reveal` menulis `transform`
+          inline untuk animasi masuknya, dan elemen yang punya transform
+          membentuk stacking context sendiri — `z-10` pada anak tidak bisa
+          keluar dari situ, jadi kartu yang membesar akan tetap tertutup
+          tetangganya di sebelah kanan. Di `<li>` ia mengangkat seluruh
+          stacking context-nya, yang memang yang dibutuhkan. Kalau `Reveal`
+          suatu saat berhenti memakai transform, pemindahan ini tetap benar.
+
+          Jeda 0.08s per kartu, sama dengan rail Process dan baris Standards:
+          satu increment untuk semua daftar yang di-reveal di halaman ini.
+          Tiga kartu berarti kartu terakhir mulai pada 0.16s, masih di dalam
+          durasi 0.6s — jadi barisnya masuk sebagai satu gelombang, bukan tiga
+          kedipan terpisah. */}
       <ul className="mt-14 hidden gap-6 md:flex">
         {content.highlights.map((item, index) => (
           <Reveal
             as="li"
             key={item.title}
             delay={index * 0.08}
-            className="aspect-[3/4] flex-1"
+            className="relative aspect-[3/4] flex-1 md:hover:z-10"
           >
             <Card item={item} index={index} className="h-full" />
           </Reveal>
@@ -104,10 +142,13 @@ export default function Highlights({ content }: { content: SiteContent }) {
  *
  * Zoom hover ada di sini, di `<div>` kartu — bukan di `Reveal` pembungkusnya,
  * karena motion menulis `transform` inline untuk animasi masuk dan inline style
- * mengalahkan utility Tailwind. `relative` + `z-10` saat hover membuat kartu
- * yang membesar naik di atas tetangganya, bukan tertutup olehnya. `origin-bottom`
- * membuat zoom tumbuh dari garis bawah, jadi barisnya tetap terasa berpangkal
- * pada satu lantai.
+ * mengalahkan utility Tailwind. `origin-bottom` membuat zoom tumbuh dari garis
+ * bawah, jadi barisnya tetap terasa berpangkal pada satu lantai. Origin itu
+ * aman untuk RTL apa adanya: `bottom` = `50% 100%`, komponen horizontalnya
+ * tengah, jadi tidak ada sisi kiri/kanan yang harus dibalik.
+ *
+ * Pengangkatan kartu di atas tetangganya dipegang `z-10` pada `<li>` di
+ * pemanggil, bukan di sini — lihat catatan di sana.
  */
 function Card({
   item,
@@ -122,9 +163,21 @@ function Card({
   // kenapa tidak ada kartu ketiga berwarna.
   const accent = index === 0;
 
+  // Waiver di bawah ini disengaja. Angka ordinal adalah dekorasi `aria-hidden`
+  // tanpa informasi — lihat "Keputusan soal kontras ordinal" di kepala file
+  // untuk alasan lengkapnya dan angka yang mendasarinya.
+  // impeccable-disable-next-line low-contrast: ordinal is aria-hidden ornament, not information
+  const ordinalColor = accent ? "text-sienna-brown/25" : "text-ink-black/[0.12]";
+
   return (
+    // `p-[9%]` bukan nilai bulat asal: padding persen dihitung dari lebar
+    // kartu, jadi tepi dalamnya ikut menyempit saat kartu mengecil di baris
+    // tiga kolom. Padding rem tetap akan terlihat longgar di kartu 219px dan
+    // sempit di kartu 384px. Sembilan persen dipilih supaya jarak tag ke tepi
+    // atas terbaca sama dengan jarak teks ke tepi bawah di kedua aspek (4/5
+    // dan 3/4).
     <div
-      className={`rounded-cards group relative flex origin-bottom flex-col justify-between overflow-hidden p-[9%] transition-transform duration-500 ease-out md:hover:z-10 md:hover:scale-[1.04] ${className} ${
+      className={`rounded-cards group relative flex origin-bottom flex-col justify-between overflow-hidden p-[9%] transition-transform duration-500 ease-out md:hover:scale-[1.04] ${className} ${
         accent ? "bg-blush-peach" : "bg-mist-gray"
       }`}
     >
@@ -142,22 +195,39 @@ function Card({
           "Handover without handcuffs" dua baris, jadi ruang sisa di tengah tiap
           kartu berbeda dan ordinalnya turun-naik sendiri. Dengan `top-[38%]`
           ketiga angka duduk di garis yang sama, seperti slot ilustrasi di
-          referensi (`top-[35%]`). Ukurannya relatif terhadap lebar layar di
-          mobile (`text-[28vw]`) lalu dipatok supaya tidak meluber. */}
+          referensi (`top-[35%]`). Nilai itu optis dan unik untuk kartu ini —
+          ia mengukur tinggi, bukan lebar, jadi tidak bisa ditokenkan bersama
+          padding persen di atas.
+
+          Ukurannya tangga yang naik di setiap rezim tata letak, bukan empat
+          angka yang berdiri sendiri:
+          - carousel (<md): 28vw, berhenti di 10rem. Dulu `28vw` lalu `10rem`
+            pada breakpoint `sm`, jadi antara 571px dan 639px angkanya 160–179px
+            lalu tiba-tiba menyusut ke 160px padahal kartunya tidak berubah.
+            `min()` membuat batas itu mulus, bukan snap.
+          - baris tiga kolom (md+): 7rem lalu 8rem. Satu-satunya penurunan di
+            seluruh tangga terjadi di sini, tepat saat kartu sendiri berhenti
+            jadi selebar layar (440px) dan mengecil jadi ~219px — ordinalnya
+            turun bersama kartunya, dari 36% ke 51% lebar kartu. Itu perubahan
+            tata letak, bukan angka yang salah urut. Setelah itu 7rem → 8rem
+            naik seiring kartu melebar sampai 384px. */}
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-[38%] flex justify-center"
       >
         <span
-          className={`font-display text-center text-[28vw] leading-none font-normal sm:text-[10rem] md:text-[7rem] lg:text-[8rem] ${
-            accent ? "text-sienna-brown/25" : "text-ink-black/[0.12]"
-          }`}
+          className={`font-display text-center text-[length:min(28vw,10rem)] leading-none font-normal md:text-[7rem] lg:text-[8rem] ${ordinalColor}`}
         >
           {String(index + 1).padStart(2, "0")}
         </span>
       </span>
 
       <div>
+        {/* `font-[450]`, bukan `font-normal` atau `font-medium`: Inter dimuat
+            sebagai variable font (tanpa daftar `weight` di layout.tsx), jadi
+            450 benar-benar dirender. Pada 26px, 450 duduk setara dengan 500
+            pada judul 20px di Standards dan Process — makin besar ukurannya,
+            makin sedikit bobot yang dibutuhkan untuk bobot optis yang sama. */}
         <h3
           className={`text-heading-sm font-[450] ${
             accent ? "text-sienna-brown" : "text-ink-black/70"

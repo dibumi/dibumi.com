@@ -46,16 +46,28 @@ export default function WorkflowMethodology({
         <div className="relative mt-12">
           {/* Rail vertikal untuk mobile. Mulai di pusat node pertama (top-3),
               bukan di tepi container, supaya garis tidak menyembul di atasnya.
+              `start-[5px]` adalah pusat node, bukan angka bulat: node 12px
+              (`h-3 w-3`) berpusat di 6px, dan rail ini 2px (`w-0.5`), jadi
+              tepinya jatuh di 5px. `start` dipakai supaya di RTL railnya
+              mengikuti sisi baca.
+
               `animate-sweep` men-scaleY garis dari 0.3 ke 1, jadi rail terbaca
               sedang digambar saat section masuk — bukan muncul mendadak.
+              Origin-nya `top`, bukan `left`: scaleY hanya menyentuh sumbu Y,
+              jadi komponen horizontal pada origin tidak berpengaruh sama
+              sekali, dan `top` membuat garisnya tumbuh ke bawah melewati
+              langkah 01→04 seperti sedang ditulis. `origin-left` yang lama
+              tumbuh dari tengah, arah yang tidak berarti apa-apa di sini.
               motion-reduce: matikan, karena gerak ini murni dekoratif. */}
           <div
-            className="bg-hairline animate-sweep absolute bottom-6 start-[5px] top-3 w-0.5 origin-left motion-reduce:animate-none lg:hidden"
+            className="bg-hairline animate-sweep absolute bottom-6 start-[5px] top-3 w-0.5 origin-top lg:hidden"
             aria-hidden="true"
           />
           {/* Rail horizontal untuk desktop: hanya sepanjang titik terakhir, jadi
               w-3/4 dan bukan lebar penuh — garis yang berhenti di luar kolom
               keempat akan menggantung tanpa tujuan.
+              `top-[5px]` mengulang aritmetika node yang sama: pusat node 12px
+              ada di 6px, rail 2px, jadi tepinya 5px.
               Keyframe `sweep` adalah scaleY; pada garis horizontal ia justru
               menebalkan/menipiskan garisnya, bukan memanjangkannya, jadi efek
               itu tidak dipakai di sini. Rail-nya cukup di-reveal sebagai satu
@@ -69,12 +81,14 @@ export default function WorkflowMethodology({
 
           <ol className="grid grid-cols-1 gap-x-8 gap-y-12 lg:grid-cols-4">
             {content.workflow.steps.map((step, index) => (
-              // Jeda 0.09s per langkah: cukup untuk membaca 01→04 sebagai
-              // urutan, tidak cukup lambat untuk terasa seperti loading.
+              // Jeda 0.08s per langkah, increment yang sama dengan kartu
+              // Highlights dan baris Standards: satu ritme untuk semua daftar
+              // yang di-reveal. Empat langkah berakhir di 0.24s, masih di dalam
+              // durasi 0.6s, jadi urutannya terbaca sebagai satu sapuan.
               <Reveal
                 as="li"
                 key={step.title}
-                delay={index * 0.09}
+                delay={index * 0.08}
                 className="group relative ps-7 lg:ps-0"
               >
                 {/* Node ikut membesar saat barisnya di-hover (CSS murni, tanpa
