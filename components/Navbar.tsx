@@ -20,8 +20,12 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  * Navigasi utama: bar yang berbisik, tanpa garis dan tanpa bayangan.
  *
  * Aturan yang dijaga di sini:
- * - Tinggi bar 64px di semua lebar. Offset anchor di globals.css mengikuti
- *   angka ini, jadi ubah keduanya bersamaan.
+ * - Tinggi bar 64px (h-16) di semua lebar. Angka itu disandikan di empat tempat
+ *   di berkas ini — `h-16` pada bar, `h-16` pada spacer, `top-16` pada sheet
+ *   mobile, dan `calc(100dvh-4rem)` pada tinggi maksimum mega panel — plus satu
+ *   di luar berkas ini (`-mt-16` di Hero). `scroll-padding-top: 5rem` di
+ *   app/globals.css adalah angka yang sama ditambah 16px napas. Ubah kelimanya
+ *   bersamaan; tidak ada satu pun yang boleh bergeser sendiri.
  * - Bar ini fixed, bukan sticky. Di posisi paling atas ia transparan dan menyatu
  *   dengan wash hero — persis seperti referensi, di mana nav tidak punya bidang
  *   sendiri sampai halaman digulir. Setelah digulir ia baru mendapat permukaan
@@ -45,6 +49,17 @@ import type { Locale, SiteContent } from "@/lib/i18n";
 
 type OpenPanel = "product" | "services" | null;
 type OpenSection = "product" | "services" | null;
+
+/**
+ * Garis tempat judul section mendarat setelah klik anchor, dalam piksel.
+ *
+ * 80px = bar 64px (h-16) + 16px napas, dan itu tepat nilai `scroll-padding-top:
+ * 5rem` di app/globals.css. Angka ini perlu ditulis ulang di sini karena
+ * IntersectionObserver tidak membaca kelas Tailwind; setiap tempat lain memakai
+ * kelas `h-16`/`top-16` dan diberi komentar di titik pakainya. Kalau tinggi bar
+ * berubah, ubah konstanta ini bersama kelima tempat itu.
+ */
+const ANCHOR_OFFSET_PX = 80;
 
 const desktopItem =
   "group inline-flex h-8 items-center gap-1 rounded-buttons px-2.5 text-caption transition-colors";
@@ -98,6 +113,7 @@ export default function Navbar({
   const [scrolled, setScrolled] = useState(false);
 
   const navRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLElement>(null);
   const productButtonRef = useRef<HTMLButtonElement>(null);
@@ -152,6 +168,11 @@ export default function Navbar({
   // atau di-refresh dalam keadaan sudah tergulir.
   useEffect(() => {
     function handleScroll() {
+      // Ambang 8px bukan ukuran desain dan sengaja bukan token: ini zona mati
+      // untuk derau masukan. Di puncak halaman scrollY masih bisa menyentuh
+      // 1–2px karena jitter trackpad atau rubber-band iOS, dan tanpa ambang
+      // permukaan bar akan berkedip antara transparan dan solid. Nilainya cukup
+      // kecil untuk tidak terasa sebagai jeda, cukup besar untuk menahan itu.
       setScrolled(window.scrollY > 8);
     }
 
@@ -162,6 +183,14 @@ export default function Navbar({
 
   // Sorot Process/Standards sesuai posisi baca. IntersectionObserver, bukan
   // listener scroll, supaya tidak ada kerja di setiap frame.
+  //
+  // `rootMargin` atas memotong viewport tepat di bawah bar + napas, yaitu garis
+  // yang sama dengan `scroll-padding-top` (lihat ANCHOR_OFFSET_PX), supaya
+  // section baru dihitung "sedang dibaca" saat judulnya benar-benar muncul di
+  // bawah bar — bukan saat ia masih tersembunyi di baliknya. Nilai bawah -55%
+  // menyisakan pita baca di paruh atas layar, jadi satu section yang panjang
+  // tetap jadi sorotan sampai section berikutnya masuk ke pita itu.
+  // Format rootMargin: `atas kanan bawah kiri`.
   useEffect(() => {
     const ids = ["process", "standards"];
     const targets = ids
@@ -183,7 +212,7 @@ export default function Navbar({
         const next = ids.find((id) => visible.has(id)) ?? null;
         setActiveHash(next ? `#${next}` : null);
       },
-      { rootMargin: "-88px 0px -55% 0px" },
+      { rootMargin: `-${ANCHOR_OFFSET_PX}px 0px -55% 0px` },
     );
 
     targets.forEach((target) => observer.observe(target));
@@ -220,27 +249,44 @@ export default function Navbar({
 
   // Sheet mobile: kunci scroll halaman, jebak fokus, Escape menutup, fokus
   // kembali ke tombol menu.
+  //
+  // Daftar fokus sengaja mencakup header DAN sheet, bukan sheet saja. Sheet
+  // menutupi seluruh layar di bawah bar, tetapi bar-nya sendiri tetap terlihat
+  // dan tetap hidup: merek dan pemilih bahasa masih bisa diklik. Kalau
+  // keduanya tidak masuk daftar, Tab dari item terakhir memutar kembali ke
+  // tombol menu, dan dua kontrol yang terlihat itu mustahil dicapai dengan
+  // keyboard. Urutannya urutan dokumen — header dulu, sheet kemudian — jadi
+  // Tab berjalan merek → bahasa → tombol menu → isi sheet → kembali.
   useEffect(() => {
     if (!mobileOpen) return;
 
     const previousOverflow = document.body.style.overflow;
+    const header = headerRef.current;
     const menuButton = menuButtonRef.current;
     const sheet = sheetRef.current;
     document.body.style.overflow = "hidden";
 
-    const focusables = () =>
-      [
-        menuButton,
-        ...(sheet
-          ? Array.from(
-              sheet.querySelectorAll<HTMLElement>(
-                'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
-              ),
-            )
-          : []),
-      ].filter((node): node is HTMLElement => node !== null);
+    const focusables = () => {
+      const roots = [header, sheet].filter((node): node is HTMLElement => node !== null);
+      const nodes = roots.flatMap((root) =>
+        Array.from(
+          root.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ),
+        ),
+      );
+      // Tautan desktop (`hidden lg:flex`) tetap ada di DOM walau tidak
+      // dirender. Memfokuskannya gagal diam-diam, dan ujung jebakan yang
+      // menunjuk elemen tak terlihat akan menelan Tab. Elemen yang benar-benar
+      // dirender selalu punya client rect.
+      return nodes.filter((node) => node.getClientRects().length > 0);
+    };
 
-    focusables()[0]?.focus();
+    // Fokus ditinggalkan di tombol menu, bukan dilempar ke isi sheet: sheet ini
+    // disclosure, bukan dialog, dan pemicunyalah yang harus memegang fokus
+    // sampai pengguna menekan Tab. `focus()` eksplisit karena Safari tidak
+    // memfokuskan tombol saat diklik.
+    menuButton?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -275,14 +321,20 @@ export default function Navbar({
   }, [mobileOpen]);
 
   // Kalau layar melebar ke desktop saat sheet terbuka, tutup sheet agar scroll
-  // halaman tidak tertinggal dalam keadaan terkunci.
+  // halaman tidak tertinggal dalam keadaan terkunci. Arah sebaliknya juga
+  // ditutup: mega panel disembunyikan `lg:block`, jadi state terbukanya harus
+  // ikut padam — tanpa itu bar tetap memakai permukaan solid di puncak halaman
+  // padahal panelnya sudah tidak dirender.
   useEffect(() => {
     const query = window.matchMedia("(min-width: 1024px)");
 
     function handleChange(event: MediaQueryListEvent) {
-      if (!event.matches) return;
-      setMobileOpen(false);
-      setOpenSection(null);
+      if (event.matches) {
+        setMobileOpen(false);
+        setOpenSection(null);
+      } else {
+        setOpenPanel(null);
+      }
     }
 
     query.addEventListener("change", handleChange);
@@ -311,6 +363,7 @@ export default function Navbar({
           atau saat panel/sheet dibuka. Border selalu ada (transparan saat belum
           digulir) supaya tinggi bar tidak melompat 1px saat statusnya berubah. */}
       <header
+        ref={headerRef}
         className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500 ${
           solidBar
             ? "bg-paper-white/85 border-hairline border-b backdrop-blur-md"
@@ -321,7 +374,8 @@ export default function Navbar({
             kolom tengah benar-benar di tengah bar: dengan `flex-1` tautan hanya
             di tengah ruang sisa, dan karena merek (137px) lebih sempit daripada
             kluster aksi (222px) hasilnya meleset ~43px. Dua kolom `1fr` di kiri
-            dan kanan membuat kolom `auto` di tengah selalu simetris. */}
+            dan kanan membuat kolom `auto` di tengah selalu simetris.
+            `h-16` = 64px, satu dari lima sandi tinggi bar. Lihat kepala berkas. */}
         <div className="mx-auto flex h-16 max-w-page items-center gap-2 px-5 sm:px-8 lg:grid lg:grid-cols-[1fr_auto_1fr]">
           {/* Brand: sekaligus link ke beranda, jadi tidak ada item "Home".
               Wordmark satu warna; titik ".com" tidak lagi diberi aksen. */}
@@ -430,7 +484,10 @@ export default function Navbar({
               aria-label={mobileOpen ? nav.closeMenu : nav.menu}
               aria-expanded={mobileOpen}
               aria-controls="mobile-navigation"
-              className="text-ink-black hover:bg-mist-gray rounded-smallcards inline-flex h-10 w-10 items-center justify-center transition lg:hidden"
+              /* 44px, bukan 40px: ini satu-satunya kontrol pembuka sheet dan
+                 seluruhnya disentuh jari. Bar tetap 64px, jadi tingginya tidak
+                 mengubah kontrak anchor. */
+              className="text-ink-black hover:bg-mist-gray rounded-smallcards inline-flex h-11 w-11 items-center justify-center transition lg:hidden"
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -438,7 +495,10 @@ export default function Navbar({
         </div>
 
         {/* Mega panel: selebar viewport, menempel ke bawah bar, tanpa border
-            dan tanpa radius. Bayangan modal yang memisahkannya dari isi. */}
+            dan tanpa radius. Bayangan modal yang memisahkannya dari isi.
+            Tinggi maksimum `calc(100dvh-4rem)` = viewport dikurangi bar 64px,
+            supaya panel tidak pernah menutupi bar-nya sendiri dan bagian
+            bawahnya yang panjang tetap bisa digulir di dalam panel. */}
         {openPanel && (
           <div
             ref={panelRef}
@@ -467,14 +527,16 @@ export default function Navbar({
       </header>
 
       {/* Bar fixed keluar dari alur dokumen, jadi tingginya harus dibayar di
-          sini supaya isi halaman tidak tertutup. Angka ini WAJIB sama dengan
-          tinggi bar di atas (h-16) dan dengan scroll-padding-top di
-          app/globals.css: kalau salah satu bergeser, judul section mendarat di
-          bawah bar atau terlalu jauh dari tepi. */}
+          sini supaya isi halaman tidak tertutup. `h-16` ini WAJIB sama dengan
+          tinggi bar di atas dan dengan `scroll-padding-top` di app/globals.css
+          (5rem = 64px bar + 16px napas): kalau salah satu bergeser, judul
+          section mendarat di bawah bar atau terlalu jauh dari tepi. */}
       <div aria-hidden="true" className="h-16" />
 
       {/* Mobile sheet: di luar header karena backdrop-blur membuat header jadi
-          containing block untuk elemen fixed. */}
+          containing block untuk elemen fixed. `top-16` adalah sandi tinggi bar
+          yang ketiga: sheet mulai tepat di bawah bar, bukan menutupinya, jadi
+          tombol X di bar tetap terjangkau saat sheet terbuka. */}
       {mobileOpen && (
         <nav
           id="mobile-navigation"
@@ -518,6 +580,10 @@ export default function Navbar({
                 key={link.href}
                 href={link.href}
                 onClick={closeMobile}
+                /* Penanda section yang sedang dibaca sama dengan versi desktop:
+                   baris ini selalu medium, jadi statusnya tidak mengubah rupa,
+                   tapi pembaca layar tetap tahu di mana ia berada. */
+                aria-current={activeHash === link.hash ? "location" : undefined}
                 className="text-ink-black border-hairline text-body flex items-center justify-between gap-3 border-b py-4 font-medium"
               >
                 {link.name}

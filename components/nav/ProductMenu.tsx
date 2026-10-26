@@ -49,8 +49,11 @@ function Arrow() {
 }
 
 function SoonBadge({ label }: { label: string }) {
+  // `rounded-buttons`, bukan `rounded-full`: nilainya sama (9999px), tapi hanya
+  // satu nama yang dipakai sistem. `rounded-full` di sini dulu satu-satunya
+  // bentuk pill yang dinamai lain di komponen nav.
   return (
-    <span className="border-hairline text-ash-gray text-caption shrink-0 rounded-full border px-2 py-0.5">
+    <span className="border-hairline text-ash-gray text-caption shrink-0 rounded-buttons border px-2 py-0.5">
       {label}
     </span>
   );
