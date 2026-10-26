@@ -16,9 +16,12 @@ const foundedYear = 2013;
  * Footer: mark di kiri, empat kolom tautan di kanan, satu baris penutup.
  *
  * Bentuknya mengikuti referensi: seluruh footer duduk di atas fog-white tanpa
- * garis pemisah, jadi perpindahan dari isi halaman ke footer terbaca sebagai
- * perubahan permukaan, bukan sebagai garis. Mark berdiri sendiri tanpa wordmark
- * — logonya sudah cukup, dan mengulang nama di sebelahnya hanya menambah teks.
+ * garis atas, jadi tidak ada garis yang memotong penutup halaman. Di beranda ia
+ * menyambung langsung pita fog section kontak — dua permukaan yang sama, jadi
+ * jaraknya dijaga oleh padding, bukan oleh border. Di halaman lain footer
+ * muncul sebagai perubahan permukaan dari paper-white. Mark berdiri sendiri
+ * tanpa wordmark — logonya sudah cukup, dan mengulang nama di sebelahnya hanya
+ * menambah teks.
  *
  * Wordmark raksasa WWW.DIBUMI.COM yang dulu menutup halaman sudah dihapus: itu
  * satu-satunya elemen berskala display di luar judul, dan di referensi footer
@@ -51,7 +54,14 @@ export default function Footer({
     { label: footer.terms, href: `/${locale}/terms` },
   ];
 
-  const columnLabel = "text-ash-gray text-caption";
+  /* Label kolom dan tautannya dulu dipisahkan oleh nilai abu yang jauh: slate
+     gelap untuk tautan, ash jauh lebih terang untuk label. Setelah ramp digelap
+     agar lolos WCAG AA, selisih ash–slate tinggal sekitar lima unit L*, jadi
+     warnanya saja tidak lagi cukup memisahkan kepala kolom dari isinya. Weight
+     jadi pembeda kedua: label medium, tautan regular. Urutan ramp tetap
+     (label lebih terang dari tautan), dan baris penutup di bawah tetap ash
+     regular sebagai lapis paling tenang. */
+  const columnLabel = "text-ash-gray text-caption font-medium";
   const columnLink = "text-slate-gray text-caption transition hover:text-ink-black";
 
   return (

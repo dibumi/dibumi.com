@@ -8,7 +8,13 @@ import { ArrowLeft } from "lucide-react";
  *
  * Halamannya sendiri adalah satu kolom teks di tengah: tag 404, judul serif,
  * satu paragraf, lalu sepasang pill. Tidak ada ikon dekoratif — panah di pill
- * pertama adalah glyph fungsional "kembali", dibalik di locale RTL.
+ * pertama adalah glyph fungsional "kembali".
+ *
+ * Catatan: halaman ini selalu dirender di luar segmen locale, jadi dir-nya
+ * selalu ltr dan varian rtl: pada panah tidak pernah aktif. Varian itu tetap
+ * dipertahankan supaya file ini benar kalau suatu saat dipindah ke dalam
+ * [locale]. Karena itu juga halaman ini tidak membawa Navbar dan Footer: hanya
+ * dua tautan di bawah yang menjadi jalan keluar.
  */
 export default function NotFound() {
   return (
@@ -18,7 +24,7 @@ export default function NotFound() {
         <h1 className="text-ink-black font-display text-heading font-normal sm:text-heading-lg mt-3">
           This page does not exist
         </h1>
-        <p className="text-slate-gray text-body mx-auto mt-3 max-w-md">
+        <p className="text-slate-gray text-body mt-3">
           The link may be outdated. Head back to the home page, or read the site in another
           language.
         </p>
@@ -28,7 +34,7 @@ export default function NotFound() {
             href="/en"
             className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 inline-flex h-11 items-center justify-center gap-2 px-5 text-caption transition"
           >
-            <ArrowLeft className="h-4 w-4 rtl:rotate-180" aria-hidden="true" />
+            <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" aria-hidden="true" />
             Back to English
           </Link>
           <Link

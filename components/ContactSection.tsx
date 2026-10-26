@@ -15,7 +15,12 @@ import type { SiteContent } from "@/lib/i18n";
  * Latar memakai fog (satu langkah di atas putih) plus satu radial peach tipis di
  * belakang judul. Ini gema dari wash hero, bukan pengulangannya: wash hero
  * penuh lima gradient, di sini hanya satu bercak lembut supaya halaman terasa
- * kembali ke tempat awalnya tanpa mengulang pertunjukan yang sama.
+ * kembali ke tempat awalnya tanpa mengulang pertunjukan yang sama. Bercak itu
+ * memakai var(--color-blush-peach), bukan hex yang ditulis ulang di sini.
+ *
+ * Padding-nya py-20 lg:py-28, sama dengan section sebelumnya (Standards). Dua
+ * pita terakhir halaman jadi satu irama; sebelumnya section ini memakai
+ * py-24 lg:py-32 dan terasa seperti lompatan tepat di penutup.
  *
  * Hierarki dua jalur tetap: WhatsApp adalah pill terisi ink, email adalah pill
  * bergaris. Yang membedakan tingkat, bukan warna — peach tetap tidak dipakai
@@ -52,14 +57,14 @@ export default function ContactSection({
     <section
       id="contact"
       aria-labelledby={titleId}
-      className="bg-fog-white relative isolate overflow-hidden py-24 lg:py-32"
+      className="bg-fog-white relative isolate overflow-hidden py-20 lg:py-28"
     >
       {/* Satu radial peach di belakang judul. -z-10 masih di atas latar section
           karena section ini isolate, jadi bercaknya tidak bocor ke section lain
           dan tidak menutupi teks. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_20%,#fbe1d1_0%,rgba(251,225,209,0)_70%)]"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_20%,var(--color-blush-peach)_0%,rgba(251,225,209,0)_70%)]"
       />
 
       <div className="mx-auto max-w-page px-5 sm:px-8">
@@ -70,7 +75,7 @@ export default function ContactSection({
           <Reveal className="w-full">
             <h2
               id={titleId}
-              className="text-ink-black font-display text-heading mx-auto max-w-[24ch] font-normal sm:text-heading-lg xl:text-[64px]"
+              className="text-ink-black font-display text-heading mx-auto max-w-[24ch] font-normal sm:text-heading-lg"
             >
               {contact.title}
             </h2>
