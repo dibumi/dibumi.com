@@ -130,7 +130,7 @@ function Card({
     >
       <p
         className={`text-caption uppercase tracking-wide ${
-          accent ? "text-sienna-brown/70" : "text-ash-gray"
+          accent ? "text-sienna-brown/80" : "text-ash-gray"
         }`}
       >
         {item.tag}

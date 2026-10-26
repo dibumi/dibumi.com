@@ -74,7 +74,7 @@ export default function Services({
                 >
                   <div id={meta ? serviceAnchor(meta.slug) : undefined} className="scroll-mt-28">
                     <div className="flex items-baseline gap-3">
-                      <span className="text-paper-white/40 tabular text-caption">
+                      <span className="text-paper-white/55 tabular text-caption">
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       <h3 className="text-body font-medium">
@@ -96,7 +96,7 @@ export default function Services({
 
                     <ul className="mt-3 flex flex-col gap-1 ps-8">
                       {service.points.map((point) => (
-                        <li key={point} className="text-paper-white/40 text-caption">
+                        <li key={point} className="text-paper-white/55 text-caption">
                           {point}
                         </li>
                       ))}
@@ -129,11 +129,11 @@ export default function Services({
               >
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                   <h3 className="text-paper-white/60 text-body font-medium">{item.title}</h3>
-                  <span className="text-paper-white/40 text-caption">
+                  <span className="text-paper-white/55 text-caption">
                     <span aria-hidden="true">·</span> {item.note}
                   </span>
                 </div>
-                <p className="text-paper-white/40 mt-2 text-caption">{item.description}</p>
+                <p className="text-paper-white/55 mt-2 text-caption">{item.description}</p>
               </Reveal>
             ))}
           </ul>
@@ -160,7 +160,7 @@ export default function Services({
                         aloneInRow ? " sm:col-start-2" : ""
                       }`}
                     >
-                      <span className="text-paper-white/40 tabular text-caption">
+                      <span className="text-paper-white/55 tabular text-caption">
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       <p className="text-paper-white mt-1 text-caption leading-snug">

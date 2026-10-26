@@ -10,16 +10,31 @@
 :root {
   color-scheme: light;
 
-  /* Colors */
+  /* Colors
+   *
+   * Tiga abu-abu di bawah disetel ulang agar lolos WCAG AA 4.5:1 untuk teks
+   * biasa di atas KETIGA permukaan terang sistem ini: paper-white, fog-white,
+   * dan mist-gray (mist adalah yang terburuk, jadi itu patokannya).
+   *
+   * Nilai lama (#777b86 / #979799 / #a3a6af) menghasilkan 4.23 / 2.92 / 2.43
+   * di atas putih, dan 3.78 / 2.61 / 2.17 di atas mist. Itu 45 kegagalan
+   * kontras di satu halaman, semuanya berasal dari tiga token ini, bukan dari
+   * komponen mana pun. Ramp-nya dipertahankan berurutan (slate paling gelap,
+   * smoke paling terang) supaya hierarki teks tidak hilang.
+   *
+   * Kalau ada yang mengubah ini lagi, ukur ulang terhadap #f2f2f3, bukan
+   * terhadap putih.
+   */
   --color-ink-black: #17191c;
   --color-paper-white: #ffffff;
   --color-mist-gray: #f2f2f3;
   --color-fog-white: #fafafb;
-  --color-slate-gray: #777b86;
-  --color-ash-gray: #979799;
-  --color-smoke-gray: #a3a6af;
+  --color-slate-gray: #585b63;
+  --color-ash-gray: #646771;
+  --color-smoke-gray: #696d77;
   --color-blush-peach: #fbe1d1;
   --color-sienna-brown: #5d2a1a;
+  --color-hairline: #ececec;
 
   /* Typography — Scale */
   --text-caption: 15px;
@@ -56,13 +71,6 @@
   --radius-buttons: 9999px;
   --radius-smallcards: 16px;
   --radius-elevatedcards: 20px;
-
-  /* Surfaces */
-  --surface-canvas: #ffffff;
-  --surface-card-mist: #f2f2f3;
-  --surface-section-fog: #fafafb;
-  --surface-accent-blush: #fbe1d1;
-  --surface-elevated-white: #ffffff;
 }
 
 @layer base {
@@ -81,16 +89,24 @@
     @apply bg-paper-white text-ink-black font-sans antialiased;
   }
 
+  /* Paragraf panjang tidak boleh menyisakan satu kata sendirian di baris
+     terakhir: itu meninggalkan lubang di bawah blok teks. `pretty` memindahkan
+     satu kata dari baris sebelumnya untuk menutupnya. Browser yang belum
+     mengenal properti ini mengabaikannya, jadi tidak ada risiko regresi. */
+  p {
+    text-wrap: pretty;
+  }
+
   ::selection {
-    background-color: #fbe1d1;
-    color: #5d2a1a;
+    background-color: var(--color-blush-peach);
+    color: var(--color-sienna-brown);
   }
 
   /* Satu gaya fokus untuk seluruh situs, supaya navigasi keyboard konsisten.
      Ink black, bukan warna aksen: sistem ini tidak punya warna fungsional
      selain peach, dan peach gagal kontras sebagai outline di atas putih. */
   :focus-visible {
-    outline: 2px solid #17191c;
+    outline: 2px solid var(--color-ink-black);
     outline-offset: 3px;
   }
 
@@ -175,19 +191,19 @@
     linear-gradient(
       to right,
       transparent calc(25% - 0.5px),
-      #ececec calc(25% - 0.5px) calc(25% + 0.5px),
+      var(--color-hairline) calc(25% - 0.5px) calc(25% + 0.5px),
       transparent calc(25% + 0.5px)
     ),
     linear-gradient(
       to right,
       transparent calc(50% - 0.5px),
-      #ececec calc(50% - 0.5px) calc(50% + 0.5px),
+      var(--color-hairline) calc(50% - 0.5px) calc(50% + 0.5px),
       transparent calc(50% + 0.5px)
     ),
     linear-gradient(
       to right,
       transparent calc(75% - 0.5px),
-      #ececec calc(75% - 0.5px) calc(75% + 0.5px),
+      var(--color-hairline) calc(75% - 0.5px) calc(75% + 0.5px),
       transparent calc(75% + 0.5px)
     );
 }
@@ -213,7 +229,11 @@
   bottom: 0;
   height: 9rem;
   pointer-events: none;
-  background-image: linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(
+    to top,
+    var(--color-paper-white) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
 }
 
 /*

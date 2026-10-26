@@ -27,9 +27,14 @@ export default {
         "paper-white": "#ffffff",
         "mist-gray": "#f2f2f3",
         "fog-white": "#fafafb",
-        "slate-gray": "#777b86",
-        "ash-gray": "#979799",
-        "smoke-gray": "#a3a6af",
+        // Tiga abu-abu ini lebih gelap dari DESIGN.md. Bukan selera: nilai asli
+        // gagal WCAG AA untuk teks (slate 4.23:1, ash 2.92:1, smoke 2.43:1 di
+        // atas putih; lebih buruk lagi di atas mist-gray). Yang diukur adalah
+        // mist-gray, karena itu permukaan terang terburuk. Urutan ramp tetap:
+        // slate paling gelap, smoke paling terang.
+        "slate-gray": "#585b63",
+        "ash-gray": "#646771",
+        "smoke-gray": "#696d77",
         "blush-peach": "#fbe1d1",
         "sienna-brown": "#5d2a1a",
         // Satu-satunya nilai di luar DESIGN.md: warna garis dari Quick Color

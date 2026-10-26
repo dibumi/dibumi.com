@@ -79,7 +79,7 @@ export default function Clients({
         <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
           {/* Kolom kiri: judul, deskripsi, dan tiga angka keras. */}
           <Reveal>
-            <p className="text-sienna-brown/70 flex items-center gap-1.5 text-caption">
+            <p className="text-sienna-brown/80 flex items-center gap-1.5 text-caption">
               {content.eyebrow}
               <span aria-hidden="true" className="rtl:-scale-x-100">
                 ›
@@ -97,7 +97,7 @@ export default function Clients({
             <dl className="border-sienna-brown/20 mt-12 grid grid-cols-3 gap-6 border-t pt-6">
               {facts.map((fact) => (
                 <div key={fact.label}>
-                  <dt className="text-sienna-brown/60 text-caption">{fact.label}</dt>
+                  <dt className="text-sienna-brown/85 text-caption">{fact.label}</dt>
                   <dd className="text-sienna-brown font-display tabular mt-1 text-heading-sm font-normal">
                     {fact.value}
                   </dd>
@@ -131,7 +131,7 @@ export default function Clients({
                     </span>
                   )}
 
-                  <span className="text-sienna-brown/60 flex items-center gap-1.5 text-caption uppercase">
+                  <span className="text-sienna-brown/85 flex items-center gap-1.5 text-caption uppercase">
                     <img
                       src={`/flags/${client.region}.svg`}
                       alt={regionName(client.region, locale)}
