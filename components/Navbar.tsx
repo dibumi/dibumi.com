@@ -390,7 +390,7 @@ export default function Navbar({
           {/* Desktop navigation — di tengah bar, bukan menempel brand. */}
           <nav
             ref={navRef}
-            aria-label="Main navigation"
+            aria-label={content.nav.mainLabel}
             className="hidden items-center gap-0.5 lg:flex lg:justify-self-center"
           >
             <div className="relative">
@@ -541,7 +541,7 @@ export default function Navbar({
         <nav
           id="mobile-navigation"
           ref={sheetRef}
-          aria-label="Mobile navigation"
+          aria-label={content.nav.mobileLabel}
           className="bg-paper-white fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col lg:hidden"
         >
           <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-1">

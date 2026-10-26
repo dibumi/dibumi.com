@@ -101,6 +101,21 @@ export default function Hero({
 
               Dua baris dipisah elemen sendiri supaya mask-nya bisa berjalan
               berurutan. */}
+          {/* Baris aksen dimiringkan dengan `<em>`. Ini keputusan yang disadari,
+              bukan kelalaian: Source Serif 4 dimuat dengan style italic, jadi di
+              locale Latin hasilnya italic sungguhan.
+
+              Untuk Arab dan Cina hasilnya berbeda. IBM Plex Sans Arabic dan Noto
+              Sans SC tidak punya potongan italic, jadi browser membuat oblique
+              sintetis dengan menggeser glyph — dan pada aksara Arab shear itu
+              merusak bentuk kaligrafi, karena italic bukan konvensi aksara
+              tersebut. Sudah dipertimbangkan dan diputuskan untuk dibiarkan:
+              mematikan italic lewat `:lang(ar) em { font-style: normal }` akan
+              membuat kedua baris judul identik gayanya, dan pembeda miring itulah
+              yang memisahkan baris aksen dari baris utama. Oblique sintetis pada
+              Cina jauh lebih bisa diterima, jadi menanganinya per aksara juga
+              akan membuat dua locale non-Latin tampil berbeda tanpa alasan yang
+              terlihat pembaca. */}
           <h1 className="hero-title text-ink-black font-display text-heading font-normal md:text-heading-lg xl:text-[100px] xl:leading-[1.06] xl:tracking-[-2.5px]">
             <MaskLine delay={0}>{hero.titleLead}</MaskLine>
             <MaskLine delay={0.1}>

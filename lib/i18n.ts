@@ -33,6 +33,11 @@ export type ProductGroupCopy = {
 
 export type SiteContent = {
   nav: {
+    /** Nama aksesibel landmark navigasi. Bukan teks yang terlihat,
+        tapi tetap dibacakan mesin baca layar, jadi harus ikut bahasa
+        halaman. */
+    mainLabel: string;
+    mobileLabel: string;
     home: string;
     product: string;
     services: string;
@@ -208,9 +213,7 @@ export type SiteContent = {
     whatsappMessage: string;
   };
   footer: {
-    description: string;
     location: string;
-    address: string;
     product: string;
     company: string;
     contact: string;
@@ -218,8 +221,6 @@ export type SiteContent = {
     terms: string;
     privacy: string;
     copyright: string;
-    builtFor: string;
-    whatsapp: string;
     since: string;
   };
   legal: {
@@ -234,6 +235,8 @@ const en: SiteContent = {
     learnMore: "Learn more",
   },
   nav: {
+    mainLabel: "Main navigation",
+    mobileLabel: "Mobile navigation",
     home: "Home",
     product: "Product",
     services: "Services",
@@ -659,10 +662,7 @@ const en: SiteContent = {
       "Hello dibumi.com Lamongan team,\n\nI would like to discuss my project needs. Thank you!",
   },
   footer: {
-    description:
-      "An app and software production studio based in Lamongan, Indonesia. We help teams ship reliable software, mobile apps, and the infrastructure behind them.",
     location: "Lamongan, East Java, Indonesia",
-    address: companyAddress,
     product: "Product",
     company: "Company",
     contact: "Contact",
@@ -670,8 +670,6 @@ const en: SiteContent = {
     terms: "Terms & Conditions",
     privacy: "Privacy Policy",
     copyright: "All rights reserved.",
-    builtFor: "Built in Lamongan, shipped worldwide.",
-    whatsapp: "WhatsApp consultation",
     since: "Building since 2013",
   },
   legal: {
@@ -690,6 +688,8 @@ const id: SiteContent = {
     learnMore: "Pelajari lebih lanjut",
   },
   nav: {
+    mainLabel: "Navigasi utama",
+    mobileLabel: "Navigasi seluler",
     home: "Beranda",
     product: "Produk",
     services: "Layanan",
@@ -1116,10 +1116,7 @@ const id: SiteContent = {
       "Halo tim dibumi.com Lamongan,\n\nSaya ingin berkonsultasi mengenai kebutuhan proyek. Terima kasih!",
   },
   footer: {
-    description:
-      "Studio produksi aplikasi dan software yang berbasis di Lamongan, Indonesia. Kami membantu tim merilis software, aplikasi mobile, dan infrastruktur yang andal.",
     location: "Lamongan, Jawa Timur, Indonesia",
-    address: companyAddress,
     product: "Produk",
     company: "Perusahaan",
     contact: "Kontak",
@@ -1127,8 +1124,6 @@ const id: SiteContent = {
     terms: "Syarat & Ketentuan",
     privacy: "Kebijakan Privasi",
     copyright: "Hak cipta dilindungi undang-undang.",
-    builtFor: "Dibangun di Lamongan, dikirim ke seluruh dunia.",
-    whatsapp: "Konsultasi WhatsApp",
     since: "Berkarya sejak 2013",
   },
   legal: {
@@ -1147,6 +1142,8 @@ const ar: SiteContent = {
     learnMore: "اعرف المزيد",
   },
   nav: {
+    mainLabel: "التنقل الرئيسي",
+    mobileLabel: "تنقل الجوال",
     home: "الرئيسية",
     product: "المنتجات",
     services: "الخدمات",
@@ -1567,10 +1564,7 @@ const ar: SiteContent = {
       "مرحباً فريق dibumi.com في لامونجان،\n\nأرغب في مناقشة احتياجات مشروعي. شكراً!",
   },
   footer: {
-    description:
-      "استوديو إنتاج تطبيقات وبرمجيات في لامونجان، إندونيسيا. نساعد الفرق على إطلاق برمجيات وتطبيقات جوال وبنية تحتية موثوقة.",
     location: "لامونجان، جاوة الشرقية، إندونيسيا",
-    address: companyAddress,
     product: "المنتجات",
     company: "الشركة",
     contact: "تواصل معنا",
@@ -1578,8 +1572,6 @@ const ar: SiteContent = {
     terms: "الشروط والأحكام",
     privacy: "سياسة الخصوصية",
     copyright: "جميع الحقوق محفوظة.",
-    builtFor: "مبني في لامونجان، ويصل إلى العالم.",
-    whatsapp: "استشارة عبر WhatsApp",
     since: "نصنع منذ 2013",
   },
   legal: {
@@ -1598,6 +1590,8 @@ const zh: SiteContent = {
     learnMore: "了解更多",
   },
   nav: {
+    mainLabel: "主导航",
+    mobileLabel: "移动端导航",
     home: "首页",
     product: "产品",
     services: "服务",
@@ -1993,10 +1987,7 @@ const zh: SiteContent = {
     whatsappMessage: "您好，dibumi.com 拉蒙岸团队：\n\n我想咨询项目需求。谢谢！",
   },
   footer: {
-    description:
-      "位于印度尼西亚拉蒙岸的应用与软件生产工作室。我们帮助团队交付可靠的软件、移动应用及其背后的基础设施。",
     location: "印度尼西亚东爪哇拉蒙岸",
-    address: companyAddress,
     product: "产品",
     company: "公司",
     contact: "联系",
@@ -2004,8 +1995,6 @@ const zh: SiteContent = {
     terms: "条款与条件",
     privacy: "隐私政策",
     copyright: "版权所有。",
-    builtFor: "在拉蒙岸构建，交付到世界各地。",
-    whatsapp: "WhatsApp 咨询",
     since: "自 2013 年起",
   },
   legal: {
@@ -2024,6 +2013,8 @@ const pl: SiteContent = {
     learnMore: "Dowiedz się więcej",
   },
   nav: {
+    mainLabel: "Nawigacja główna",
+    mobileLabel: "Nawigacja mobilna",
     home: "Start",
     product: "Produkty",
     services: "Usługi",
@@ -2449,10 +2440,7 @@ const pl: SiteContent = {
       "Dzień dobry, zespole dibumi.com Lamongan,\n\nChcę porozmawiać o potrzebach mojego projektu. Dziękuję!",
   },
   footer: {
-    description:
-      "Studio produkcji aplikacji i oprogramowania z Lamongan w Indonezji. Pomagamy zespołom dostarczać niezawodne oprogramowanie, aplikacje mobilne i infrastrukturę.",
     location: "Lamongan, Jawa Wschodnia, Indonezja",
-    address: companyAddress,
     product: "Produkty",
     company: "Firma",
     contact: "Kontakt",
@@ -2460,8 +2448,6 @@ const pl: SiteContent = {
     terms: "Regulamin",
     privacy: "Polityka prywatności",
     copyright: "Wszelkie prawa zastrzeżone.",
-    builtFor: "Zbudowane w Lamongan, dostarczane na cały świat.",
-    whatsapp: "Konsultacja WhatsApp",
     since: "Tworzymy od 2013",
   },
   legal: {

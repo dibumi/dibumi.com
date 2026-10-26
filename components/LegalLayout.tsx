@@ -61,29 +61,39 @@ export default function LegalLayout({
         )}
       </header>
 
-      {/* Intro adalah paragraf pemimpin, jadi naik satu tingkat ke 20px. */}
-      <p className="text-ink-black text-body-lg">{content.intro}</p>
+      {/* Intro adalah paragraf pemimpin, jadi naik satu tingkat ke 20px.
 
-      <div className="mt-10 space-y-9">
-        {content.sections.map((section) => (
-          <section key={section.heading}>
-            <h2 className="text-ink-black font-display text-subheading font-normal mb-3">
-              {section.heading}
-            </h2>
-            {/* Jarak antar paragraf 16px: pada 17px/1.35 itu ~0.95em, cukup untuk
-                memisahkan paragraf tanpa memutus alurnya. 12px sebelumnya hanya
-                setengah baris dan membuat blok panjang terbaca sebagai satu
-                dinding teks. Jarak antar section (36px) tetap lebih dari dua
-                kali jarak antar paragraf, jadi hierarkinya masih terbaca. */}
-            <div className="space-y-4">
-              {section.paragraphs.map((paragraph, index) => (
-                <p key={index} className="text-slate-gray text-body">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </section>
-        ))}
+          Untuk locale yang jatuh ke dokumen Inggris (ar/zh/pl), seluruh isi
+          dibungkus `lang="en" dir="ltr"`. Tanpa itu, teks Inggris dirender di
+          dalam `dir="rtl"` milik locale Arab: paragrafnya rata kanan, dan
+          bidi merompak tanda baca serta angka — "Law No. 27 of 2022" terbaca
+          terbalik. `lang` juga memberi tahu mesin baca layar aksara mana yang
+          harus dipakai. Notis terjemahan di atas sengaja tetap di luar
+          pembungkus ini supaya ia tetap berbahasa locale pembaca. */}
+      <div lang={isFallback ? "en" : undefined} dir={isFallback ? "ltr" : undefined}>
+        <p className="text-ink-black text-body-lg">{content.intro}</p>
+
+        <div className="mt-10 space-y-9">
+          {content.sections.map((section) => (
+            <section key={section.heading}>
+              <h2 className="text-ink-black font-display text-subheading font-normal mb-3">
+                {section.heading}
+              </h2>
+              {/* Jarak antar paragraf 16px: pada 17px/1.35 itu ~0.95em, cukup untuk
+                  memisahkan paragraf tanpa memutus alurnya. 12px sebelumnya hanya
+                  setengah baris dan membuat blok panjang terbaca sebagai satu
+                  dinding teks. Jarak antar section (36px) tetap lebih dari dua
+                  kali jarak antar paragraf, jadi hierarkinya masih terbaca. */}
+              <div className="space-y-4">
+                {section.paragraphs.map((paragraph, index) => (
+                  <p key={index} className="text-slate-gray text-body">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
       </div>
     </article>
   );
