@@ -64,6 +64,21 @@
   --card-padding: 20px;
   --element-gap: 8px;
 
+  /* Offset header untuk semua target anchor.
+   *
+   * Satu-satunya sumber angka ini. Bar navbar setinggi 4rem (h-16) dan nilai di
+   * bawah menyisakan 1rem jarak di bawahnya, jadi judul section tidak tertutup
+   * saat sebuah anchor diklik.
+   *
+   * Dipakai oleh `scroll-padding-top` di bawah, oleh `top-header` di
+   * tailwind.config.ts (rail sticky di Services), dan dibaca lewat
+   * getComputedStyle oleh IntersectionObserver scroll-spy di Navbar. Sebelumnya
+   * angka ini hidup di tiga tempat dan pernah menyimpang 8px tanpa ketahuan.
+   *
+   * Jangan menambahkan `scroll-margin-top` di section: browser menjumlahkan
+   * keduanya dan target mendarat 80px lebih rendah dari yang dimaksud. */
+  --header-offset: 5rem;
+
   /* Named Radii */
   --radius-cards: 24px;
   --radius-images: 12px;
@@ -80,9 +95,11 @@
     /* Header fixed setinggi 4rem (h-16) di semua lebar. Nilai di bawah
        menyisakan jarak 1rem di bawah bar. Tanpa ini, judul section
        tertutup saat klik anchor. Ubah bersama tinggi bar di Navbar.
+       Angkanya hidup di --header-offset, bukan di sini, supaya rail sticky
+       dan scroll-spy membaca nilai yang sama.
        Jangan menambahkan scroll-margin-top di section: keduanya dijumlahkan
-       dan target mendarat 88px lebih rendah dari yang dimaksud. */
-    scroll-padding-top: 5rem;
+       dan target mendarat 80px lebih rendah dari yang dimaksud. */
+    scroll-padding-top: var(--header-offset);
   }
 
   body {
@@ -104,10 +121,23 @@
 
   /* Satu gaya fokus untuk seluruh situs, supaya navigasi keyboard konsisten.
      Ink black, bukan warna aksen: sistem ini tidak punya warna fungsional
-     selain peach, dan peach gagal kontras sebagai outline di atas putih. */
+     selain peach, dan peach gagal kontras sebagai outline di atas putih.
+
+     Butuh 5px ruang di dalam kontainer (2px outline + 3px offset). Kontainer
+     terketat di navbar adalah dropdown bahasa dengan `p-1.5` (6px), jadi masih
+     lewat. Kalau ada kontainer turun ke `p-1`, outline-nya akan terpotong. */
   :focus-visible {
     outline: 2px solid var(--color-ink-black);
     outline-offset: 3px;
+  }
+
+  /* Permukaan gelap membalik warna ring: ink-black di atas ink-black tidak
+     terlihat, jadi setiap kontrol di band gelap kehilangan indikator fokus
+     sepenuhnya. Pasang `.on-dark` pada section-nya, bukan pada tiap elemen —
+     utility per elemen selalu ketinggalan satu tempat dan sudah terbukti
+     begitu di band Services. */
+  .on-dark :focus-visible {
+    outline-color: var(--color-paper-white);
   }
 
   /* Angka pada tabel dan kartu data tetap rata. */
@@ -253,6 +283,22 @@
  * definisi `.hero-atmosphere`, dan karena spesifisitasnya sama, aturan
  * `animation: hero-drift ...` di bawahnya yang menang — wash tetap bergerak
  * walau pengunjung meminta sebaliknya.
+ *
+ * Dua lapis, dan keduanya perlu:
+ *  1. `animation: none` mematikan animasi CSS berbasis class. Tanpa ini,
+ *     keyframe-nya tetap berjalan dan marquee tetap meluncur.
+ *  2. `transition-duration: 0.01ms` untuk semua elemen. Tanpa ini, setiap
+ *     `transition-*` di seluruh situs tetap berjalan — komentar blok ini
+ *     dulu mengklaim "semua gerak berhenti" padahal itu tidak benar. Nilainya
+ *     0.01ms, bukan 0, supaya `transitionend` tetap terpicu dan kode yang
+ *     menunggunya tidak menggantung.
+ *
+ * Setelah ini, komponen tidak perlu lagi menambal dirinya dengan
+ * `motion-reduce:transition-none` atau `motion-reduce:animate-none`; tambalan
+ * lokal itu sudah dilepas karena aturan `!important` di bawah membuatnya tidak
+ * berpengaruh. Yang tetap perlu dipertahankan adalah perubahan layout statis,
+ * misalnya marquee yang berubah jadi dinding logo yang wrap — itu bukan gerak,
+ * itu tata letak saat diam.
  */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -264,5 +310,16 @@
   .animate-marquee,
   .hero-atmosphere {
     animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }

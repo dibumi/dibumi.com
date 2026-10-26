@@ -98,9 +98,19 @@ export default {
         page: "1200px",
       },
       spacing: {
+        // Offset header, dibaca dari --header-offset supaya `top-header`,
+        // `scroll-padding-top`, dan scroll-spy memakai satu angka. Nilainya
+        // sengaja tidak ditulis ulang di sini.
+        header: "var(--header-offset)",
         124: "124px",
         128: "128px",
         160: "160px",
+      },
+      letterSpacing: {
+        // Label overline (nama klien di marquee). Sebelumnya ditulis sebagai
+        // tracking-[0.18em] di satu tempat; 0.1em adalah langkah yang dipakai
+        // tipografi overline pada umumnya dan tidak perlu nilai arbitrer.
+        overline: "0.1em",
       },
       keyframes: {
         "fade-up": {
