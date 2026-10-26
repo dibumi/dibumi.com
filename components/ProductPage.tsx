@@ -21,6 +21,11 @@ import type { SiteContent } from "@/lib/i18n";
  * tidak ada harga, jumlah pengguna, tanggal rilis, atau testimoni, karena
  * semua itu belum tentu benar dan yang belum tentu benar tidak ditulis.
  *
+ * Geometri pill-nya tiga peran, dan ketiganya dipakai sama persis di halaman
+ * layanan dan halaman grup: h-12 px-6 untuk aksi utama, h-12 px-2 untuk tautan
+ * sekunder, h-11 px-5 untuk CTA penutup. Badge Soon bukan pill — tingginya
+ * mengikuti baris teks, sama dengan SoonBadge di menu produk.
+ *
  * Karena produknya belum terbit, deskripsi ditemani `page.statusNote`. Begitu
  * `href` di lib/products.ts diisi, halaman ini otomatis menukar pill "diskusi"
  * dengan tautan keluar ke situs produknya, tanpa satu string pun disunting.
@@ -42,6 +47,11 @@ export default function ProductPage({
 
   return (
     <article className="mx-auto max-w-page px-5 pb-20 pt-16 sm:px-8 sm:pt-20 lg:pb-24 lg:pt-24">
+      {/* Satu kolom baca, dan `62ch` inilah ukuran barisnya — angka yang sama
+          dengan ServicePage dan NgambegPage. Paragraf di dalamnya karena itu
+          tidak membawa batas lebar sendiri. Dulu paragraf pengantar diberi
+          `58ch`: karena 58 lebih sempit dari 62, batas itu tidak pernah aktif
+          dan hanya meninggalkan dua angka untuk satu kolom. */}
       <div className="max-w-[62ch]">
         <Link
           href={`${basePath}#products`}
@@ -60,13 +70,13 @@ export default function ProductPage({
             {item.name}
           </h1>
           {item.status === "soon" ? (
-            <span className="border-hairline text-ash-gray text-caption shrink-0 rounded-full border px-2 py-0.5">
+            <span className="border-hairline text-ash-gray shrink-0 rounded-buttons inline-flex items-center border px-2 py-0.5 text-caption">
               {content.products.soon}
             </span>
           ) : null}
         </div>
 
-        <p className="text-slate-gray mt-5 max-w-[58ch] text-body-lg">{copy.description}</p>
+        <p className="text-slate-gray mt-5 text-body-lg">{copy.description}</p>
 
         {item.status === "soon" ? (
           <p className="text-ash-gray mt-3 text-caption">{labels.statusNote}</p>
@@ -78,7 +88,7 @@ export default function ProductPage({
               href={item.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 group inline-flex h-12 items-center justify-center gap-2 px-6 text-body transition"
+              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 inline-flex h-12 items-center justify-center gap-2 px-6 text-body transition"
             >
               {content.products.visit}
               <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
@@ -162,6 +172,13 @@ export default function ProductPage({
  * Panah yang meluncur keluar lalu masuk dari sisi lain saat tautan di-hover.
  * Sama dengan panah di halaman layanan: pola dua glyph bertumpuk, dan dibalik
  * di RTL.
+ *
+ * Dua glyph, bukan satu, karena satu glyph tidak bisa keluar dan masuk
+ * sekaligus: yang pertama keluar ke arah baca, yang kedua sudah menunggu di
+ * seberang dan mengisi tempatnya. Di RTL arah bacanya ke kiri, jadi glyph
+ * pertama keluar ke kiri dan glyph kedua harus mulai dari kanan. Tanpa
+ * `rtl:translate-x-full` keduanya bergerak ke tepi kiri dan sempat bertumpuk di
+ * tengah kotak — terbaca sebagai dua panah, bukan satu panah yang lewat.
  */
 function Arrow() {
   return (
@@ -169,7 +186,7 @@ function Arrow() {
       <span className="absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-out group-hover:translate-x-full rtl:-scale-x-100 rtl:group-hover:-translate-x-full">
         →
       </span>
-      <span className="absolute inset-0 flex -translate-x-full items-center justify-center transition-transform duration-300 ease-out group-hover:translate-x-0 rtl:-scale-x-100 rtl:group-hover:translate-x-0">
+      <span className="absolute inset-0 flex -translate-x-full items-center justify-center transition-transform duration-300 ease-out group-hover:translate-x-0 rtl:translate-x-full rtl:-scale-x-100 rtl:group-hover:translate-x-0">
         →
       </span>
     </span>

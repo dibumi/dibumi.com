@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { getPlatformProducts, ngambegCatalogUrl, ngambegHubUrl, ngambegSlug, productPath } from "@/lib/products";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/motion/Reveal";
@@ -30,6 +30,11 @@ import type { SiteContent } from "@/lib/i18n";
  * Setiap tab punya halaman sendiri di `/{locale}/products/{slug}`, dan tautan
  * "Learn more" di samping badge Soon itulah pintunya. Tanpa itu, produk yang
  * situsnya belum terbit hanya berhenti di badge dan tidak bisa diklik.
+ *
+ * Geometri pill di sini mengikuti dua peran yang sama dengan halaman detail:
+ * h-12 px-6 untuk aksi utama, h-11 px-4 untuk pill bergaris — di section ini
+ * hanya yang kedua yang dipakai. Badge status bukan pill: tingginya mengikuti
+ * baris teks. Tidak ada tinggi ketiga.
  */
 export default function Products({
   content,
@@ -71,15 +76,31 @@ export default function Products({
 
   const [active, setActive] = React.useState(0);
   const current = tabs[active];
+  const reduce = useReducedMotion();
 
-  /** Panah kiri/kanan memindah tab, sesuai pola tablist yang di halaman lain. */
+  /**
+   * Papan ketik tablist, mengikuti pola APG: panah kiri/kanan — dan atas/bawah,
+   * karena di desktop daftarnya vertikal — memindah pilihan, Home/End melompat
+   * ke ujung. Fokus ikut dipindah supaya pengguna tidak perlu Tab lagi setelah
+   * panah; `tabIndex` di bawah menjaga hanya satu tab yang jadi titik Tab.
+   */
   const onKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (event.key !== "ArrowDown" && event.key !== "ArrowUp" && event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
+    const keys = ["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft", "Home", "End"];
+    if (!keys.includes(event.key)) {
       return;
     }
     event.preventDefault();
-    const forward = event.key === "ArrowDown" || event.key === "ArrowRight";
-    const next = forward ? (active + 1) % tabs.length : (active - 1 + tabs.length) % tabs.length;
+
+    let next: number;
+    if (event.key === "Home") {
+      next = 0;
+    } else if (event.key === "End") {
+      next = tabs.length - 1;
+    } else {
+      const forward = event.key === "ArrowDown" || event.key === "ArrowRight";
+      next = forward ? (active + 1) % tabs.length : (active - 1 + tabs.length) % tabs.length;
+    }
+
     setActive(next);
     document.getElementById(`product-tab-${tabs[next].key}`)?.focus();
   };
@@ -101,12 +122,18 @@ export default function Products({
         <div className="mt-14 grid gap-8 lg:mt-20 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-14">
           {/* Daftar tab. Di desktop vertikal seperti referensi; di layar
               sempit menjadi baris chip yang bisa digulir horizontal, supaya
-              device-nya tetap ada tanpa memaksa kolom sempit. */}
+              device-nya tetap ada tanpa memaksa kolom sempit.
+
+              `pt-2` + `-mt-2` hanya untuk cincin fokus: `overflow-x-auto`
+              memotong apa pun di luar padding box, jadi tanpa ruang itu outline
+              2px di tepi atas chip terpangkas. Margin negatifnya mengembalikan
+              posisi chip ke tempat semula, dan keduanya dilepas di lg saat
+              daftarnya sudah tidak menggulir. */}
           <div
             role="tablist"
-            aria-label={copy.groups.platforms.label}
+            aria-label={copy.eyebrow}
             aria-orientation="vertical"
-            className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:px-8 lg:mx-0 lg:flex-col lg:gap-0 lg:overflow-visible lg:px-0 lg:pb-0"
+            className="-mx-5 -mt-2 flex gap-2 overflow-x-auto px-5 pb-2 pt-2 sm:-mx-8 sm:px-8 lg:mx-0 lg:mt-0 lg:flex-col lg:gap-0 lg:overflow-visible lg:px-0 lg:py-0"
           >
             {tabs.map((tab, index) => {
               const selected = index === active;
@@ -137,10 +164,12 @@ export default function Products({
 
                   {/* Penanda tab aktif: garis pendek di bawah, seperti
                       referensi. Bukan bullet, bukan latar — cukup satu
-                      tanda tangan. */}
+                      tanda tangan. Yang bertransisi hanya lebar dan opasitas;
+                      `transition-all` ikut memindahkan properti lain tanpa
+                      perlu, dan `motion-reduce` mematikan gerak garisnya. */}
                   <span
                     aria-hidden="true"
-                    className={`mt-2 hidden h-px bg-ink-black transition-all duration-300 lg:block ${
+                    className={`mt-2 hidden h-px bg-ink-black transition-[width,opacity] duration-300 lg:block ${
                       selected ? "w-10 opacity-100" : "w-0 opacity-0"
                     }`}
                   />
@@ -151,8 +180,12 @@ export default function Products({
 
           {/* Panel: bingkai produk. Bingkai luar hanya jarak 2px antara
               perangkat dan isinya, supaya terbaca sebagai perangkat, bukan
-              sebagai kartu biasa. */}
-          <Reveal delay={0.1}>
+              sebagai kartu biasa.
+
+              Jeda reveal-nya 0.08 dan 0.16 — pasangan yang sudah dipakai
+              ContactSection untuk dua blok berurutan: satu langkah untuk panel,
+              dua langkah untuk katalog di bawahnya. */}
+          <Reveal delay={0.08}>
             <div
               id="product-panel"
               role="tabpanel"
@@ -168,16 +201,22 @@ export default function Products({
                   <span className="bg-smoke-gray h-2.5 w-2.5 rounded-full" />
                   <span className="bg-smoke-gray h-2.5 w-2.5 rounded-full" />
                 </span>
-                <span className="bg-paper-white text-ash-gray mx-auto truncate rounded-full px-4 py-1 text-caption">
+                <span className="bg-paper-white text-ash-gray mx-auto truncate rounded-buttons px-4 py-1 text-caption">
                   {current.brand}
                 </span>
               </div>
 
+              {/* `initial` dimatikan DAN durasinya dinolkan saat preferensi
+                  reduced-motion aktif. Durasinya ikut nol, bukan hanya
+                  `initial`, karena preferensi itu baru terbaca setelah mount —
+                  dan karena komponen ini remount tiap ganti tab (`key`), animasi
+                  0.35s akan tetap diputar di setiap pergantian tab kalau hanya
+                  `initial` yang dimatikan. */}
               <motion.div
                 key={current.key}
-                initial={{ opacity: 0, y: 8 }}
+                initial={reduce ? false : { opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: reduce ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
                 className="px-2 pb-2 pt-10 sm:px-8 sm:pb-8 sm:pt-14"
               >
                 <p className="text-ash-gray text-caption">{current.group}</p>
@@ -191,7 +230,7 @@ export default function Products({
                       href={current.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="border-ink-black text-ink-black rounded-buttons inline-flex h-9 items-center gap-1.5 border px-4 text-caption transition hover:bg-mist-gray"
+                      className="border-ink-black text-ink-black rounded-buttons inline-flex h-11 items-center gap-1.5 border px-4 text-caption transition hover:bg-mist-gray"
                     >
                       {copy.hub}
                       <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
@@ -199,7 +238,13 @@ export default function Products({
                       </span>
                     </a>
                   ) : (
-                    <span className="border-hairline text-ash-gray rounded-full border px-3 py-1 text-caption">
+                    /* Badge status, bukan pill: geometrinya sama dengan SoonBadge
+                       di menu produk (px-2 py-0.5) — yang di sebelah kanan adalah
+                       aksi, ini keterangan. Radiusnya token `buttons`, dan
+                       `inline-flex items-center` menaruh teks di tengah kotaknya
+                       (padding vertikal pada elemen inline tidak menggeser line
+                       box). */
+                    <span className="border-hairline text-ash-gray shrink-0 rounded-buttons inline-flex items-center border px-2 py-0.5 text-caption">
                       {current.status}
                     </span>
                   )}
@@ -217,6 +262,10 @@ export default function Products({
                   </Link>
                 </div>
 
+                {/* Lebar baris di dalam panel diukur sendiri: panel ini lebih
+                    lebar dari kolom baca 62ch di halaman detail, dan deskripsinya
+                    lead 20px — 54ch menjaga barisnya tetap pendek di panel yang
+                    lebar. */}
                 <p className="text-slate-gray mt-5 max-w-[54ch] text-body-lg">
                   {current.description}
                 </p>
@@ -251,13 +300,13 @@ export default function Products({
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href={ngambegCatalogUrl.games}
-                className="border-ink-black text-ink-black rounded-buttons inline-flex h-10 items-center border px-4 text-caption transition hover:bg-mist-gray"
+                className="border-ink-black text-ink-black rounded-buttons inline-flex h-11 items-center border px-4 text-caption transition hover:bg-mist-gray"
               >
                 {copy.catalog.games}
               </Link>
               <Link
                 href={ngambegCatalogUrl.apps}
-                className="border-ink-black text-ink-black rounded-buttons inline-flex h-10 items-center border px-4 text-caption transition hover:bg-mist-gray"
+                className="border-ink-black text-ink-black rounded-buttons inline-flex h-11 items-center border px-4 text-caption transition hover:bg-mist-gray"
               >
                 {copy.catalog.apps}
               </Link>
