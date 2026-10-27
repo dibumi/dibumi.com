@@ -42,6 +42,10 @@ export default function Footer({
   const nav = content.nav;
   const footer = content.footer;
 
+  // Alamat surel dipecah di "@" supaya bisa turun baris di sana kalau kolomnya
+  // sempit. `contactEmail` dijamin berisi satu "@", jadi dua bagian ini cukup.
+  const [mailbox, mailDomain] = contactEmail.split("@");
+
   const companyLinks = [
     { label: nav.services, href: `${basePath}#services` },
     { label: nav.process, href: `${basePath}#process` },
@@ -120,7 +124,20 @@ export default function Footer({
             </nav>
 
             {/* Kontak: nomor dan email dikunci ltr supaya tidak terbalik di
-                locale Arab. Alamat lengkap turun ke baris penutup. */}
+                locale Arab. Alamat lengkap turun ke baris penutup.
+
+                `break-words` pada email bukan hiasan: di 320px kolom ini hanya
+                124px lebar (grid dua kolom, gap 32px), sedangkan
+                "fatkul@dibumi.com" butuh ~146px dan tidak punya titik putus.
+                Tanpa itu barisnya menembus 2px melewati viewport dan seluruh
+                halaman bisa digeser ke samping.
+
+                `<wbr>` di belakang "@" menentukan di mana ia boleh pecah. Tanpa
+                itu `break-word` memotong di titik mana pun yang muat, dan di
+                768px hasilnya "fatkul@dibumi.c" / "om" — terbaca seperti alamat
+                yang salah ketik. Dengan titik putus eksplisit hasilnya
+                "fatkul@" / "dibumi.com". Di lebar yang cukup tidak ada yang
+                berubah, karena tidak ada yang perlu dipotong. */}
             <nav aria-label={footer.contact} className="flex flex-col gap-3">
               <span className={columnLabel}>{footer.contact}</span>
               <a
@@ -130,8 +147,12 @@ export default function Footer({
               >
                 {contactPhone.display}
               </a>
-              <a href={`mailto:${contactEmail}`} className={columnLink} dir="ltr">
-                {contactEmail}
+              <a
+                href={`mailto:${contactEmail}`}
+                className={`${columnLink} break-words`}
+                dir="ltr"
+              >
+                {mailbox}@<wbr />{mailDomain}
               </a>
               <Link href={`${basePath}#contact`} className={columnLink}>
                 {nav.cta}
