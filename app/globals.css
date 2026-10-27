@@ -313,13 +313,16 @@
  * - judul turun ke ukuran `heading` (44px). Ini satu-satunya perubahan yang
  *   menghemat lebih dari 50px sendirian, dan di layar 390px tinggi, 64px memang
  *   terlalu besar: dua barisnya menghabiskan 43% dari tinggi layar.
- * - celah antar elemen 28px -> 20px.
+ * - celah antar elemen 28px -> 16px.
  * - padding bawah, yang cuma menambah tinggi section tanpa menggerakkan apa pun
  *   ke atas.
  *
  * Padding ATAS tidak ikut dipotong. Navbar fixed setinggi 4.5rem dan hero-nya
- * `-mt-[4.5rem]`, jadi memotongnya sampai di bawah 5.5rem akan membuat baris
- * pertama judul masuk ke balik navbar.
+ * `-mt-[4.5rem]`, jadi memotongnya akan membuat baris pertama judul masuk ke
+ * balik navbar. Nilainya dibaca dari `var(--header-offset)` (88px = bar 72px +
+ * 16px napas), token yang sama dengan `scroll-padding-top`, bukan 5rem seperti
+ * sebelumnya: 80px hanya menyisakan 7px di bawah bar 72px, sementara setiap
+ * target anchor lain di situs ini diberi 16px.
  *
  * Ditulis sebagai CSS biasa dengan satu tingkat spesifisitas lebih, bukan varian
  * arbitrary Tailwind (`[@media(max-height:560px)]:`) maupun kelas tambahan.
@@ -332,7 +335,7 @@
  */
 @media (max-height: 560px) {
   .hero-shell {
-    padding-top: 5rem;
+    padding-top: var(--header-offset);
     padding-bottom: 2.5rem;
   }
 
