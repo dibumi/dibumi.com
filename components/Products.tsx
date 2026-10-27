@@ -74,7 +74,22 @@ export default function Products({
     },
   ];
 
-  const [active, setActive] = React.useState(0);
+  // Tab pertama yang benar-benar punya situs terbit. Enam produk platform masih
+  // berstatus "Soon", jadi membuka section ini pada tab 0 berarti panel besar
+  // pertama yang dibaca pengunjung adalah produk yang belum ada — di section
+  // yang tugasnya membuktikan bahwa studio ini mengirim sesuatu. Urutan tab
+  // TIDAK diubah (katalog platform tetap 01-06, sama seperti menu navbar yang
+  // juga menaruh platform lebih dulu); yang berubah hanya panel yang terbuka.
+  //
+  // `Math.max(0, ...)` menjaga keadaan yang hari ini tidak terjadi: kalau suatu
+  // saat tidak ada satu pun produk terbit, tab 0 tetap jadi pilihan yang sah
+  // dan tidak ada indeks -1 yang membuat `current` undefined.
+  const liveTabIndex = Math.max(
+    0,
+    tabs.findIndex((tab) => tab.href !== null),
+  );
+
+  const [active, setActive] = React.useState(liveTabIndex);
   const current = tabs[active];
   const reduce = useReducedMotion();
 
