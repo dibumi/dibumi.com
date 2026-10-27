@@ -182,6 +182,13 @@ export type SiteContent = {
     description: string;
     /** Label pengganti kode ISO untuk merek yang tidak terikat yurisdiksi. */
     global: string;
+    /**
+     * Sel penutup dinding logo. Ini bukan nama klien, jadi diterjemahkan.
+     * `otherNote` memuat angka 100+ yang sama dengan angka di pita kiri
+     * (`Clients.tsx`), jadi keduanya harus diubah bersamaan.
+     */
+    other: string;
+    otherNote: string;
     /** Label untuk tiga angka di pita klien. */
     facts: {
       clients: string;
@@ -575,6 +582,8 @@ const en: SiteContent = {
     description:
       "Teams and networks we have supported across software, mobile, and infrastructure work.",
     global: "Global",
+    other: "Other",
+    otherNote: "and 100+ more",
     facts: {
       clients: "Clients",
       countries: "Countries",
@@ -1025,6 +1034,8 @@ const id: SiteContent = {
     description:
       "Tim dan jaringan yang pernah kami dukung dalam pekerjaan software, mobile, dan infrastruktur.",
     global: "Global",
+    other: "Lainnya",
+    otherNote: "dan 100+ lainnya",
     facts: {
       clients: "Klien",
       countries: "Negara",
@@ -1475,6 +1486,8 @@ const ar: SiteContent = {
     description:
       "فرق وشبكات دعمناها في أعمال البرمجيات والجوال والبنية التحتية.",
     global: "عالمي",
+    other: "أخرى",
+    otherNote: "و100+ أخرى",
     facts: {
       clients: "العملاء",
       countries: "الدول",
@@ -1903,6 +1916,8 @@ const zh: SiteContent = {
     title: "合作过的客户",
     description: "我们在软件、移动端和基础设施项目中支持过的团队与网络。",
     global: "全球",
+    other: "其他",
+    otherNote: "以及另外 100+ 家",
     facts: {
       clients: "客户",
       countries: "国家",
@@ -2340,6 +2355,8 @@ const pl: SiteContent = {
     description:
       "Zespoły i sieci, które wspieraliśmy w projektach software, mobile i infrastrukturalnych.",
     global: "Globalny",
+    other: "Inne",
+    otherNote: "i ponad 100 innych",
     facts: {
       clients: "Klienci",
       countries: "Kraje",

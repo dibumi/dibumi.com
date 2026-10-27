@@ -60,6 +60,6 @@ export const clients: Client[] = [
     region: null,
     width: 0,
     height: 0,
-    tagline: "Mobile Advertising Network",
+    tagline: "Mobile Ad Network",
   },
 ];

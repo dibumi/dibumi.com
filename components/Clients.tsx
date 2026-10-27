@@ -12,8 +12,10 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  * tidak pernah ada adalah memalsukannya. Yang menggantikannya adalah dinding
  * logo: empat belas klien, tiap selnya satu kotak yang dipisah garis sienna
  * tipis. Sebelas di antaranya punya aset logo; tiga sisanya ditulis sebagai
- * wordmark. Empat belas itu adalah jumlah merek yang tercatat di dinding,
- * bukan jumlah klien: angkanya jauh lebih besar dan ditulis di pita kiri.
+ * wordmark. Sel kelima belas adalah penutup, bukan klien: ia berbunyi "Other"
+ * dan "and 100+ more", supaya dinding ini tidak terbaca sebagai daftar lengkap.
+ * Empat belas merek itu bukan jumlah klien: angkanya jauh lebih besar dan
+ * ditulis di pita kiri.
  *
  * Dinding logo itu juga lebih jujur daripada tabel nama: yang ingin dilihat
  * prospective client adalah siapa yang pernah percaya pada kita, bukan
@@ -81,20 +83,15 @@ export default function Clients({
 }) {
   // Angka di pita ini adalah klaim total sepanjang 2013–sekarang, bukan
   // jumlah logo di dinding kanan: hanya sebagian klien yang aset logonya
-  // tersimpan, jadi empat belas sel logo dan "100+" bukan dua versi angka yang
-  // sama. Karena itu ketiganya ditulis tetap, bukan diturunkan dari data —
-  // kalau dihitung, angkanya berubah jadi 14 dan 10 setiap kali daftar logo
-  // bertambah atau berkurang.
+  // tersimpan, jadi lima belas sel (empat belas merek + sel penutup) dan "100+"
+  // bukan dua versi angka yang sama. Karena itu ketiganya ditulis tetap, bukan
+  // diturunkan dari data. "100+" yang sama muncul lagi di content.otherNote,
+  // jadi ubah keduanya bersamaan.
   const facts = [
     { value: "100+", label: content.facts.clients },
     { value: "10+", label: content.facts.countries },
     { value: "2013", label: content.facts.since },
   ];
-
-  // Daftar berakhir dengan baris tidak penuh kalau sisanya dua (14 = 4×3 + 2).
-  // Dipakai untuk melebarkan dua sel terakhir di `sm` ke atas; lihat komentar
-  // dinding logo di bawah.
-  const wideTail = clients.length % 3 === 2;
 
   return (
     <section id="clients" className="bg-blush-peach py-20 lg:py-40">
@@ -134,22 +131,23 @@ export default function Clients({
               sel dan tidak ada garis yang penggantung di tepi.
 
               Di `sm` ke atas grid-nya enam kolom, bukan tiga. Tiap sel
-              mengambil dua kolom (tiga sel per baris), dan ketika daftar
-              berakhir dengan sisa dua — 14 = 4×3 + 2 — dua sel terakhir
-              mengambil tiga kolom, jadi masing-masing selebar setengah dinding
-              dan baris terakhir tetap penuh. Tanpa itu slot kosong di baris
-              terakhir memperlihatkan `bg-sienna-brown/20` sebagai kotak
-              kecokelatan, bukan kertas. */}
+              mengambil dua kolom, jadi tiga sel per baris. Jumlahnya lima
+              belas (empat belas merek ditambah sel penutup "Other"),
+              kelipatan tiga, jadi baris terakhir sudah penuh tanpa aturan
+              pelebaran. Kalau menambah merek, jaga jumlah sel tetap kelipatan
+              tiga; kalau tidak, baris terakhir menyisakan slot kosong yang
+              memperlihatkan `bg-sienna-brown/20` sebagai kotak kecokelatan.
+
+              Sel penutup memakai `col-span-2` di semua lebar. Di ponsel yang
+              grid-nya dua kolom ia mengisi baris terakhir sendirian; tanpa itu
+              slot di sebelahnya menjadi kotak kecokelatan yang sama. Di `sm`
+              ke atas nilai itu membuatnya selebar sel lain. */}
           <Reveal delay={0.12}>
             <ul className="grid grid-cols-2 gap-px bg-sienna-brown/20 sm:grid-cols-6">
-              {clients.map((client, index) => (
+              {clients.map((client) => (
                 <li
                   key={client.name}
-                  className={`group bg-blush-peach flex flex-col items-center justify-center p-6 transition-colors hover:bg-sienna-brown/5 ${
-                    wideTail && index >= clients.length - 2
-                      ? "sm:col-span-3"
-                      : "sm:col-span-2"
-                  }`}
+                  className="group bg-blush-peach flex flex-col items-center justify-center p-6 transition-colors hover:bg-sienna-brown/5 sm:col-span-2"
                 >
                   {client.logo ? (
                     <img
@@ -197,6 +195,21 @@ export default function Clients({
                   </span>
                 </li>
               ))}
+
+              {/* Sel penutup. Sengaja tidak punya logo, bendera, atau kode
+                  negara: isinya penanda bahwa dinding ini bukan daftar lengkap,
+                  bukan klien ke-15. Gaya teksnya mengikuti wordmark klien
+                  (nama 16px medium, keterangan 16px di /85), tapi keterangannya
+                  ditulis dalam kalimat biasa, bukan uppercase seperti kode ISO,
+                  supaya tidak terbaca sebagai metadata negara. */}
+              <li className="group bg-blush-peach col-span-2 flex flex-col items-center justify-center p-6 transition-colors hover:bg-sienna-brown/5">
+                <span className="text-sienna-brown text-caption font-medium tracking-tight">
+                  {content.other}
+                </span>
+                <span className="text-sienna-brown/85 mt-1 text-caption">
+                  {content.otherNote}
+                </span>
+              </li>
             </ul>
           </Reveal>
         </div>
