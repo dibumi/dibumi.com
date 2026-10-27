@@ -74,10 +74,11 @@ requests confirmed in writing; deposit at start plus milestone settlement; IP tr
 full payment; the studio may name a project in its portfolio unless asked not to; liability is
 capped at the amount paid; governing law is the Republic of Indonesia.
 
-**Client footprint** — 12 named clients with logo assets (`lib/clients.ts:26`), spanning ten
-entity jurisdictions (CN, SG, CY, SA, ID, CR, RO, PA, US, IN). The dominant vertical by count
-is performance advertising and adtech; this is an observation of the asset list, not a claim
-the site makes.
+**Client footprint** — 14 named clients (`lib/clients.ts:36`), eleven with logo assets and
+three as text wordmarks, spanning ten entity jurisdictions (CN, SG, CY, SA, ID, CR, RO, PA,
+US, IN) plus two global brands without a jurisdiction. The dominant vertical by count is
+performance advertising and adtech; this is an observation of the asset list, not a claim the
+site makes.
 
 **Geography** — home base Lamongan, East Java (`lib/i18n.ts:255`); stated service area
 Indonesia (`lib/i18n.ts:646`); stated reach worldwide (`lib/i18n.ts:668`).
@@ -150,8 +151,9 @@ never by an agent session. Allowed: `npm run typecheck`, reading files, `git dif
 
 **Real and usable:**
 
-- 12 named clients with logo assets in `public/clients/` (`lib/clients.ts:26`). Wap2Cash
-  deliberately has no image and renders as a text wordmark (`lib/clients.ts:10`).
+- 14 named clients in `public/clients/` (`lib/clients.ts:36`), eleven with logo assets.
+  Wap2Cash, MyWapBlog, and ZetMoney deliberately have no image and render as text wordmarks
+  (`lib/clients.ts:12`).
 - Three literal headline figures: 100+ clients, 10+ countries, since 2013
   (`components/Clients.tsx:70`). Hard-coded on purpose, not computed.
 - One named team member: Fatkul Nur Koirudin, Founder & Lead Engineer (`lib/team.ts:30`).

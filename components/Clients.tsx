@@ -10,9 +10,10 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  * pita biru dengan kutipan besar, foto, dan sebaris logo. Foto tidak ada
  * di sini — tidak ada aset foto studio ini, dan mengarang foto orang yang
  * tidak pernah ada adalah memalsukannya. Yang menggantikannya adalah dinding
- * logo: dua belas klien dengan aset logo yang tersimpan, tiap selnya satu
- * kotak yang dipisah garis sienna tipis. Dua belas itu adalah jumlah logo yang
- * ada, bukan jumlah klien: angkanya jauh lebih besar dan ditulis di pita kiri.
+ * logo: empat belas klien, tiap selnya satu kotak yang dipisah garis sienna
+ * tipis. Sebelas di antaranya punya aset logo; tiga sisanya ditulis sebagai
+ * wordmark. Empat belas itu adalah jumlah merek yang tercatat di dinding,
+ * bukan jumlah klien: angkanya jauh lebih besar dan ditulis di pita kiri.
  *
  * Dinding logo itu juga lebih jujur daripada tabel nama: yang ingin dilihat
  * prospective client adalah siapa yang pernah percaya pada kita, bukan
@@ -30,9 +31,9 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  * beberapa di antaranya aset pihak ketiga berukuran kecil. Dengan begitu tidak
  * perlu mengaktifkan dangerouslyAllowSVG pada image optimizer.
  *
- * Wap2Cash tidak punya aset logo (situsnya mati dan arsipnya tidak menyimpan
- * logo), jadi namanya ditulis sebagai wordmark teks di slot logo. Tidak ada
- * gambar karangan.
+ * Wap2Cash, MyWapBlog, dan ZetMoney tidak punya aset logo yang bisa dipakai,
+ * jadi namanya ditulis sebagai wordmark teks di slot logo. Tidak ada gambar
+ * karangan.
  *
  * Logo pihak ketiga membawa warnanya masing-masing, dan satu baris warna di
  * tengah palet achromatic merusak halaman. Karena itu semuanya diredupkan ke
@@ -46,7 +47,7 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  * Sekarang keduanya dipicu oleh hal yang sama.
  *
  * Batas lebar logo 130px sama dengan yang dipakai marquee di ClientMarquee.tsx:
- * dua belas logo yang sama muncul di dua tempat, jadi keduanya tidak boleh
+ * empat belas merek yang sama muncul di dua tempat, jadi keduanya tidak boleh
  * punya lebar maksimum berbeda. Angkanya diambil dari sini, tempat yang lebih
  * ketat, dan di sini ia hanya berperan sebagai langit-langit: lebar sel
  * menyisakan 92px di ponsel 320px, 120px di 1024px, dan 166px di desktop
@@ -80,15 +81,20 @@ export default function Clients({
 }) {
   // Angka di pita ini adalah klaim total sepanjang 2013–sekarang, bukan
   // jumlah logo di dinding kanan: hanya sebagian klien yang aset logonya
-  // tersimpan, jadi dua belas sel logo dan "100+" bukan dua versi angka yang
+  // tersimpan, jadi empat belas sel logo dan "100+" bukan dua versi angka yang
   // sama. Karena itu ketiganya ditulis tetap, bukan diturunkan dari data —
-  // kalau dihitung, angkanya berubah jadi 12 dan 10 setiap kali daftar logo
+  // kalau dihitung, angkanya berubah jadi 14 dan 10 setiap kali daftar logo
   // bertambah atau berkurang.
   const facts = [
     { value: "100+", label: content.facts.clients },
     { value: "10+", label: content.facts.countries },
     { value: "2013", label: content.facts.since },
   ];
+
+  // Daftar berakhir dengan baris tidak penuh kalau sisanya dua (14 = 4×3 + 2).
+  // Dipakai untuk melebarkan dua sel terakhir di `sm` ke atas; lihat komentar
+  // dinding logo di bawah.
+  const wideTail = clients.length % 3 === 2;
 
   return (
     <section id="clients" className="bg-blush-peach py-20 lg:py-40">
@@ -125,13 +131,25 @@ export default function Clients({
 
           {/* Kolom kanan: dinding logo. Jarak 1px antar sel memperlihatkan
               warna latar sebagai garis pemisah, jadi tidak perlu border per
-              sel dan tidak ada garis yang penggantung di tepi. */}
+              sel dan tidak ada garis yang penggantung di tepi.
+
+              Di `sm` ke atas grid-nya enam kolom, bukan tiga. Tiap sel
+              mengambil dua kolom (tiga sel per baris), dan ketika daftar
+              berakhir dengan sisa dua — 14 = 4×3 + 2 — dua sel terakhir
+              mengambil tiga kolom, jadi masing-masing selebar setengah dinding
+              dan baris terakhir tetap penuh. Tanpa itu slot kosong di baris
+              terakhir memperlihatkan `bg-sienna-brown/20` sebagai kotak
+              kecokelatan, bukan kertas. */}
           <Reveal delay={0.12}>
-            <ul className="grid grid-cols-2 gap-px bg-sienna-brown/20 sm:grid-cols-3">
-              {clients.map((client) => (
+            <ul className="grid grid-cols-2 gap-px bg-sienna-brown/20 sm:grid-cols-6">
+              {clients.map((client, index) => (
                 <li
                   key={client.name}
-                  className="group bg-blush-peach flex flex-col items-center justify-center gap-3 p-6 transition-colors hover:bg-sienna-brown/5"
+                  className={`group bg-blush-peach flex flex-col items-center justify-center p-6 transition-colors hover:bg-sienna-brown/5 ${
+                    wideTail && index >= clients.length - 2
+                      ? "sm:col-span-3"
+                      : "sm:col-span-2"
+                  }`}
                 >
                   {client.logo ? (
                     <img
@@ -143,27 +161,39 @@ export default function Clients({
                       className="max-h-9 w-full max-w-[130px] object-contain opacity-70 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
                     />
                   ) : (
-                    <span className="text-sienna-brown text-caption font-medium uppercase tracking-tight">
+                    <span className="text-sienna-brown text-caption font-medium tracking-tight">
                       {client.name}
                     </span>
                   )}
 
-                  <span className="text-sienna-brown/85 flex items-center gap-1.5 text-caption uppercase">
+                  {client.tagline ? (
+                    <span className="text-sienna-brown/85 mt-1 text-caption">
+                      {client.tagline}
+                    </span>
+                  ) : null}
+
+                  <span className="text-sienna-brown/85 mt-3 flex items-center gap-1.5 text-caption uppercase">
                     {/* Bendera 15x10 bukan kartu, jadi lantai radius 16px tidak
                         berlaku di sini: token terkecil (`rounded-images` 12px)
                         di kotak setinggi 10px dijepit CSS jadi 5px dan mengubah
                         bendera menjadi lozenge — sudut adalah bagian dari
                         siluet bendera. 2px adalah nilai terkecil yang
                         menghilangkan gigir bitmap tanpa mengubah bentuknya. */}
-                    <img
-                      src={`/flags/${client.region}.svg`}
-                      alt={regionName(client.region, locale)}
-                      width={18}
-                      height={12}
-                      loading="lazy"
-                      className="h-2.5 w-[15px] shrink-0 rounded-[2px] object-cover"
-                    />
-                    <span className="tabular">{client.region}</span>
+                    {client.region ? (
+                      <>
+                        <img
+                          src={`/flags/${client.region}.svg`}
+                          alt={regionName(client.region, locale)}
+                          width={18}
+                          height={12}
+                          loading="lazy"
+                          className="h-2.5 w-[15px] shrink-0 rounded-[2px] object-cover"
+                        />
+                        <span className="tabular">{client.region}</span>
+                      </>
+                    ) : (
+                      <span>{content.global}</span>
+                    )}
                   </span>
                 </li>
               ))}

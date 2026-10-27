@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { Pause, Play } from "lucide-react";
 import { clients } from "@/lib/clients";
 import type { SiteContent } from "@/lib/i18n";
 
@@ -24,7 +25,8 @@ import type { SiteContent } from "@/lib/i18n";
  *
  * Logo memakai <img> biasa, bukan next/image: separuhnya SVG pihak ketiga
  * berukuran kecil, dan tidak perlu mengaktifkan dangerouslyAllowSVG.
- * Wap2Cash tidak punya aset logo, jadi namanya ditulis sebagai wordmark.
+ * Wap2Cash, MyWapBlog, dan ZetMoney tidak punya aset logo, jadi namanya
+ * ditulis sebagai wordmark.
  *
  * Logo tampil berwarna penuh. Versi sebelumnya meredupkannya ke grayscale
  * dengan hover yang mengembalikan warna; itu dilepas karena satu-satunya alasan
@@ -34,8 +36,8 @@ import type { SiteContent } from "@/lib/i18n";
  * beraspek 512:74 akan menarik 304px pada tinggi 44px dan mendominasi seluruh
  * strip, sementara logo lain hanya 44–198px.
  *
- * Angka 130 itu sama dengan batas di dinding logo `Clients.tsx`. Dua belas logo
- * yang sama muncul di dua tempat, jadi keduanya tidak boleh punya lebar
+ * Angka 130 itu sama dengan batas di dinding logo `Clients.tsx`. Empat belas
+ * merek yang sama muncul di dua tempat, jadi keduanya tidak boleh punya lebar
  * maksimum berbeda. Nilainya diambil dari sana, tempat yang lebih ketat, bukan
  * dari angka yang lebih longgar di sini, supaya menyeragamkannya tidak
  * menambah risiko luber di mana pun. Yang berbeda di kedua tempat hanya sumbu
@@ -73,11 +75,12 @@ import type { SiteContent } from "@/lib/i18n";
  * keduanya, dan strip ini tidak berisi elemen fokus apa pun sehingga
  * `:focus-within` juga tidak bisa dipakai.
  *
- * Tombolnya duduk di ujung baris label, selalu terlihat dan bukan tersembunyi
- * sampai difokus: pengguna sentuh juga tidak punya hover, dan kontrol yang
- * hanya muncul saat difokus tidak akan pernah ditemukan oleh mereka. Labelnya
- * menyebut aksinya ("Jeda…" / "Lanjutkan…"), bukan keadaannya, jadi tidak perlu
- * `aria-pressed` — pembaca layar sudah mendengar aksi yang akan terjadi.
+ * Tombolnya duduk di ujung baris label (di bawah label pada layar sempit),
+ * selalu terlihat dan bukan tersembunyi sampai difokus: pengguna sentuh juga
+ * tidak punya hover, dan kontrol yang hanya muncul saat difokus tidak akan
+ * pernah ditemukan oleh mereka. Ikonnya hanya gambar; nama aksinya ada di
+ * `aria-label` ("Jeda…" / "Lanjutkan…"), bukan di keadaan tombol, jadi tidak
+ * perlu `aria-pressed` — pembaca layar sudah mendengar aksi yang akan terjadi.
  *
  * Karena tombol ini butuh state, komponennya jadi client component. HTML yang
  * dirender server tetap sama persis; yang bertambah hanya hidrasi untuk satu
@@ -92,14 +95,20 @@ export default function ClientMarquee({ content }: { content: SiteContent["clien
     // mengikuti skala section lain (py-20 / lg:py-24), bukan pb saja.
     <section className="overflow-hidden py-20 lg:py-24">
       <div className="mx-auto flex w-full flex-col items-center justify-center gap-7 md:gap-8">
-        {/* Di layar sempit label dan tombol tidak muat sebaris — teks tombolnya
-            kalimat penuh di tiap locale, dan memendekkannya jadi "Pause" berarti
-            mengembalikan teks Inggris hardcoded ke situs lima bahasa. Jadi di
-            bawah `md` keduanya bertumpuk di tengah, dan baru di `md` ke atas
-            tombol pindah ke ujung kanan. Grid tiga kolom dengan kolom kiri
-            kosong dipakai supaya label tetap di tengah optis ketika tombol
-            muncul di kanan; `justify-between` akan menggeser label ke kiri
-            sebesar lebar tombol. */}
+        {/* Kontrol jeda kini ikon saja. Label teks sepanjang "Pause logo
+            movement" bersaing dengan overline di sebelahnya, dan strip ini
+            memang baris logo, bukan baris kontrol. Ikonnya fungsional, bukan
+            dekoratif — sama seperti ikon menu di navbar. Teks aksinya tetap
+            ada sebagai `aria-label`, jadi pembaca layar mendengar tindakan
+            yang akan terjadi dan tidak perlu `aria-pressed`.
+
+            Di layar sempit label dan tombol tetap bertumpuk: labelnya sendiri
+            sudah memakai hampir seluruh lebar baris di 320px, jadi tombol
+            44px di sampingnya akan memaksa label membungkus. Baru di `md` ke
+            atas tombol pindah ke ujung kanan. Grid tiga kolom dengan kolom
+            kiri kosong dipakai supaya label tetap di tengah optis ketika
+            tombol muncul di kanan; `justify-between` akan menggeser label ke
+            kiri sebesar lebar tombol. */}
         {/* Baris label dibatasi `max-w-page` dan diberi padding yang sama dengan
             section lain, supaya tepi kanan tombol jeda sejajar dengan tepi kanan
             isi halaman. Sebelumnya baris ini `w-full` tanpa batas, jadi tombolnya
@@ -114,9 +123,14 @@ export default function ClientMarquee({ content }: { content: SiteContent["clien
           <button
             type="button"
             onClick={() => setPaused((value) => !value)}
-            className="text-slate-gray hover:text-ink-black text-caption underline decoration-1 underline-offset-4 transition md:justify-self-end"
+            aria-label={paused ? content.marqueeResume : content.marqueePause}
+            className="text-slate-gray hover:text-ink-black hover:bg-mist-gray rounded-smallcards inline-flex h-11 w-11 shrink-0 items-center justify-center transition md:justify-self-end"
           >
-            {paused ? content.marqueeResume : content.marqueePause}
+            {paused ? (
+              <Play className="h-5 w-5" aria-hidden="true" />
+            ) : (
+              <Pause className="h-5 w-5" aria-hidden="true" />
+            )}
           </button>
         </div>
 
@@ -199,7 +213,7 @@ export default function ClientMarquee({ content }: { content: SiteContent["clien
                         className="h-9 w-auto max-w-[130px] object-contain md:h-11"
                       />
                     ) : (
-                      <span className="text-slate-gray text-body font-medium uppercase tracking-wide">
+                      <span className="text-slate-gray text-body font-medium tracking-wide">
                         {client.name}
                       </span>
                     )}

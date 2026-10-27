@@ -20,12 +20,19 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  * Navigasi utama: bar yang berbisik, tanpa garis dan tanpa bayangan.
  *
  * Aturan yang dijaga di sini:
- * - Tinggi bar 64px (h-16) di semua lebar. Angka itu disandikan di empat tempat
- *   di berkas ini — `h-16` pada bar, `h-16` pada spacer, `top-16` pada sheet
- *   mobile, dan `calc(100dvh-4rem)` pada tinggi maksimum mega panel — plus satu
- *   di luar berkas ini (`-mt-16` di Hero). `scroll-padding-top: 5rem` di
- *   app/globals.css adalah angka yang sama ditambah 16px napas. Ubah kelimanya
- *   bersamaan; tidak ada satu pun yang boleh bergeser sendiri.
+ * - Tinggi bar 72px (`h-[4.5rem]`) di semua lebar. Angka itu disandikan di lima
+ *   tempat di berkas ini — `h-[4.5rem]` pada bar, `h-[4.5rem]` pada spacer,
+ *   `top-[4.5rem]` pada sheet mobile, `calc(100dvh-4.5rem)` pada tinggi
+ *   maksimum mega panel, dan `ANCHOR_OFFSET_PX` — plus dua di luar berkas ini
+ *   (`-mt-[4.5rem]` di Hero, `--header-offset: 5.5rem` di app/globals.css).
+ *   Ubah semuanya bersamaan; tidak ada satu pun yang boleh bergeser sendiri.
+ * - Nav desktop baru muncul di `xl` (1280px), bukan `lg`. Bukan pilihan gaya:
+ *   item 17px dengan padding 12px membuat nav selebar 480–488px (Polandia/Inggris),
+ *   sementara grid di 1024px hanya menyisakan (960 − 16 − 480) / 2 = 232px per
+ *   sisi, dan kluster kanan saja butuh 281px di Polandia. Jadi di 1024px label
+ *   menabrak CTA, bukan sekadar mepet. Antara 1024 dan 1279 bar tetap flex —
+ *   merek di kiri, pil bahasa + CTA + hamburger di kanan — jadi tidak ada yang
+ *   hilang di lebar itu; hanya nav tengahnya yang jadi sheet.
  * - Bar ini fixed, bukan sticky. Di posisi paling atas ia transparan dan menyatu
  *   dengan wash hero — persis seperti referensi, di mana nav tidak punya bidang
  *   sendiri sampai halaman digulir. Setelah digulir ia baru mendapat permukaan
@@ -53,16 +60,17 @@ type OpenSection = "product" | "services" | null;
 /**
  * Garis tempat judul section mendarat setelah klik anchor, dalam piksel.
  *
- * 80px = bar 64px (h-16) + 16px napas, dan itu tepat nilai `scroll-padding-top:
- * 5rem` di app/globals.css. Angka ini perlu ditulis ulang di sini karena
- * IntersectionObserver tidak membaca kelas Tailwind; setiap tempat lain memakai
- * kelas `h-16`/`top-16` dan diberi komentar di titik pakainya. Kalau tinggi bar
- * berubah, ubah konstanta ini bersama kelima tempat itu.
+ * 88px = bar 72px (`h-[4.5rem]`) + 16px napas, dan itu tepat nilai
+ * `--header-offset: 5.5rem` di app/globals.css. Angka ini perlu ditulis ulang
+ * di sini karena IntersectionObserver tidak membaca kelas Tailwind; setiap
+ * tempat lain memakai kelas `h-[4.5rem]`/`top-[4.5rem]` dan diberi komentar di
+ * titik pakainya. Kalau tinggi bar berubah, ubah konstanta ini bersama kelima
+ * tempat itu.
  */
-const ANCHOR_OFFSET_PX = 80;
+const ANCHOR_OFFSET_PX = 88;
 
 const desktopItem =
-  "group inline-flex h-8 items-center gap-1 rounded-buttons px-2 text-caption transition-colors";
+  "group inline-flex h-10 items-center gap-1 rounded-buttons px-3 text-body transition-colors";
 
 /**
  * Keadaan warna item desktop.
@@ -75,27 +83,25 @@ const desktopItem =
  *
  * Penanda aktif tetap berat huruf, bukan warna, supaya penandanya tidak hilang
  * saat kursor kebetulan ada di atasnya. Tangganya dinaikkan satu tingkat ke
- * medium/semibold (500/600): semuanya medium karena 16px medium jauh lebih
- * mudah dibaca daripada 16px regular — nav ini adalah pintu utama situs dan
+ * medium/semibold (500/600): semuanya medium karena 17px medium jauh lebih
+ * mudah dibaca daripada 17px regular — nav ini adalah pintu utama situs dan
  * dibaca cepat, bukan dibaca pelan — dan semibold sebagai penanda aktif tetap
  * terlihat jelas di atas medium. Di locale Arab (IBM Plex Sans Arabic memuat
  * 300/400/600/700) medium jatuh ke 400 dan semibold ke 600, jadi tangganya
  * malah lebih lebar di sana.
  *
- * Ukurannya `text-caption` (16px), sama dengan CTA dan isi dropdown. Lantai
- * 16px dipilih agar item nav tidak lagi menjadi teks tersempit di halaman;
- * token `caption` (nav, eyebrow section, tombol sekunder, isi dropdown) naik
- * dari 15px ke 16px bersama-sama, jadi tidak ada peran yang tertinggal.
+ * Ukurannya `text-body` (17px), sebesar paragraf: item nav adalah tujuan
+ * navigasi utama, bukan keterangan kecil, dan di bar 72px ia punya ruang
+ * vertikal untuk itu. CTA dan pil bahasa ikut naik ke ukuran yang sama supaya
+ * ketiganya duduk di satu garis baca — sebelumnya ketiganya `text-caption`
+ * (16px), lantai kontrol yang dipilih saat bar masih 64px.
  *
  * Lebar yang dibayar: lima label Polandia ("Produkty", "Usługi", "Proces",
- * "Standardy", "Zespół") harus masih muat di 1024px, lebar tersempit sebelum
- * nav berganti jadi hamburger, tanpa mendorong kluster aksi keluar dari pusat
- * bar. Kenaikan 15→16px plus medium dibayar dengan padding `px-2` (dari
- * `px-2.5`), menghapus `gap-0.5` antar item (spasi antar label kini murni dari
- * padding 8px+8px), chevron `h-3.5` yang menyesuaikan ukuran teks, dan pil
- * bahasa/CTA `px-2.5` (dari `px-3`). Sisa ruangnya tipis di 1024px locale
- * Polandia, jadi tidak ada satu pun penghemat di atas yang boleh dinaikkan lagi
- * tanpa mencabut yang lain.
+ * "Standardy", "Zespół") harus masih muat, dan itulah alasan nav desktop
+ * berganti ambang dari `lg` ke `xl`. Diukur di Polandia: nav 480px, kluster
+ * kanan 281px. Di 1280px grid menyediakan (1136 − 16 − 480) / 2 = 320px per
+ * sisi, jadi sisa 39px. Tipis, tapi terukur; di bawah 1280 nav menjadi sheet,
+ * jadi tidak ada lebar di mana label menabrak kluster aksi.
  */
 function itemState(active: boolean) {
   return active
@@ -291,7 +297,7 @@ export default function Navbar({
           ),
         ),
       );
-      // Tautan desktop (`hidden lg:flex`) tetap ada di DOM walau tidak
+      // Tautan desktop (`hidden xl:flex`) tetap ada di DOM walau tidak
       // dirender. Memfokuskannya gagal diam-diam, dan ujung jebakan yang
       // menunjuk elemen tak terlihat akan menelan Tab. Elemen yang benar-benar
       // dirender selalu punya client rect.
@@ -336,13 +342,15 @@ export default function Navbar({
     };
   }, [mobileOpen]);
 
-  // Kalau layar melebar ke desktop saat sheet terbuka, tutup sheet agar scroll
-  // halaman tidak tertinggal dalam keadaan terkunci. Arah sebaliknya juga
-  // ditutup: mega panel disembunyikan `lg:block`, jadi state terbukanya harus
+  // Kalau layar melebar ke lebar desktop saat sheet terbuka, tutup sheet agar
+  // scroll halaman tidak tertinggal dalam keadaan terkunci. Arah sebaliknya juga
+  // ditutup: mega panel disembunyikan `xl:block`, jadi state terbukanya harus
   // ikut padam — tanpa itu bar tetap memakai permukaan solid di puncak halaman
-  // padahal panelnya sudah tidak dirender.
+  // padahal panelnya sudah tidak dirender. Angkanya `xl` (1280px), sama dengan
+  // ambang nav desktop; kalau salah satu bergeser, ada pita lebar di mana sheet
+  // sudah tertutup tapi hamburger masih tampil (atau sebaliknya).
   useEffect(() => {
-    const query = window.matchMedia("(min-width: 1024px)");
+    const query = window.matchMedia("(min-width: 1280px)");
 
     function handleChange(event: MediaQueryListEvent) {
       if (event.matches) {
@@ -386,20 +394,21 @@ export default function Navbar({
             : "border-b border-transparent bg-transparent"
         }`}
       >
-        {/* Tiga kolom saat lg, satu baris flex sebelumnya. Grid dipilih supaya
+        {/* Tiga kolom saat xl, satu baris flex sebelumnya. Grid dipilih supaya
             kolom tengah benar-benar di tengah bar: dengan `flex-1` tautan hanya
             di tengah ruang sisa, dan karena merek (137px) lebih sempit daripada
             kluster aksi (222px) hasilnya meleset ~43px. Dua kolom `1fr` di kiri
             dan kanan membuat kolom `auto` di tengah selalu simetris.
-            `h-16` = 64px, satu dari lima sandi tinggi bar. Lihat kepala berkas. */}
-        <div className="mx-auto flex h-16 max-w-page items-center gap-2 px-5 sm:px-8 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+            `h-[4.5rem]` = 72px, satu dari lima sandi tinggi bar. Lihat kepala
+            berkas. */}
+        <div className="mx-auto flex h-[4.5rem] max-w-page items-center gap-2 px-5 sm:px-8 xl:grid xl:grid-cols-[1fr_auto_1fr]">
           {/* Brand: sekaligus link ke beranda, jadi tidak ada item "Home".
               Wordmark satu warna; titik ".com" tidak lagi diberi aksen. */}
           <Link
             href={basePath}
-            className="text-ink-black flex shrink-0 items-center gap-2.5 lg:justify-self-start"
+            className="text-ink-black flex shrink-0 items-center gap-2.5 xl:justify-self-start"
           >
-            <BrandMark className="h-8 w-8 shrink-0" />
+            <BrandMark className="h-9 w-9 shrink-0" />
             <span className="text-body truncate font-medium">dibumi.com</span>
           </Link>
 
@@ -407,7 +416,7 @@ export default function Navbar({
           <nav
             ref={navRef}
             aria-label={content.nav.mainLabel}
-            className="hidden items-center lg:flex lg:justify-self-center"
+            className="hidden items-center xl:flex xl:justify-self-center"
           >
             <div className="relative">
               <button
@@ -423,7 +432,7 @@ export default function Navbar({
               >
                 {nav.product}
                 <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                  className={`h-4 w-4 transition-transform duration-200 ${
                     openPanel === "product" ? "rotate-180" : ""
                   }`}
                   aria-hidden="true"
@@ -445,7 +454,7 @@ export default function Navbar({
               >
                 {nav.services}
                 <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                  className={`h-4 w-4 transition-transform duration-200 ${
                     openPanel === "services" ? "rotate-180" : ""
                   }`}
                   aria-hidden="true"
@@ -480,12 +489,12 @@ export default function Navbar({
           </nav>
 
           {/* Right cluster */}
-          <div className="ms-auto flex items-center gap-1 sm:gap-2 lg:ms-0 lg:justify-self-end">
-            <LanguageSwitcher locale={locale} label={nav.language} variant="ghost" />
+          <div className="ms-auto flex items-center gap-1 sm:gap-2 xl:ms-0 xl:justify-self-end">
+            <LanguageSwitcher locale={locale} label={nav.language} variant="ghost" compact />
 
             <Link
               href={`${basePath}#contact`}
-              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 ms-1 hidden h-8 shrink-0 items-center justify-center whitespace-nowrap px-2.5 text-caption transition lg:inline-flex"
+              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 ms-1 hidden h-10 shrink-0 items-center justify-center whitespace-nowrap px-4 text-body transition lg:inline-flex"
             >
               {nav.cta}
             </Link>
@@ -501,9 +510,9 @@ export default function Navbar({
               aria-expanded={mobileOpen}
               aria-controls="mobile-navigation"
               /* 44px, bukan 40px: ini satu-satunya kontrol pembuka sheet dan
-                 seluruhnya disentuh jari. Bar tetap 64px, jadi tingginya tidak
-                 mengubah kontrak anchor. */
-              className="text-ink-black hover:bg-mist-gray rounded-smallcards inline-flex h-11 w-11 items-center justify-center transition lg:hidden"
+                 seluruhnya disentuh jari. Bar 72px, jadi tingginya masih di
+                 bawah tinggi bar dan tidak mengubah kontrak anchor. */
+              className="text-ink-black hover:bg-mist-gray rounded-smallcards inline-flex h-11 w-11 items-center justify-center transition xl:hidden"
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -512,14 +521,14 @@ export default function Navbar({
 
         {/* Mega panel: selebar viewport, menempel ke bawah bar, tanpa border
             dan tanpa radius. Bayangan modal yang memisahkannya dari isi.
-            Tinggi maksimum `calc(100dvh-4rem)` = viewport dikurangi bar 64px,
+            Tinggi maksimum `calc(100dvh-4.5rem)` = viewport dikurangi bar 72px,
             supaya panel tidak pernah menutupi bar-nya sendiri dan bagian
             bawahnya yang panjang tetap bisa digulir di dalam panel. */}
         {openPanel && (
           <div
             ref={panelRef}
             id={`${openPanel}-menu`}
-            className="border-hairline bg-paper-white shadow-subtle-2 animate-panel-in absolute inset-x-0 top-full hidden max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-b lg:block"
+            className="border-hairline bg-paper-white shadow-subtle-2 animate-panel-in absolute inset-x-0 top-full hidden max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain border-b xl:block"
           >
             <div className="mx-auto max-w-page px-5 py-6 sm:px-8">
               {openPanel === "product" ? (
@@ -543,22 +552,23 @@ export default function Navbar({
       </header>
 
       {/* Bar fixed keluar dari alur dokumen, jadi tingginya harus dibayar di
-          sini supaya isi halaman tidak tertutup. `h-16` ini WAJIB sama dengan
-          tinggi bar di atas dan dengan `scroll-padding-top` di app/globals.css
-          (5rem = 64px bar + 16px napas): kalau salah satu bergeser, judul
-          section mendarat di bawah bar atau terlalu jauh dari tepi. */}
-      <div aria-hidden="true" className="h-16" />
+          sini supaya isi halaman tidak tertutup. `h-[4.5rem]` ini WAJIB sama
+          dengan tinggi bar di atas dan dengan `--header-offset` di
+          app/globals.css (5.5rem = 72px bar + 16px napas): kalau salah satu
+          bergeser, judul section mendarat di bawah bar atau terlalu jauh dari
+          tepi. */}
+      <div aria-hidden="true" className="h-[4.5rem]" />
 
       {/* Mobile sheet: di luar header karena backdrop-blur membuat header jadi
-          containing block untuk elemen fixed. `top-16` adalah sandi tinggi bar
-          yang ketiga: sheet mulai tepat di bawah bar, bukan menutupinya, jadi
-          tombol X di bar tetap terjangkau saat sheet terbuka. */}
+          containing block untuk elemen fixed. `top-[4.5rem]` adalah sandi
+          tinggi bar yang ketiga: sheet mulai tepat di bawah bar, bukan
+          menutupinya, jadi tombol X di bar tetap terjangkau saat sheet terbuka. */}
       {mobileOpen && (
         <nav
           id="mobile-navigation"
           ref={sheetRef}
           aria-label={content.nav.mobileLabel}
-          className="bg-paper-white fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col lg:hidden"
+          className="bg-paper-white fixed inset-x-0 bottom-0 top-[4.5rem] z-40 flex flex-col xl:hidden"
         >
           <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-1">
             <MobileSection

@@ -56,20 +56,20 @@ export default function Hero({
   const titleY = useTransform(scrollYProgress, [0, 1], [0, -40]);
   const titleOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0.35]);
 
-  // `-mt-16` menarik hero ke atas menutupi spacer `h-16` yang dibayarkan
-  // Navbar untuk bar fixed-nya, supaya wash hero duduk di balik nav yang masih
-  // transparan di puncak halaman. Angka ini satu kontrak dengan empat angka
-  // lain, dan kelimanya harus bergerak bersama:
-  //   - `h-16` di bar Navbar,
-  //   - spacer `h-16` di bawah bar itu,
-  //   - `scroll-padding-top: 5rem` di app/globals.css,
-  //   - `top-16` sheet mobile Navbar.
+  // `-mt-[4.5rem]` menarik hero ke atas menutupi spacer `h-[4.5rem]` yang
+  // dibayarkan Navbar untuk bar fixed-nya, supaya wash hero duduk di balik nav
+  // yang masih transparan di puncak halaman. Angka ini satu kontrak dengan
+  // empat angka lain, dan kelimanya harus bergerak bersama:
+  //   - `h-[4.5rem]` di bar Navbar,
+  //   - spacer `h-[4.5rem]` di bawah bar itu,
+  //   - `--header-offset: 5.5rem` di app/globals.css,
+  //   - `top-[4.5rem]` sheet mobile Navbar.
   // Kalau tinggi bar berubah dan angka ini tidak, hero menyisakan pita putih
   // di bawah nav atau naik menutupi baris pertamanya. Jangan diubah sendirian.
   return (
     <section
       ref={sectionRef}
-      className="relative isolate -mt-16 flex min-h-dvh items-center overflow-hidden"
+      className="relative isolate -mt-[4.5rem] flex min-h-dvh items-center overflow-hidden"
     >
       <div
         className="hero-atmosphere hero-grain hero-fade absolute inset-0 -z-10"

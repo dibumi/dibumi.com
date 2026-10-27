@@ -180,6 +180,8 @@ export type SiteContent = {
     marqueeResume: string;
     title: string;
     description: string;
+    /** Label pengganti kode ISO untuk merek yang tidak terikat yurisdiksi. */
+    global: string;
     /** Label untuk tiga angka di pita klien. */
     facts: {
       clients: string;
@@ -572,6 +574,7 @@ const en: SiteContent = {
     title: "Clients we have worked with",
     description:
       "Teams and networks we have supported across software, mobile, and infrastructure work.",
+    global: "Global",
     facts: {
       clients: "Clients",
       countries: "Countries",
@@ -1021,6 +1024,7 @@ const id: SiteContent = {
     title: "Klien yang pernah bekerja sama",
     description:
       "Tim dan jaringan yang pernah kami dukung dalam pekerjaan software, mobile, dan infrastruktur.",
+    global: "Global",
     facts: {
       clients: "Klien",
       countries: "Negara",
@@ -1470,6 +1474,7 @@ const ar: SiteContent = {
     title: "عملاء تعاملنا معهم",
     description:
       "فرق وشبكات دعمناها في أعمال البرمجيات والجوال والبنية التحتية.",
+    global: "عالمي",
     facts: {
       clients: "العملاء",
       countries: "الدول",
@@ -1897,6 +1902,7 @@ const zh: SiteContent = {
     marqueeResume: "继续标志滚动",
     title: "合作过的客户",
     description: "我们在软件、移动端和基础设施项目中支持过的团队与网络。",
+    global: "全球",
     facts: {
       clients: "客户",
       countries: "国家",
@@ -2333,6 +2339,7 @@ const pl: SiteContent = {
     title: "Klienci, z którymi pracowaliśmy",
     description:
       "Zespoły i sieci, które wspieraliśmy w projektach software, mobile i infrastrukturalnych.",
+    global: "Globalny",
     facts: {
       clients: "Klienci",
       countries: "Kraje",

@@ -33,14 +33,21 @@ export default function LanguageSwitcher({
   label: string;
   compact?: boolean;
   /**
-   * `ghost` dipakai di navbar: pill abu 32px tanpa border, sejajar dengan CTA
-   * hitam di sebelahnya. `mist-gray` tepat 5% hitam di atas putih, jadi pill
-   * ini terbaca sebagai bidang yang lebih ringan satu tingkat dari CTA, bukan
+   * `ghost` dipakai di navbar: pill abu tanpa border, sejajar dengan CTA hitam
+   * di sebelahnya. `mist-gray` tepat 5% hitam di atas putih, jadi pill ini
+   * terbaca sebagai bidang yang lebih ringan satu tingkat dari CTA, bukan
    * sebagai tombol kedua yang bersaing dengannya.
    *
-   * Di bawah lg pill ini naik ke 44px (`h-11`): di sana ia bukan lagi pasangan
-   * CTA melainkan satu-satunya kontrol bahasa di samping tombol menu, dan jari
-   * butuh 44px. Di lg ia kembali 32px supaya tetap sebaris dengan CTA.
+   * Di bawah lg pill ini 44px (`h-11`): di sana ia bukan lagi pasangan CTA
+   * melainkan satu-satunya kontrol bahasa di samping tombol menu, dan jari
+   * butuh 44px. Di lg ia turun ke 40px (`lg:h-10`) supaya tetap sebaris dengan
+   * CTA dan item nav, yang sama-sama 40px di bar 72px.
+   *
+   * `compact` dipakai di navbar supaya label locale ("EN") hilang di bawah sm
+   * dan hanya menyisakan globe + chevron. Bukan hiasan: di 320px bar hanya
+   * menyisakan 280px untuk merek, pill ini, dan tombol menu, dan ketiganya
+   * berjumlah 288px tanpa pemotongan itu. Nama aksesibelnya tetap utuh lewat
+   * `aria-label` di atas, jadi pembaca layar masih mendengar locale aktifnya.
    */
   variant?: "outline" | "ghost";
 }) {
@@ -102,14 +109,14 @@ export default function LanguageSwitcher({
         aria-label={`${label}: ${localeLabels[locale]}`}
         className={
           variant === "ghost"
-            ? "bg-mist-gray text-ink-black hover:bg-ink-black/10 rounded-buttons inline-flex h-11 items-center gap-1.5 px-2.5 text-caption transition lg:h-8"
+            ? "bg-mist-gray text-ink-black hover:bg-ink-black/10 rounded-buttons inline-flex h-11 items-center gap-1.5 px-3 text-body transition lg:h-10"
             : "border-hairline bg-paper-white text-slate-gray hover:text-ink-black rounded-smallcards inline-flex min-h-11 items-center gap-1.5 border px-2.5 text-caption transition"
         }
       >
         <Languages className="h-4 w-4" aria-hidden="true" />
         <span className={compact ? "sr-only sm:not-sr-only" : ""}>{localeLabels[locale]}</span>
         <ChevronDown
-          className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
           aria-hidden="true"
         />
       </button>
