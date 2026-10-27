@@ -56,6 +56,16 @@ export default function Hero({
   const titleY = useTransform(scrollYProgress, [0, 1], [0, -40]);
   const titleOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0.35]);
 
+  // `-mt-16` menarik hero ke atas menutupi spacer `h-16` yang dibayarkan
+  // Navbar untuk bar fixed-nya, supaya wash hero duduk di balik nav yang masih
+  // transparan di puncak halaman. Angka ini satu kontrak dengan empat angka
+  // lain, dan kelimanya harus bergerak bersama:
+  //   - `h-16` di bar Navbar,
+  //   - spacer `h-16` di bawah bar itu,
+  //   - `scroll-padding-top: 5rem` di app/globals.css,
+  //   - `top-16` sheet mobile Navbar.
+  // Kalau tinggi bar berubah dan angka ini tidak, hero menyisakan pita putih
+  // di bawah nav atau naik menutupi baris pertamanya. Jangan diubah sendirian.
   return (
     <section
       ref={sectionRef}
@@ -66,14 +76,46 @@ export default function Hero({
         aria-hidden="true"
       />
 
-      <div className="mx-auto w-full max-w-page px-5 py-28 sm:px-8 lg:py-32">
+      <div className="hero-shell mx-auto w-full max-w-page px-5 py-28 sm:px-8 lg:py-32">
         <motion.div
-          className="mx-auto flex max-w-5xl flex-col items-center gap-7 text-center lg:gap-9"
+          className="hero-stack mx-auto flex max-w-5xl flex-col items-center gap-7 text-center lg:gap-9"
           style={reduce ? undefined : { y: titleY, opacity: titleOpacity }}
         >
-          {/* 100px di xl, bukan 92px: tanpa kartu di kiri dan kanan, judulnya
-              punya seluruh lebar kontainer untuk diri sendiri. Dua baris
-              dipisah elemen sendiri supaya mask-nya bisa berjalan berurutan. */}
+          {/* 100px di xl adalah satu-satunya ukuran teks di halaman ini yang
+              duduk DI ATAS tangga token: `text-display` berhenti di 90px.
+              Itu disengaja dan dipin di DESIGN.reference.md maupun README
+              ("a centred serif headline at 100px"), bukan sisa nilai lama.
+              Tanpa kartu di kiri dan kanan, judulnya punya seluruh lebar
+              kontainer untuk diri sendiri.
+
+              `text-display` tetap tidak dipakai karena dua dari tiga angkanya
+              tidak cocok untuk hero: leading 1.3 memberi jarak antar baris yang
+              memutus dua baris judul yang seharusnya terbaca sebagai satu blok
+              (dan memaksa mask `clip-path` di bawah menutupi celah yang lebih
+              lebar), sementara tracking -2.25px hanya benar di 90px. Nilai di
+              sini diturunkan dari rasio yang sama dengan token, bukan dikarang:
+              -0.025em (rasio tracking display di referensi) x 100px = -2.5px.
+              Jadi hurufnya tetap dirapatkan sebanding, tidak lebih rapat.
+              Kalau `--text-display` suatu saat bergeser, dua angka ini yang
+              harus ikut dihitung ulang dari rasio yang sama.
+
+              Dua baris dipisah elemen sendiri supaya mask-nya bisa berjalan
+              berurutan. */}
+          {/* Baris aksen dimiringkan dengan `<em>`. Ini keputusan yang disadari,
+              bukan kelalaian: Source Serif 4 dimuat dengan style italic, jadi di
+              locale Latin hasilnya italic sungguhan.
+
+              Untuk Arab dan Cina hasilnya berbeda. IBM Plex Sans Arabic dan Noto
+              Sans SC tidak punya potongan italic, jadi browser membuat oblique
+              sintetis dengan menggeser glyph — dan pada aksara Arab shear itu
+              merusak bentuk kaligrafi, karena italic bukan konvensi aksara
+              tersebut. Sudah dipertimbangkan dan diputuskan untuk dibiarkan:
+              mematikan italic lewat `:lang(ar) em { font-style: normal }` akan
+              membuat kedua baris judul identik gayanya, dan pembeda miring itulah
+              yang memisahkan baris aksen dari baris utama. Oblique sintetis pada
+              Cina jauh lebih bisa diterima, jadi menanganinya per aksara juga
+              akan membuat dua locale non-Latin tampil berbeda tanpa alasan yang
+              terlihat pembaca. */}
           <h1 className="hero-title text-ink-black font-display text-heading font-normal md:text-heading-lg xl:text-[100px] xl:leading-[1.06] xl:tracking-[-2.5px]">
             <MaskLine delay={0}>{hero.titleLead}</MaskLine>
             <MaskLine delay={0.1}>
@@ -83,6 +125,7 @@ export default function Hero({
 
           <motion.p
             className="text-slate-gray max-w-xl text-body-lg"
+            data-reveal
             initial={reduce ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: reduce ? 0 : 0.3, ease: EASE }}
@@ -92,6 +135,7 @@ export default function Hero({
 
           <motion.div
             className="mt-1 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:gap-3"
+            data-reveal
             initial={reduce ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: reduce ? 0 : 0.4, ease: EASE }}
@@ -120,6 +164,7 @@ export default function Hero({
               bagian dari blok CTA, bukan paragraf keempat. */}
           <motion.p
             className="text-ash-gray -mt-3 text-caption"
+            data-reveal
             initial={reduce ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: reduce ? 0 : 0.52, ease: EASE }}
@@ -139,6 +184,10 @@ export default function Hero({
  * sengaja lebih besar dari glyph box: huruf italic miring keluar dari kotak
  * baris di kedua ujung, dan Arab membawa harakat jauh di atas ascent. Tanpa
  * ruang itu, baris yang sudah "selesai" masih terpotong.
+ *
+ * Keadaan awalnya bukan opasitas tapi `clip-path` yang memotong seluruh baris,
+ * jadi baris judul hero hilang total tanpa JavaScript. `data-reveal` yang
+ * mengembalikannya, lewat aturan yang sama di `app/globals.css`.
  */
 function MaskLine({
   children,
@@ -152,6 +201,7 @@ function MaskLine({
   return (
     <motion.span
       className="block"
+      data-reveal
       initial={
         reduce ? false : { clipPath: "inset(0% 0% 100% 0%)", y: "16%" }
       }
@@ -167,6 +217,13 @@ function MaskLine({
  * Panah yang meluncur keluar lalu masuk dari sisi lain saat tautan di-hover.
  * Pola `arrow-slide-frames` di referensi: glyph bergerak ke kanan, hilang, dan
  * muncul lagi dari kiri. Dua glyph ditumpuk supaya tidak ada ruang kosong.
+ *
+ * Arah geser itu fisik, jadi di RTL keduanya harus ditukar: glyph pertama
+ * keluar ke kiri (`rtl:group-hover:-translate-x-full`) dan glyph kedua mulai
+ * dari kanan (`rtl:translate-x-full`). Tanpa yang terakhir, glyph kedua masuk
+ * dari sisi yang baru saja ditinggalkan glyph pertama — panahnya terlihat
+ * memantul balik, bukan mengalir ke arah baca. `-scale-x-100` hanya membalik
+ * glyph-nya, tidak membalik sumbu gesernya, jadi keduanya perlu ditulis.
  */
 function ArrowGlyph() {
   return (
@@ -174,7 +231,7 @@ function ArrowGlyph() {
       <span className="absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-out group-hover:translate-x-full rtl:-scale-x-100 rtl:group-hover:-translate-x-full">
         →
       </span>
-      <span className="absolute inset-0 flex -translate-x-full items-center justify-center transition-transform duration-300 ease-out group-hover:translate-x-0 rtl:-scale-x-100 rtl:group-hover:translate-x-0">
+      <span className="absolute inset-0 flex -translate-x-full items-center justify-center transition-transform duration-300 ease-out group-hover:translate-x-0 rtl:translate-x-full rtl:-scale-x-100 rtl:group-hover:translate-x-0">
         →
       </span>
     </span>

@@ -36,8 +36,25 @@ import type { Locale, SiteContent } from "@/lib/i18n";
  *
  * Logo pihak ketiga membawa warnanya masing-masing, dan satu baris warna di
  * tengah palet achromatic merusak halaman. Karena itu semuanya diredupkan ke
- * grayscale dan baru kembali berwarna saat disentuh kursor — warnanya tetap
- * tersedia sebagai pengenal, tapi tidak pernah ikut menyusun komposisi.
+ * grayscale dan baru kembali berwarna saat selnya disentuh kursor — warnanya
+ * tetap tersedia sebagai pengenal, tapi tidak pernah ikut menyusun komposisi.
+ *
+ * Hover itu dipasang di sel (`group`), bukan di gambarnya sendiri. Sebelumnya
+ * latar sel menyala saat kursor ada di mana pun di dalam sel, tapi logonya baru
+ * berwarna kalau kursor tepat di atas bitmap-nya: dua reaksi untuk satu
+ * gerakan, dan yang kedua terasa meleset karena separuh sel adalah padding.
+ * Sekarang keduanya dipicu oleh hal yang sama.
+ *
+ * Batas lebar logo 130px sama dengan yang dipakai marquee di ClientMarquee.tsx:
+ * dua belas logo yang sama muncul di dua tempat, jadi keduanya tidak boleh
+ * punya lebar maksimum berbeda. Angkanya diambil dari sini, tempat yang lebih
+ * ketat, dan di sini ia hanya berperan sebagai langit-langit: lebar sel
+ * menyisakan 92px di ponsel 320px, 120px di 1024px, dan 166px di desktop
+ * penuh. Karena itu gambar memakai `w-full max-w-[130px]`, bukan `w-auto
+ * max-w-[130px]`: dengan `w-auto` lebarnya mengikuti rasio asli lalu dijepit
+ * 130px, dan di sel yang lebih sempit dari 130px logo itu luber ke sel
+ * sebelahnya. `w-full` membuat lebarnya mengikuti sel lebih dulu, 130px hanya
+ * batas atasnya, dan `object-contain` menjaga rasionya utuh di kedua arah.
  *
  * Tanpa state, jadi server component. Nama negara diambil dari Intl.DisplayNames
  * supaya alt bendera ikut locale tanpa menambah string baru ke lib/i18n.ts.
@@ -79,7 +96,7 @@ export default function Clients({
         <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
           {/* Kolom kiri: judul, deskripsi, dan tiga angka keras. */}
           <Reveal>
-            <p className="text-sienna-brown/70 flex items-center gap-1.5 text-caption">
+            <p className="text-sienna-brown/80 flex items-center gap-1.5 text-caption">
               {content.eyebrow}
               <span aria-hidden="true" className="rtl:-scale-x-100">
                 ›
@@ -97,7 +114,7 @@ export default function Clients({
             <dl className="border-sienna-brown/20 mt-12 grid grid-cols-3 gap-6 border-t pt-6">
               {facts.map((fact) => (
                 <div key={fact.label}>
-                  <dt className="text-sienna-brown/60 text-caption">{fact.label}</dt>
+                  <dt className="text-sienna-brown/85 text-caption">{fact.label}</dt>
                   <dd className="text-sienna-brown font-display tabular mt-1 text-heading-sm font-normal">
                     {fact.value}
                   </dd>
@@ -114,7 +131,7 @@ export default function Clients({
               {clients.map((client) => (
                 <li
                   key={client.name}
-                  className="bg-blush-peach flex flex-col items-center justify-center gap-3 p-6 transition-colors hover:bg-sienna-brown/[0.06]"
+                  className="group bg-blush-peach flex flex-col items-center justify-center gap-3 p-6 transition-colors hover:bg-sienna-brown/5"
                 >
                   {client.logo ? (
                     <img
@@ -123,7 +140,7 @@ export default function Clients({
                       width={client.width}
                       height={client.height}
                       loading="lazy"
-                      className="max-h-9 w-auto max-w-[130px] object-contain opacity-70 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0"
+                      className="max-h-9 w-full max-w-[130px] object-contain opacity-70 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
                     />
                   ) : (
                     <span className="text-sienna-brown text-caption font-medium uppercase tracking-tight">
@@ -131,7 +148,13 @@ export default function Clients({
                     </span>
                   )}
 
-                  <span className="text-sienna-brown/60 flex items-center gap-1.5 text-caption uppercase">
+                  <span className="text-sienna-brown/85 flex items-center gap-1.5 text-caption uppercase">
+                    {/* Bendera 15x10 bukan kartu, jadi lantai radius 16px tidak
+                        berlaku di sini: token terkecil (`rounded-images` 12px)
+                        di kotak setinggi 10px dijepit CSS jadi 5px dan mengubah
+                        bendera menjadi lozenge — sudut adalah bagian dari
+                        siluet bendera. 2px adalah nilai terkecil yang
+                        menghilangkan gigir bitmap tanpa mengubah bentuknya. */}
                     <img
                       src={`/flags/${client.region}.svg`}
                       alt={regionName(client.region, locale)}

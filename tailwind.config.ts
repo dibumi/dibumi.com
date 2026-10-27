@@ -27,9 +27,14 @@ export default {
         "paper-white": "#ffffff",
         "mist-gray": "#f2f2f3",
         "fog-white": "#fafafb",
-        "slate-gray": "#777b86",
-        "ash-gray": "#979799",
-        "smoke-gray": "#a3a6af",
+        // Tiga abu-abu ini lebih gelap dari DESIGN.md. Bukan selera: nilai asli
+        // gagal WCAG AA untuk teks (slate 4.23:1, ash 2.92:1, smoke 2.43:1 di
+        // atas putih; lebih buruk lagi di atas mist-gray). Yang diukur adalah
+        // mist-gray, karena itu permukaan terang terburuk. Urutan ramp tetap:
+        // slate paling gelap, smoke paling terang.
+        "slate-gray": "#585b63",
+        "ash-gray": "#646771",
+        "smoke-gray": "#696d77",
         "blush-peach": "#fbe1d1",
         "sienna-brown": "#5d2a1a",
         // Satu-satunya nilai di luar DESIGN.md: warna garis dari Quick Color
@@ -61,8 +66,13 @@ export default {
         zh: ["var(--font-chinese)", "var(--font-sans)", "system-ui", "sans-serif"],
       },
       fontSize: {
-        caption: ["15px", { lineHeight: "1.5" }],
-        body: ["17px", { lineHeight: "1.35" }],
+        // caption adalah anak tangga terkecil dan lantai baca UI situs ini:
+        // 16px, bukan 15px — teks kontrol terkecil (nav, label, tombol sekunder)
+        // tetap mudah dibaca tanpa menembus ukuran body 17px.
+        caption: ["16px", { lineHeight: "1.5" }],
+        // Leading 1.5 untuk body: 1.35 membuat paragraf section (SectionHeading,
+        // daftar included, intro panjang) terasa rapat sebagai dinding teks.
+        body: ["17px", { lineHeight: "1.5" }],
         "body-lg": ["20px", { lineHeight: "1.35" }],
         subheading: ["22px", { lineHeight: "1.5" }],
         "heading-sm": ["26px", { lineHeight: "1.18", letterSpacing: "-0.23px" }],
@@ -93,9 +103,19 @@ export default {
         page: "1200px",
       },
       spacing: {
+        // Offset header, dibaca dari --header-offset supaya `top-header`,
+        // `scroll-padding-top`, dan scroll-spy memakai satu angka. Nilainya
+        // sengaja tidak ditulis ulang di sini.
+        header: "var(--header-offset)",
         124: "124px",
         128: "128px",
         160: "160px",
+      },
+      letterSpacing: {
+        // Label overline (nama klien di marquee). Sebelumnya ditulis sebagai
+        // tracking-[0.18em] di satu tempat; 0.1em adalah langkah yang dipakai
+        // tipografi overline pada umumnya dan tidak perlu nilai arbitrer.
+        overline: "0.1em",
       },
       keyframes: {
         "fade-up": {

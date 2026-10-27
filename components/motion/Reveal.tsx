@@ -19,7 +19,31 @@ import { motion, useReducedMotion } from "motion/react";
  * karena preferensi itu baru terbaca setelah mount — kalau hanya `initial`
  * yang dimatikan, elemen sudah sempat dirender pada opasitas 0 dan transisi
  * 0.6 detik tetap dijalankan saat masuk viewport.
+ *
+ * `data-reveal` adalah penanda untuk keadaan tanpa JavaScript: aturan
+ * `html:not(.js) [data-reveal]` di `app/globals.css` memaksa elemen ini terlihat
+ * saat skrip tidak jalan, karena `whileInView` tidak akan pernah terpicu dan
+ * opasitas 0 dari `initial` tidak akan pernah dihapus. Atribut ini wajib ada di
+ * setiap elemen yang menyembunyikan dirinya lewat `initial`.
  */
+/**
+ * Easing untuk setiap reveal.
+ *
+ * Nilai ini sama dengan `cubic-bezier(0.22, 1, 0.36, 1)` — ease-out-quint —
+ * yang juga dipakai di empat tempat lain: `tailwind.config.ts` (animasi
+ * `fade-up` dan `panel-in`), `components/Hero.tsx`, dan `components/Products.tsx`.
+ * Semuanya menyalin angka yang sama.
+ *
+ * Disimpan sebagai konstanta bernama di sini, bukan ditulis ulang di dalam
+ * `transition`, karena file ini pemilik gerak masuk situs: kalau kurvanya
+ * berubah, ini titik yang harus dibaca lebih dulu. Menjadikannya ekspor
+ * bersama untuk file lain sengaja belum dilakukan — file ini `"use client"`,
+ * jadi nilai yang diekspor dari sini akan sampai ke server component sebagai
+ * client reference, bukan sebagai array. Kalau nanti keempat salinan itu mau
+ * disatukan, rumah yang benar adalah modul biasa tanpa `"use client"`.
+ */
+const REVEAL_EASE = [0.22, 1, 0.36, 1] as const;
+
 export default function Reveal({
   children,
   delay = 0,
@@ -38,13 +62,14 @@ export default function Reveal({
   return (
     <Component
       className={className}
+      data-reveal
       initial={reduce ? false : { opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{
         duration: reduce ? 0 : 0.6,
         delay: reduce ? 0 : delay,
-        ease: [0.22, 1, 0.36, 1],
+        ease: REVEAL_EASE,
       }}
     >
       {children}

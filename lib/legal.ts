@@ -247,20 +247,20 @@ const privacyEn: LegalContent = {
     {
       heading: "1. Personal Data We Collect",
       paragraphs: [
-        "Data you provide directly, such as your name, email address, WhatsApp number, company name, and message content when you fill in the contact form or contact us.",
+        "Data you provide directly, such as your name, email address, WhatsApp number, company name, and the content of your message when you contact us.",
         "Data recorded automatically, such as IP address, browser type, device, pages visited, and access time, used to maintain security and improve the quality of the site.",
       ],
     },
     {
       heading: "2. How We Obtain Data",
       paragraphs: [
-        "Through the contact form on the site, email correspondence, WhatsApp conversations, and other interactions you initiate with our team.",
+        "Through email correspondence, WhatsApp conversations, and other interactions you initiate with our team.",
       ],
     },
     {
       heading: "3. Legal Basis for Processing",
       paragraphs: [
-        "Your consent, when you submit data through the form or contact us first.",
+        "Your consent, when you contact us first and we process the data you send.",
         "Performance of a contract, when data is needed to prepare a proposal or deliver a project you have agreed to.",
         "Our legitimate interests, to maintain system security, prevent misuse, and develop our services reasonably.",
       ],
@@ -339,20 +339,20 @@ const privacyId: LegalContent = {
     {
       heading: "1. Data Pribadi yang Kami Kumpulkan",
       paragraphs: [
-        "Data yang Anda berikan secara langsung, seperti nama, alamat email, nomor WhatsApp, nama perusahaan, dan isi pesan ketika Anda mengisi formulir kontak atau menghubungi kami.",
+        "Data yang Anda berikan secara langsung, seperti nama, alamat email, nomor WhatsApp, nama perusahaan, dan isi pesan ketika Anda menghubungi kami.",
         "Data yang tercatat secara otomatis, seperti alamat IP, jenis peramban, perangkat, halaman yang dikunjungi, dan waktu akses, yang digunakan untuk menjaga keamanan dan meningkatkan kualitas situs.",
       ],
     },
     {
       heading: "2. Cara Kami Memperoleh Data",
       paragraphs: [
-        "Melalui formulir kontak pada situs, korespondensi email, percakapan WhatsApp, serta interaksi lain yang Anda inisiasi sendiri dengan tim kami.",
+        "Melalui korespondensi email, percakapan WhatsApp, serta interaksi lain yang Anda inisiasi sendiri dengan tim kami.",
       ],
     },
     {
       heading: "3. Dasar Hukum Pemrosesan",
       paragraphs: [
-        "Persetujuan Anda, ketika Anda mengirimkan data melalui formulir atau menghubungi kami lebih dahulu.",
+        "Persetujuan Anda, ketika Anda menghubungi kami lebih dahulu dan kami memproses data yang Anda kirimkan.",
         "Pelaksanaan perjanjian, ketika data diperlukan untuk menyiapkan penawaran atau menjalankan proyek yang Anda sepakati.",
         "Kepentingan sah kami, untuk menjaga keamanan sistem, mencegah penyalahgunaan, dan mengembangkan layanan secara wajar.",
       ],

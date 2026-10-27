@@ -38,6 +38,10 @@ export default function ServicePage({
 
   return (
     <article className="mx-auto max-w-page px-5 pb-20 pt-16 sm:px-8 sm:pt-20 lg:pb-24 lg:pt-24">
+      {/* Satu kolom baca; `62ch` di sini yang jadi ukuran baris, sama seperti
+          halaman produk dan grup. Paragraf di dalamnya karena itu tidak membawa
+          batas lebar sendiri — dulu paragraf pengantar diberi `58ch` yang lebih
+          sempit dari kolomnya, jadi angka itu tidak pernah aktif. */}
       <div className="max-w-[62ch]">
         <Link
           href={`${basePath}#services`}
@@ -53,7 +57,7 @@ export default function ServicePage({
           {service.title}
         </h1>
 
-        <p className="text-slate-gray mt-5 max-w-[58ch] text-body-lg">{page.intro}</p>
+        <p className="text-slate-gray mt-5 text-body-lg">{page.intro}</p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Link
@@ -156,6 +160,13 @@ export default function ServicePage({
 /**
  * Panah yang meluncur keluar lalu masuk dari sisi lain saat tautan di-hover.
  * Sama dengan panah di beranda: pola dua glyph bertumpuk, dan dibalik di RTL.
+ *
+ * Dua glyph, bukan satu, karena satu glyph tidak bisa keluar dan masuk
+ * sekaligus: yang pertama keluar ke arah baca, yang kedua sudah menunggu di
+ * seberang dan mengisi tempatnya. Di RTL arah bacanya ke kiri, jadi glyph
+ * pertama keluar ke kiri dan glyph kedua harus mulai dari kanan. Tanpa
+ * `rtl:translate-x-full` keduanya bergerak ke tepi kiri dan sempat bertumpuk di
+ * tengah kotak — terbaca sebagai dua panah, bukan satu panah yang lewat.
  */
 function Arrow() {
   return (
@@ -163,7 +174,7 @@ function Arrow() {
       <span className="absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-out group-hover:translate-x-full rtl:-scale-x-100 rtl:group-hover:-translate-x-full">
         →
       </span>
-      <span className="absolute inset-0 flex -translate-x-full items-center justify-center transition-transform duration-300 ease-out group-hover:translate-x-0 rtl:-scale-x-100 rtl:group-hover:translate-x-0">
+      <span className="absolute inset-0 flex -translate-x-full items-center justify-center transition-transform duration-300 ease-out group-hover:translate-x-0 rtl:translate-x-full rtl:-scale-x-100 rtl:group-hover:translate-x-0">
         →
       </span>
     </span>

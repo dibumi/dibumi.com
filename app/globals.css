@@ -10,22 +10,41 @@
 :root {
   color-scheme: light;
 
-  /* Colors */
+  /* Colors
+   *
+   * Tiga abu-abu di bawah disetel ulang agar lolos WCAG AA 4.5:1 untuk teks
+   * biasa di atas KETIGA permukaan terang sistem ini: paper-white, fog-white,
+   * dan mist-gray (mist adalah yang terburuk, jadi itu patokannya).
+   *
+   * Nilai lama (#777b86 / #979799 / #a3a6af) menghasilkan 4.23 / 2.92 / 2.43
+   * di atas putih, dan 3.78 / 2.61 / 2.17 di atas mist. Itu 45 kegagalan
+   * kontras di satu halaman, semuanya berasal dari tiga token ini, bukan dari
+   * komponen mana pun. Ramp-nya dipertahankan berurutan (slate paling gelap,
+   * smoke paling terang) supaya hierarki teks tidak hilang.
+   *
+   * Kalau ada yang mengubah ini lagi, ukur ulang terhadap #f2f2f3, bukan
+   * terhadap putih.
+   */
   --color-ink-black: #17191c;
   --color-paper-white: #ffffff;
   --color-mist-gray: #f2f2f3;
   --color-fog-white: #fafafb;
-  --color-slate-gray: #777b86;
-  --color-ash-gray: #979799;
-  --color-smoke-gray: #a3a6af;
+  --color-slate-gray: #585b63;
+  --color-ash-gray: #646771;
+  --color-smoke-gray: #696d77;
   --color-blush-peach: #fbe1d1;
   --color-sienna-brown: #5d2a1a;
+  --color-hairline: #ececec;
 
-  /* Typography — Scale */
-  --text-caption: 15px;
+  /* Typography — Scale
+   *
+   * caption = 16px adalah lantai baca UI (nav, label section, tombol sekunder);
+   * leading body 1.5 supaya paragraf section tidak terbaca sebagai dinding teks.
+   */
+  --text-caption: 16px;
   --leading-caption: 1.5;
   --text-body: 17px;
-  --leading-body: 1.35;
+  --leading-body: 1.5;
   --text-body-lg: 20px;
   --leading-body-lg: 1.35;
   --text-subheading: 22px;
@@ -49,6 +68,21 @@
   --card-padding: 20px;
   --element-gap: 8px;
 
+  /* Offset header untuk semua target anchor.
+   *
+   * Satu-satunya sumber angka ini. Bar navbar setinggi 4.5rem (h-[4.5rem]) dan
+   * nilai di bawah menyisakan 1rem jarak di bawahnya, jadi judul section tidak
+   * tertutup saat sebuah anchor diklik.
+   *
+   * Dipakai oleh `scroll-padding-top` di bawah, oleh `top-header` di
+   * tailwind.config.ts, dan dibaca lewat
+   * getComputedStyle oleh IntersectionObserver scroll-spy di Navbar. Sebelumnya
+   * angka ini hidup di tiga tempat dan pernah menyimpang 8px tanpa ketahuan.
+   *
+   * Jangan menambahkan `scroll-margin-top` di section: browser menjumlahkan
+   * keduanya dan target mendarat 88px lebih rendah dari yang dimaksud. */
+  --header-offset: 5.5rem;
+
   /* Named Radii */
   --radius-cards: 24px;
   --radius-images: 12px;
@@ -56,42 +90,58 @@
   --radius-buttons: 9999px;
   --radius-smallcards: 16px;
   --radius-elevatedcards: 20px;
-
-  /* Surfaces */
-  --surface-canvas: #ffffff;
-  --surface-card-mist: #f2f2f3;
-  --surface-section-fog: #fafafb;
-  --surface-accent-blush: #fbe1d1;
-  --surface-elevated-white: #ffffff;
 }
 
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Header fixed setinggi 4rem (h-16) di semua lebar. Nilai di bawah
+    /* Header fixed setinggi 4.5rem (h-[4.5rem]) di semua lebar. Nilai di bawah
        menyisakan jarak 1rem di bawah bar. Tanpa ini, judul section
        tertutup saat klik anchor. Ubah bersama tinggi bar di Navbar.
+       Angkanya hidup di --header-offset, bukan di sini, supaya setiap target
+       sticky dan scroll-spy membaca nilai yang sama.
        Jangan menambahkan scroll-margin-top di section: keduanya dijumlahkan
        dan target mendarat 88px lebih rendah dari yang dimaksud. */
-    scroll-padding-top: 5rem;
+    scroll-padding-top: var(--header-offset);
   }
 
   body {
     @apply bg-paper-white text-ink-black font-sans antialiased;
   }
 
+  /* Paragraf panjang tidak boleh menyisakan satu kata sendirian di baris
+     terakhir: itu meninggalkan lubang di bawah blok teks. `pretty` memindahkan
+     satu kata dari baris sebelumnya untuk menutupnya. Browser yang belum
+     mengenal properti ini mengabaikannya, jadi tidak ada risiko regresi. */
+  p {
+    text-wrap: pretty;
+  }
+
   ::selection {
-    background-color: #fbe1d1;
-    color: #5d2a1a;
+    background-color: var(--color-blush-peach);
+    color: var(--color-sienna-brown);
   }
 
   /* Satu gaya fokus untuk seluruh situs, supaya navigasi keyboard konsisten.
      Ink black, bukan warna aksen: sistem ini tidak punya warna fungsional
-     selain peach, dan peach gagal kontras sebagai outline di atas putih. */
+     selain peach, dan peach gagal kontras sebagai outline di atas putih.
+
+     Butuh 5px ruang di dalam kontainer (2px outline + 3px offset). Kontainer
+     terketat di navbar adalah dropdown bahasa dengan `p-1.5` (6px), jadi masih
+     lewat. Kalau ada kontainer turun ke `p-1`, outline-nya akan terpotong. */
   :focus-visible {
-    outline: 2px solid #17191c;
+    outline: 2px solid var(--color-ink-black);
     outline-offset: 3px;
+  }
+
+  /* Permukaan gelap membalik warna ring: ink-black di atas ink-black tidak
+     terlihat, jadi setiap kontrol di band gelap kehilangan indikator fokus
+     sepenuhnya. Pasang `.on-dark` pada section-nya, bukan pada tiap elemen —
+     utility per elemen selalu ketinggalan satu tempat dan sudah terbukti
+     begitu di band Services. */
+  .on-dark :focus-visible {
+    outline-color: var(--color-paper-white);
   }
 
   /* Angka pada tabel dan kartu data tetap rata. */
@@ -151,14 +201,30 @@
 /*
  * Guide kolom.
  *
- * Referensi menarik tiga garis hairline vertikal di sepanjang section putih,
- * membagi lebar kontainer menjadi empat kolom. Garis-garis itu bukan tipografi:
- * mereka adalah grid editorial, dan itulah yang membuat section putih
- * terasa disusun, bukan sekadar kosong.
+ * Referensi menarik tiga garis hairline vertikal, membagi lebar kontainer
+ * menjadi empat kolom. Garis-garis itu bukan tipografi: mereka grid editorial,
+ * dan itulah yang membuat section putih terasa disusun, bukan sekadar kosong.
  *
- * Garis dibuat eksplisit di 25%, 50%, dan 75% supaya tepi kontainer tidak
- * ikut bergaris. `isolation: isolate` menjaga garis tetap di belakang isi
- * section: tanpa itu, garis akan melintasi teks.
+ * Versi sebelumnya menaruhnya setinggi seluruh section dan mengandalkan
+ * `z-index: -1` untuk "menjaga garis tetap di belakang isi". Itu tidak cukup:
+ * `z-index` memang menaruh garis di belakang glyph, tapi teks di sini tidak
+ * punya latar, jadi garis 1px tetap terbaca menembus sela kata dan counter
+ * huruf. Di Standards kolom deskripsi membentang dari 18rem sampai tepi kanan,
+ * jadi ketiga garis jatuh di dalam teks. Di Process grid-nya empat kolom, tapi
+ * karena padding kontainer tetap sementara gutter grid 2rem, garis 25/50/75%
+ * hanya kebetulan jatuh di gutter pada lebar tertentu; di 1024px garis 75%
+ * meleset sekitar 8px ke dalam kolom keempat.
+ *
+ * Jadi garisnya dipindah ke tempat yang memang kosong: padding atas section,
+ * tepat di atas isi kontainer. `bottom: 100%` menempelkannya ke tepi atas isi,
+ * dan mask-nya melarutkan garis sebelum mencapai judul, jadi tidak ada ujung
+ * yang terpotong keras. Tingginya 5rem, sama dengan `py-20` section pemakainya:
+ * garis tidak pernah melimpah ke section sebelumnya, dan pada `lg:py-28` ia
+ * hanya duduk 2rem lebih rendah dari tepi section.
+ *
+ * `isolation: isolate` tetap dipertahankan: ia yang menahan garis di dalam
+ * konteks tumpukan kontainer, jadi garis tidak pernah naik di atas milik section
+ * lain kalau suatu saat kontainer ini diberi latar.
  */
 .column-guides {
   position: relative;
@@ -168,26 +234,30 @@
 .column-guides::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset-inline: 0;
+  bottom: 100%;
+  height: 5rem;
   z-index: -1;
   pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
   background-image:
     linear-gradient(
       to right,
       transparent calc(25% - 0.5px),
-      #ececec calc(25% - 0.5px) calc(25% + 0.5px),
+      var(--color-hairline) calc(25% - 0.5px) calc(25% + 0.5px),
       transparent calc(25% + 0.5px)
     ),
     linear-gradient(
       to right,
       transparent calc(50% - 0.5px),
-      #ececec calc(50% - 0.5px) calc(50% + 0.5px),
+      var(--color-hairline) calc(50% - 0.5px) calc(50% + 0.5px),
       transparent calc(50% + 0.5px)
     ),
     linear-gradient(
       to right,
       transparent calc(75% - 0.5px),
-      #ececec calc(75% - 0.5px) calc(75% + 0.5px),
+      var(--color-hairline) calc(75% - 0.5px) calc(75% + 0.5px),
       transparent calc(75% + 0.5px)
     );
 }
@@ -213,7 +283,11 @@
   bottom: 0;
   height: 9rem;
   pointer-events: none;
-  background-image: linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(
+    to top,
+    var(--color-paper-white) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
 }
 
 /*
@@ -227,12 +301,132 @@
 }
 
 /*
+ * Hero di layar pendek (ponsel lanskap, mis. 844x390).
+ *
+ * Hero-nya setinggi 591px di viewport 390px: py-28 saja sudah 224px, lalu judul
+ * dua baris di `text-heading-lg` (166px) dan dua celah 28px. Akibatnya CTA
+ * utamanya mendarat di y=388-440, yaitu seluruhnya di bawah lipatan — di layar
+ * yang justru paling sering dipakai untuk "lihat sekilas" ini, tombolnya tidak
+ * terlihat sama sekali.
+ *
+ * Yang dipotong, berurutan menurut mana yang paling murah:
+ * - judul turun ke ukuran `heading` (44px). Ini satu-satunya perubahan yang
+ *   menghemat lebih dari 50px sendirian, dan di layar 390px tinggi, 64px memang
+ *   terlalu besar: dua barisnya menghabiskan 43% dari tinggi layar.
+ * - celah antar elemen 28px -> 20px.
+ * - padding bawah, yang cuma menambah tinggi section tanpa menggerakkan apa pun
+ *   ke atas.
+ *
+ * Padding ATAS tidak ikut dipotong. Navbar fixed setinggi 4.5rem dan hero-nya
+ * `-mt-[4.5rem]`, jadi memotongnya sampai di bawah 5.5rem akan membuat baris
+ * pertama judul masuk ke balik navbar.
+ *
+ * Ditulis sebagai CSS biasa dengan satu tingkat spesifisitas lebih, bukan varian
+ * arbitrary Tailwind (`[@media(max-height:560px)]:`) maupun kelas tambahan.
+ * Alasannya urutan emisi: Tailwind 3 di proyek ini mengeluarkan utility dasar
+ * lebih awal (`.py-28` dan `.gap-7`) tapi utility BERVARIAN di paling akhir
+ * (`md:text-heading-lg`). Jadi `.hero-shell` saja sudah cukup untuk menang atas
+ * `py-28`, sementara `.hero-title` TIDAK cukup untuk menang atas
+ * `md:text-heading-lg`; ia butuh satu tingkat lebih spesifik. Ini mekanisme yang
+ * sama dengan `:lang(ar) .hero-title` di atas.
+ */
+@media (max-height: 560px) {
+  .hero-shell {
+    padding-top: 5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .hero-stack {
+    gap: 1rem;
+  }
+
+  .hero-shell .hero-title {
+    font-size: 44px;
+    letter-spacing: -0.66px;
+  }
+}
+
+/*
+ * Panel scroll daftar Services.
+ *
+ * Daftar layanan dibatasi tingginya di `lg` (lihat components/Services.tsx),
+ * jadi ia menggulir sendiri di dalam kolomnya. Scrollbar bawaan di atas
+ * ink-black terbaca sebagai batang abu terang yang memotong kolom, jadi
+ * warnanya diturunkan ke 28% paper-white dan lebarnya dikecilkan.
+ *
+ * `scrollbar-gutter: stable` menahan ruang gutter sejak awal. Tanpa itu, saat
+ * scrollbar muncul, baris-baris yang punya border atas bergeser beberapa
+ * piksel, dan di RTL geseran itu jatuh di sisi yang salah.
+ */
+@media (min-width: 64rem) {
+  .services-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+    scrollbar-gutter: stable;
+  }
+
+  .services-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .services-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.28);
+    border-radius: 9999px;
+  }
+
+  .services-scroll::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
+/*
+ * Keadaan istirahat untuk setiap animasi masuk adalah terlihat.
+ *
+ * Reveal, hero, dan panel produk menulis keadaan awalnya sebagai gaya inline:
+ * opasitas 0, `clip-path` yang memotong seluruh baris, dan transform yang
+ * bergeser. Gaya itu ikut di-render server, jadi tanpa JavaScript tidak ada yang
+ * menghapusnya dan halaman tampil kosong. Terukur: 159 dari 195 elemen teks
+ * berada di opasitas 0 saat skrip diblokir, dan hero-nya hilang seluruhnya
+ * karena `animate` juga tidak pernah jalan.
+ *
+ * Skrip inline di `app/[locale]/layout.tsx` menambahkan kelas `js` ke `<html>`
+ * sebelum isi body dirender. Aturan di bawah hanya berlaku saat kelas itu tidak
+ * ada, yaitu saat JavaScript dimatikan di pengaturan browser atau skripnya
+ * diblokir ekstensi. Dengan JavaScript, aturan ini tidak aktif dan gerak
+ * masuknya berjalan seperti semula.
+ *
+ * Diletakkan sebelum blok reduced-motion di bawah supaya blok itu tetap paling
+ * bawah, sesuai alasan urutannya.
+ */
+html:not(.js) [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: none !important;
+}
+
+/*
  * Prefers-reduced-motion: semua gerak berhenti.
  *
  * Blok ini sengaja diletakkan paling bawah. Sebelumnya ia berada di atas
  * definisi `.hero-atmosphere`, dan karena spesifisitasnya sama, aturan
  * `animation: hero-drift ...` di bawahnya yang menang — wash tetap bergerak
  * walau pengunjung meminta sebaliknya.
+ *
+ * Dua lapis, dan keduanya perlu:
+ *  1. `animation: none` mematikan animasi CSS berbasis class. Tanpa ini,
+ *     keyframe-nya tetap berjalan dan marquee tetap meluncur.
+ *  2. `transition-duration: 0.01ms` untuk semua elemen. Tanpa ini, setiap
+ *     `transition-*` di seluruh situs tetap berjalan — komentar blok ini
+ *     dulu mengklaim "semua gerak berhenti" padahal itu tidak benar. Nilainya
+ *     0.01ms, bukan 0, supaya `transitionend` tetap terpicu dan kode yang
+ *     menunggunya tidak menggantung.
+ *
+ * Setelah ini, komponen tidak perlu lagi menambal dirinya dengan
+ * `motion-reduce:transition-none` atau `motion-reduce:animate-none`; tambalan
+ * lokal itu sudah dilepas karena aturan `!important` di bawah membuatnya tidak
+ * berpengaruh. Yang tetap perlu dipertahankan adalah perubahan layout statis,
+ * misalnya marquee yang berubah jadi dinding logo yang wrap — itu bukan gerak,
+ * itu tata letak saat diam.
  */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -244,5 +438,16 @@
   .animate-marquee,
   .hero-atmosphere {
     animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }

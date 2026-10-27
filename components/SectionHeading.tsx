@@ -5,16 +5,38 @@ import Link from "next/link";
  * Judul section yang konsisten di seluruh halaman.
  *
  * Tiga tingkat, semuanya tipografis:
- * - tag kategori 15px ash dengan chevron `›`, mengikuti pola "Product ›" di
- *   referensi. Chevron-nya bagian dari label, bukan ikon terpisah.
+ * - tag kategori 16px ash dengan chevron `›`, mengikuti pola "Product ›" di
+ *   referensi. Chevron-nya bagian dari label, bukan ikon terpisah. Beratnya 500,
+ *   satu tingkat di atas body: label ini dibaca cepat sebelum judul, dan 400
+ *   pada 16px terlalu dekat dengan paragraf 17px di bawahnya.
  * - judul serif weight 400. Tidak pernah bold: serif yang berbisik, bukan
  *   berteriak, adalah inti dari sistem ini.
  * - deskripsi 17px slate, dibatasi 52ch supaya baris tetap enak dibaca.
  *
- * Opsi `cta` menambah pil abu "Learn more →" di bawah deskripsi, persis seperti
- * di referensi: setiap section punya satu pintu keluar, dan pintunya berupa
- * pil abu penuh, bukan ghost berborder. Tanpa prop ini, section tidak berubah —
- * dipakai hanya di section yang memang punya tujuan berikutnya.
+ * Dua batas lebar itu (`58ch` di pembungkus, `52ch` di deskripsi) bukan bug
+ * yang saling menimpa, dan jangan "dirapikan" jadi satu nilai:
+ *
+ * - `ch` diukur dari font-size elemen yang memakai kelasnya. Pembungkus ini
+ *   mewarisi 17px dari body, dan deskripsinya juga 17px, jadi kedua batas itu
+ *   berada di satuan yang sama dan bisa dibandingkan langsung: judul boleh
+ *   selebar 58 karakter, paragraf 52.
+ * - Itu memang pembagian peran yang lazim di halaman editorial. Judul 44–64px
+ *   memuat 58 karakter dalam dua baris tanpa terasa padat, sementara paragraf
+ *   17px pada 58 karakter mulai melelahkan mata. Paragraf yang lebih sempit
+ *   membuat mata turun lebih pendek per baris.
+ *
+ * Konsekuensinya: batas dalam selalu menang untuk paragraf, dan itu
+ * disengaja — bukan sisa dari nilai yang lupa dihapus.
+ *
+ * Opsi `cta` menambah pil abu di bawah deskripsi, persis seperti di referensi:
+ * setiap section punya satu pintu keluar, dan pintunya berupa pil abu penuh,
+ * bukan ghost berborder. Tanpa prop ini, section tidak berubah.
+ *
+ * Labelnya wajib datang dari pemanggil, bukan dari satu kunci bersama. Dulu
+ * keduanya memakai `common.learnMore`, dan karena dua section berurutan menuju
+ * tujuan yang berbeda, "Learn more" berarti dua hal dalam satu halaman. Label
+ * sekarang menyebut tujuannya: section Process menawarkan standar, section
+ * Standards menawarkan percakapan.
  *
  * Tidak ada ikon dekoratif di sini.
  */
@@ -34,13 +56,17 @@ export default function SectionHeading({
 }) {
   return (
     <div className={`max-w-[58ch] ${className}`}>
-      <p className="text-ash-gray flex items-center gap-1.5 text-caption">
+      <p className="text-ash-gray flex items-center gap-1.5 text-caption font-medium">
         {eyebrow}
         <span aria-hidden="true" className="rtl:-scale-x-100">
           ›
         </span>
       </p>
-      <h2 className="text-ink-black font-display mt-4 text-heading font-normal sm:text-heading-lg">
+      {/* `text-balance` hanya di judul. Paragraf di bawahnya sudah ditangani
+          `text-wrap: pretty` dari globals.css; menaruh `balance` di keduanya
+          membuat baris paragraf ditarik-tarik demi rata, padahal `pretty`
+          cukup memindahkan satu kata supaya tidak ada anak yatim. */}
+      <h2 className="text-ink-black font-display mt-4 text-balance text-heading font-normal sm:text-heading-lg">
         {title}
       </h2>
       <p className="text-slate-gray mt-5 max-w-[52ch] text-body">{description}</p>

@@ -80,16 +80,19 @@ function AllServicesLink({
   content,
   basePath,
   onNavigate,
+  className = "",
 }: {
   content: SiteContent;
   basePath: string;
   onNavigate?: () => void;
+  /** Dipakai varian mobile untuk menaikkan tinggi sasaran sentuh ke 44px. */
+  className?: string;
 }) {
   return (
     <Link
       href={`${basePath}#services`}
       onClick={onNavigate}
-      className="text-ink-black text-caption inline-flex items-center gap-1 hover:underline"
+      className={`text-ink-black text-caption inline-flex items-center gap-1 hover:underline ${className}`}
     >
       {content.nav.allServices}
       <Arrow />
@@ -165,7 +168,14 @@ export function ServicesMenuList({
         ))}
       </ul>
       <div className="mt-1.5">
-        <AllServicesLink content={content} basePath={basePath} onNavigate={onNavigate} />
+        {/* `min-h-11`: satu-satunya tautan teks di sheet mobile, dan tinggi
+            barisnya saja (23px) jauh di bawah ambang sentuh 44px. */}
+        <AllServicesLink
+          content={content}
+          basePath={basePath}
+          onNavigate={onNavigate}
+          className="min-h-11"
+        />
       </div>
       <RetiredRows retired={retired} />
     </div>

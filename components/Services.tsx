@@ -5,6 +5,26 @@ import Reveal from "@/components/motion/Reveal";
 import type { SiteContent } from "@/lib/i18n";
 
 /**
+ * Irama reveal section ini: satu nilai untuk baris layanan, satu untuk diagram,
+ * dan diagram memakai kelipatan nilai yang sama supaya kolom kiri dan kanan
+ * bergerak dalam satu tempo. 0.08 bukan angka baru — itu jeda daftar yang sudah
+ * dipakai di Highlights, WorkflowMethodology, dan ContactSection.
+ *
+ * Cascade sengaja berhenti di dua langkah. Tiap baris dipicu sendiri oleh
+ * viewport (`whileInView` di Reveal), bukan oleh satu trigger untuk seluruh
+ * daftar, jadi jeda yang menumpuk sampai baris kesembilan tidak membeli apa
+ * pun: baris terakhir cuma menunggu 0.64 detik setelah ia sendiri terlihat.
+ * Dua langkah cukup untuk tiga baris pertama yang masuk bersamaan.
+ */
+const ROW_STAGGER = 0.08;
+const ROW_STAGGER_STEPS = 2;
+
+/** Diagram masuk satu ketukan setelah baris kedua: mata membaca daftar dulu. */
+const DIAGRAM_DELAY = ROW_STAGGER * ROW_STAGGER_STEPS;
+
+const rowDelay = (index: number) => Math.min(index, ROW_STAGGER_STEPS) * ROW_STAGGER;
+
+/**
  * Pita gelap: daftar layanan di kiri, diagram model kerja di kanan.
  *
  * Referensinya memakai satu section hitam pekat di tengah halaman, dengan
@@ -29,6 +49,22 @@ import type { SiteContent } from "@/lib/i18n";
  * panel, bukan tautan. Nomor 01–07 karena itu tetap hanya menghitung yang
  * masih bisa dibeli.
  *
+ * Satu baris layanan hanya memuat ordinal, judul, dan satu keterangan. Dua butir
+ * bullet yang dulu menempel di tiap baris sudah dilepas: teksnya hidup di
+ * halaman detail tiap layanan dalam bentuk yang lebih lengkap (`servicePages`
+ * punya empat poin "yang termasuk" per layanan), jadi yang tinggal di beranda
+ * hanya mengulanginya dengan versi yang lebih pendek. Tautan "Discuss a project"
+ * juga dilepas dari tiap baris dan diganti satu CTA di ujung daftar: tujuh
+ * tautan ke satu tujuan yang sama bukan pilihan, hanya kebisingan.
+ *
+ * Di layar lebar daftar itu dibatasi tingginya dan menggulir sendiri. Tanpa
+ * batas, sembilan barisnya (tujuh praktik + dua yang pensiun) membuat kolom
+ * kiri 500px lebih panjang dari diagram di kanannya, dan section-nya jadi
+ * hampir dua layar penuh di monitor besar. Batasnya `min(36rem, 100dvh - 12rem)`:
+ * 576px di layar biasa, menyusut di layar pendek, dan selalu lebih pendek dari
+ * isinya — jadi daftar ini selalu bisa digulir, bukan hanya di layar yang
+ * kebetulan kecil.
+ *
  * Ikon tetap tidak ada. Urutan ditandai ordinal 01–07.
  */
 export default function Services({
@@ -41,7 +77,7 @@ export default function Services({
   const copy = content.servicesSection;
 
   return (
-    <section id="services" className="bg-ink-black py-20 lg:py-40">
+    <section id="services" className="bg-ink-black on-dark py-20 lg:py-32">
       <div className="mx-auto max-w-page px-5 sm:px-8">
         <Reveal>
           <div className="max-w-[58ch]">
@@ -58,93 +94,132 @@ export default function Services({
           </div>
         </Reveal>
 
-        <div className="mt-14 grid gap-12 lg:mt-20 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-16">
-          {/* Daftar kolom kiri. Dipisah garis hairline, bukan kartu: di atas
-              latar gelap garis lebih terbaca daripada kotak berisi. */}
-          <ul className="flex flex-col">
-            {content.services.map((service, index) => {
-              const meta = serviceMeta[index];
+        <div className="mt-14 grid gap-12 lg:mt-16 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-16">
+          {/* Kolom kiri: daftar layanan, lalu satu CTA untuk seluruhnya.
+              Daftar dipisah garis hairline, bukan kartu: di atas latar gelap
+              garis lebih terbaca daripada kotak berisi.
 
-              return (
-                <Reveal
-                  key={service.title}
-                  as="li"
-                  delay={index * 0.05}
-                  className="border-paper-white/15 border-t py-6 first:border-t-0 first:pt-0"
-                >
-                  <div id={meta ? serviceAnchor(meta.slug) : undefined} className="scroll-mt-28">
-                    <div className="flex items-baseline gap-3">
-                      <span className="text-paper-white/40 tabular text-caption">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <h3 className="text-body font-medium">
-                        {/* Judul sekaligus pintu masuk halaman detail: di pita
-                            gelap ini tidak ada ruang untuk tautan kedua tanpa
-                            memecah ritme barisnya. */}
-                        <Link
-                          href={`${basePath}${servicePath(meta.slug)}`}
-                          className="text-paper-white underline-offset-4 transition hover:underline"
-                        >
-                          {service.title}
-                        </Link>
-                      </h3>
+              Dulu tiap baris membawa tautan "Discuss a project" sendiri dan
+              dua butir bullet tambahan; tujuh baris berarti tujuh tautan ke
+              tujuan yang sama, dan bulletnya hanya mengulang apa yang sudah
+              lebih lengkap ada di halaman detail tiap layanan. */}
+          <div className="flex flex-col">
+            {/* Panel gulir untuk daftar (alasannya di komentar atas file).
+
+                `overscroll-contain` menahan gulirannya supaya tidak merambat ke
+                halaman saat mencapai ujung. `pt-1 -mt-1` hanya ruang untuk cincin
+                fokus baris pertama: `overflow-y-auto` memotong apa pun di luar
+                padding box, dan judul layanan adalah tautan yang menerima fokus
+                keyboard. Margin negatifnya mengembalikan posisi daftar.
+
+                Di bawah `lg` semuanya dilepas: daftar mengalir normal, karena
+                panel gulir di dalam halaman yang juga menggulir menyiksa di
+                ponsel. */}
+            <ul className="services-scroll flex flex-col lg:-mt-1 lg:max-h-[min(36rem,calc(100dvh_-_12rem))] lg:overflow-y-auto lg:overscroll-contain lg:pt-1">
+              {content.services.map((service, index) => {
+                const meta = serviceMeta[index];
+
+                return (
+                  <Reveal
+                    key={service.title}
+                    as="li"
+                    delay={rowDelay(index)}
+                    className="border-paper-white/15 border-t py-5 first:border-t-0 first:pt-0"
+                  >
+                    {/* Pembungkus ini hanya membawa id anchor. Tanpa
+                        `scroll-margin-top`: `scroll-padding-top: 5rem` di
+                        globals.css sudah menyisakan 80px, dan menambah margin di
+                        sini membuat browser menjumlahkan keduanya sehingga baris
+                        mendarat jauh di bawah header. */}
+                    <div id={meta ? serviceAnchor(meta.slug) : undefined}>
+                      <div className="flex items-baseline gap-3">
+                        <span className="text-paper-white/55 tabular text-caption">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <h3 className="text-body font-medium">
+                          {/* Judul sekaligus pintu masuk halaman detail: di pita
+                              gelap ini tidak ada ruang untuk tautan kedua tanpa
+                              memecah ritme barisnya.
+
+                              Warna cincin fokus di pita gelap ini datang dari
+                              kelas `on-dark` di section, bukan dari utility per
+                              elemen: cincin global berwarna ink-black dan tidak
+                              terlihat di sini. */}
+                          <Link
+                            href={`${basePath}${servicePath(meta.slug)}`}
+                            className="text-paper-white underline-offset-4 transition hover:underline"
+                          >
+                            {service.title}
+                          </Link>
+                        </h3>
+                      </div>
+
+                      <p className="text-paper-white/60 mt-2 ps-8 text-caption">
+                        {service.description}
+                      </p>
                     </div>
+                  </Reveal>
+                );
+              })}
 
-                    <p className="text-paper-white/60 mt-2 ps-8 text-caption">
-                      {service.description}
-                    </p>
-
-                    <ul className="mt-3 flex flex-col gap-1 ps-8">
-                      {service.points.map((point) => (
-                        <li key={point} className="text-paper-white/40 text-caption">
-                          {point}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Link
-                      href={`${basePath}#contact`}
-                      className="text-paper-white/80 hover:text-paper-white mt-3 inline-flex items-center gap-1.5 ps-8 text-caption transition"
-                    >
-                      {copy.consult}
-                      <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
-                        →
-                      </span>
-                    </Link>
+              {/* Baris pensiun: statusnya ditulis sebagai teks, bukan hanya
+                  warna, supaya tetap terbaca tanpa warna dan oleh screen reader.
+                  Hairline di atasnya sama dengan item lain, jadi ia menyambung
+                  daftar, bukan memulai section baru. */}
+              {copy.retired.map((item, index) => (
+                <Reveal
+                  key={item.title}
+                  as="li"
+                  delay={rowDelay(index)}
+                  className="border-paper-white/15 border-t py-5"
+                >
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <h3 className="text-paper-white/60 text-body font-medium">{item.title}</h3>
+                    <span className="text-paper-white/55 text-caption">
+                      <span aria-hidden="true">·</span> {item.note}
+                    </span>
                   </div>
+                  <p className="text-paper-white/55 mt-2 text-caption">{item.description}</p>
                 </Reveal>
-              );
-            })}
+              ))}
+            </ul>
 
-            {/* Baris pensiun: statusnya ditulis sebagai teks, bukan hanya
-                warna, supaya tetap terbaca tanpa warna dan oleh screen reader.
-                Hairline di atasnya sama dengan item lain, jadi ia menyambung
-                daftar, bukan memulai section baru. */}
-            {copy.retired.map((item, index) => (
-              <Reveal
-                key={item.title}
-                as="li"
-                delay={0.28 + index * 0.05}
-                className="border-paper-white/15 border-t py-6"
+            {/* Satu pintu keluar untuk seluruh daftar, bukan tujuh. Pil
+                penuh, bukan tautan teks: di ujung daftar sepanjang ini ia
+                harus terbaca sebagai tujuan, bukan sebagai baris kesembilan.
+
+                `self-start` menahannya selebar isinya; tanpa itu ia melar
+                mengikuti kolom flex. */}
+            <Reveal delay={DIAGRAM_DELAY} className="mt-10 self-start">
+              <Link
+                href={`${basePath}#contact`}
+                className="bg-paper-white text-ink-black rounded-buttons hover:bg-paper-white/90 inline-flex h-11 items-center justify-center gap-2 px-5 text-body transition"
               >
-                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <h3 className="text-paper-white/60 text-body font-medium">{item.title}</h3>
-                  <span className="text-paper-white/40 text-caption">
-                    <span aria-hidden="true">·</span> {item.note}
-                  </span>
-                </div>
-                <p className="text-paper-white/40 mt-2 text-caption">{item.description}</p>
-              </Reveal>
-            ))}
-          </ul>
+                {copy.consult}
+                <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
+                  →
+                </span>
+              </Link>
+            </Reveal>
+          </div>
 
-          {/* Diagram: tujuh praktik → satu tim → tiga keluaran. */}
-          {/* Diagram menempel saat daftar digulir: daftar layanan jauh lebih
-              panjang dari diagram, dan tanpa ini sisi kanan menyisakan rongga
-              kosong sepanjang sisa section. */}
-          <Reveal delay={0.12} className="lg:sticky lg:top-28 lg:self-start">
-            <figure className="border-paper-white/12 bg-ink-black/40 rounded-elevatedcards relative overflow-hidden border p-6 sm:p-10">
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {/* Diagram: tujuh praktik → satu tim → tiga keluaran.
+              Hanya <figure> di bawah yang berupa kartu. Sebelumnya tiap praktik,
+              blok "One team", dan tiap keluaran membawa border + radius sendiri:
+              sebelas kartu di dalam satu kartu, dan wadah bersarang selalu
+              terbaca sebagai dua bingkai yang saling bertengkar. Pemisahnya kini
+              garis atas per sel — perangkat yang sama dengan daftar di kolom
+              kiri — dan hierarki dibawa oleh ukuran huruf serta konektor, bukan
+              oleh kotak.
+
+              Diagram dulu menempel saat daftar digulir: daftarnya jauh lebih
+              panjang dari diagram, dan tanpa itu sisi kanan menyisakan rongga
+              kosong sepanjang sisa section. Sekarang daftarnya dibatasi
+              tingginya dan menggulir sendiri, jadi kedua kolom berhenti di
+              ketinggian yang hampir sama dan sticky tidak lagi membeli apa pun. */}
+          <Reveal delay={DIAGRAM_DELAY} className="lg:self-start">
+            <figure className="border-paper-white/15 bg-ink-black/40 rounded-elevatedcards relative overflow-hidden border p-6 sm:p-10">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
                 {content.services.map((service, index) => {
                   // Dengan tujuh praktik, kotak terakhir duduk sendirian di
                   // baris ketiga grid tiga kolom. `col-start-2` menaruhnya di
@@ -156,11 +231,11 @@ export default function Services({
                   return (
                     <div
                       key={service.title}
-                      className={`border-paper-white/15 rounded-smallcards border px-4 py-3${
+                      className={`border-paper-white/15 border-t pt-3${
                         aloneInRow ? " sm:col-start-2" : ""
                       }`}
                     >
-                      <span className="text-paper-white/40 tabular text-caption">
+                      <span className="text-paper-white/55 tabular text-caption">
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       <p className="text-paper-white mt-1 text-caption leading-snug">
@@ -178,7 +253,12 @@ export default function Services({
                   skema. */}
               <Connector />
 
-              <div className="border-paper-white/25 rounded-smallcards bg-paper-white/[0.04] px-6 py-7 text-center">
+              {/* Titik poros diagram. Dulu ia panel berisi (border, radius, dan
+                  tint 4%), jadi kartu kedua di dalam kartu pertama. Sekarang
+                  yang membedakannya dari sel caption di atas dan di bawah hanya
+                  tipografi: serif 22px, di tengah, dengan dua konektor yang
+                  menunjuk ke sini. Hierarkinya tetap, tanpa kotak ketiga. */}
+              <div className="py-4 text-center">
                 <p className="text-paper-white font-display text-subheading font-normal">
                   {copy.oneTeam}
                 </p>
@@ -189,11 +269,14 @@ export default function Services({
 
               <Connector />
 
-              <div className="grid grid-cols-3 gap-3">
+              {/* Tiga keluaran: garis atas saja, rata tengah, tanpa kotak.
+                  Iramanya sama dengan grid praktik di atas (gap-x-6) supaya
+                  kedua deret garis punya jarak yang sama. */}
+              <div className="grid grid-cols-3 gap-x-6">
                 {copy.outputs.map((output) => (
                   <p
                     key={output}
-                    className="border-paper-white/15 text-paper-white rounded-smallcards border px-4 py-4 text-center text-caption"
+                    className="border-paper-white/15 text-paper-white border-t pt-3 text-center text-caption"
                   >
                     {output}
                   </p>
