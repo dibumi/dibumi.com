@@ -1,12 +1,10 @@
 {
   "version": 1,
   "skills": {
-    "playwriter": {
-      "source": "playwriter.dev",
-      "sourceUrl": "https://playwriter.dev",
-      "sourceType": "well-known",
-      "computedHash": "189bbff9d353e31bdf824e7806369758e44de743616792b688acdf6729297075",
-      "wellKnownDigest": "sha256:f873d60c1dcf987ad5e9c4bfbfc5a4375cffbcf46c102f2b3878aa9fd214fdd3"
+    "browsermcp": {
+      "source": "browsermcp.io",
+      "sourceUrl": "https://browsermcp.io",
+      "sourceType": "manual"
     }
   }
 }

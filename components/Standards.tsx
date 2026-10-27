@@ -28,13 +28,17 @@ export default function Standards({
 }) {
   return (
     <section id="standards" className="py-20 lg:py-28">
+      {/* `column-guides` menggambar tiga hairline di padding atas section, bukan
+          setinggi isi. Kolom deskripsi di sini membentang dari 18rem sampai tepi
+          kanan, jadi garis setinggi isi pasti menembus teks; alasan lengkapnya
+          ada di globals.css. */}
       <div className="column-guides mx-auto max-w-page px-5 sm:px-8">
         <Reveal>
           <SectionHeading
             eyebrow={content.standards.eyebrow}
             title={content.standards.title}
             description={content.standards.description}
-            cta={{ label: content.common.learnMore, href: `${basePath}#contact` }}
+            cta={{ label: content.standards.ctaLabel, href: `${basePath}#contact` }}
           />
         </Reveal>
 

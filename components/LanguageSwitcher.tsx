@@ -102,7 +102,7 @@ export default function LanguageSwitcher({
         aria-label={`${label}: ${localeLabels[locale]}`}
         className={
           variant === "ghost"
-            ? "bg-mist-gray text-ink-black hover:bg-ink-black/10 rounded-buttons inline-flex h-11 items-center gap-1.5 px-3 text-caption transition lg:h-8"
+            ? "bg-mist-gray text-ink-black hover:bg-ink-black/10 rounded-buttons inline-flex h-11 items-center gap-1.5 px-2.5 text-caption transition lg:h-8"
             : "border-hairline bg-paper-white text-slate-gray hover:text-ink-black rounded-smallcards inline-flex min-h-11 items-center gap-1.5 border px-2.5 text-caption transition"
         }
       >
@@ -135,7 +135,7 @@ export default function LanguageSwitcher({
                   }`}
                 >
                   <span className="flex items-center gap-2">
-                    <span className="text-ash-gray text-caption w-7">{localeLabels[item]}</span>
+                    <span className="text-ash-gray text-caption w-8">{localeLabels[item]}</span>
                     {localeNames[item]}
                   </span>
                   {active && <Check className="text-ink-black h-4 w-4" aria-hidden="true" />}

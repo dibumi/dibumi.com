@@ -62,7 +62,7 @@ type OpenSection = "product" | "services" | null;
 const ANCHOR_OFFSET_PX = 80;
 
 const desktopItem =
-  "group inline-flex h-8 items-center gap-1 rounded-buttons px-2.5 text-caption transition-colors";
+  "group inline-flex h-8 items-center gap-1 rounded-buttons px-2 text-caption transition-colors";
 
 /**
  * Keadaan warna item desktop.
@@ -71,20 +71,36 @@ const desktopItem =
  * Arahnya sengaja dibalik dari kebiasaan: nav ini tidak punya bidang sendiri,
  * jadi menyalakan latar saat hover akan menambahkan satu permukaan yang tidak
  * ada di sistem. Meredupkan teks justru terbaca sebagai "item ini hidup" tanpa
- * menggambar apa pun. Item aktif memakai berat huruf, bukan warna, supaya
- * penandanya tidak hilang saat kursor kebetulan ada di atasnya.
+ * menggambar apa pun.
  *
- * Ukurannya `text-caption` (15px), sama dengan CTA dan isi dropdown, bukan
- * `text-xs` seperti markup referensi. Referensi memakai Sohne, yang terbaca
- * lebih besar dari Inter pada angka yang sama; 12px di sini jadi satu-satunya
- * teks sekecil itu di halaman. Paddingnya `px-2.5`, lebih sempit dari
- * referensi, untuk membayar lebar tambahan itu — lima label Polandia
- * ("Produkty", "Usługi", "Standardy", "Zespół") harus masih muat di 1024,
- * lebar tersempit sebelum nav berganti jadi hamburger, tanpa mendorong kluster
- * aksi keluar dari pusat bar. Terukur: sisa 13px di sana.
+ * Penanda aktif tetap berat huruf, bukan warna, supaya penandanya tidak hilang
+ * saat kursor kebetulan ada di atasnya. Tangganya dinaikkan satu tingkat ke
+ * medium/semibold (500/600): semuanya medium karena 16px medium jauh lebih
+ * mudah dibaca daripada 16px regular — nav ini adalah pintu utama situs dan
+ * dibaca cepat, bukan dibaca pelan — dan semibold sebagai penanda aktif tetap
+ * terlihat jelas di atas medium. Di locale Arab (IBM Plex Sans Arabic memuat
+ * 300/400/600/700) medium jatuh ke 400 dan semibold ke 600, jadi tangganya
+ * malah lebih lebar di sana.
+ *
+ * Ukurannya `text-caption` (16px), sama dengan CTA dan isi dropdown. Lantai
+ * 16px dipilih agar item nav tidak lagi menjadi teks tersempit di halaman;
+ * token `caption` (nav, eyebrow section, tombol sekunder, isi dropdown) naik
+ * dari 15px ke 16px bersama-sama, jadi tidak ada peran yang tertinggal.
+ *
+ * Lebar yang dibayar: lima label Polandia ("Produkty", "Usługi", "Proces",
+ * "Standardy", "Zespół") harus masih muat di 1024px, lebar tersempit sebelum
+ * nav berganti jadi hamburger, tanpa mendorong kluster aksi keluar dari pusat
+ * bar. Kenaikan 15→16px plus medium dibayar dengan padding `px-2` (dari
+ * `px-2.5`), menghapus `gap-0.5` antar item (spasi antar label kini murni dari
+ * padding 8px+8px), chevron `h-3.5` yang menyesuaikan ukuran teks, dan pil
+ * bahasa/CTA `px-2.5` (dari `px-3`). Sisa ruangnya tipis di 1024px locale
+ * Polandia, jadi tidak ada satu pun penghemat di atas yang boleh dinaikkan lagi
+ * tanpa mencabut yang lain.
  */
 function itemState(active: boolean) {
-  return active ? "text-ink-black font-medium" : "text-ink-black hover:text-slate-gray";
+  return active
+    ? "text-ink-black font-semibold"
+    : "text-ink-black font-medium hover:text-slate-gray";
 }
 
 /** Panah teks untuk affordance tautan. Dibalik di RTL supaya tetap menunjuk maju. */
@@ -391,7 +407,7 @@ export default function Navbar({
           <nav
             ref={navRef}
             aria-label={content.nav.mainLabel}
-            className="hidden items-center gap-0.5 lg:flex lg:justify-self-center"
+            className="hidden items-center lg:flex lg:justify-self-center"
           >
             <div className="relative">
               <button
@@ -407,7 +423,7 @@ export default function Navbar({
               >
                 {nav.product}
                 <ChevronDown
-                  className={`h-3 w-3 transition-transform duration-200 ${
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
                     openPanel === "product" ? "rotate-180" : ""
                   }`}
                   aria-hidden="true"
@@ -429,7 +445,7 @@ export default function Navbar({
               >
                 {nav.services}
                 <ChevronDown
-                  className={`h-3 w-3 transition-transform duration-200 ${
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
                     openPanel === "services" ? "rotate-180" : ""
                   }`}
                   aria-hidden="true"
@@ -469,7 +485,7 @@ export default function Navbar({
 
             <Link
               href={`${basePath}#contact`}
-              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 ms-1 hidden h-8 shrink-0 items-center justify-center whitespace-nowrap px-3 text-caption transition lg:inline-flex"
+              className="bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 ms-1 hidden h-8 shrink-0 items-center justify-center whitespace-nowrap px-2.5 text-caption transition lg:inline-flex"
             >
               {nav.cta}
             </Link>

@@ -211,9 +211,14 @@ export default function Products({
                   `initial`, karena preferensi itu baru terbaca setelah mount —
                   dan karena komponen ini remount tiap ganti tab (`key`), animasi
                   0.35s akan tetap diputar di setiap pergantian tab kalau hanya
-                  `initial` yang dimatikan. */}
+                  `initial` yang dimatikan.
+
+                  `data-reveal` menahannya tetap terlihat saat JavaScript tidak
+                  jalan: tanpa itu panel tab pertama keluar kosong, karena
+                  opasitas 0 dari `initial` tidak ada yang menghapus. */}
               <motion.div
                 key={current.key}
+                data-reveal
                 initial={reduce ? false : { opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: reduce ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}

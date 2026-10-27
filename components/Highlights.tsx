@@ -10,7 +10,7 @@ import type { SiteContent } from "@/lib/i18n";
  * zoom hanya terjadi pada kartu yang sedang ditunjuk kursor. Kartu itu membesar
  * sedikit, naik ke atas tetangganya, dan menggeser permukaannya, jadi "menunjuk"
  * terasa seperti mengangkat satu kartu dari barisnya, bukan seperti tiga kartu
- * yang memang beda ukuran. Di bawah `md` baris itu jadi carousel snap: satu
+ * yang memang beda ukuran. Di bawah `lg` baris itu jadi carousel snap: satu
  * kartu per layar, digeser jari, tanpa tombol dan tanpa JavaScript — karena itu
  * komponen ini tetap server component.
  *
@@ -92,7 +92,7 @@ export default function Highlights({ content }: { content: SiteContent }) {
           kebetulan terpotong. Batas 440px menjaga kartu tidak melebar sampai
           kehilangan bentuknya di tablet, tempat 88% sudah lebih dari cukup.
           Nilai ini unik untuk track ini; tidak ada carousel lain di halaman. */}
-      <ul className="-mx-5 mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 sm:-mx-8 sm:px-8 md:hidden">
+      <ul className="-mx-5 mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 sm:-mx-8 sm:px-8 lg:hidden">
         {content.highlights.map((item, index) => (
           <li key={item.title} className="w-[88%] max-w-[440px] shrink-0 snap-center">
             <Card item={item} index={index} className="aspect-[4/5]" />
@@ -100,10 +100,16 @@ export default function Highlights({ content }: { content: SiteContent }) {
         ))}
       </ul>
 
-      {/* Desktop: satu baris, tiga kartu bertinggi sama. `items-stretch` (bawaan
-          flex) yang menyamakan tingginya: tiap `<li>` mengambil lebar `flex-1`
-          dengan aspek 3/4, jadi tingginya otomatis identik. Tanpa skala bawaan
-          apa pun — zoom hanya pada kartu yang di-hover.
+      {/* Satu baris, tiga kartu bertinggi sama, mulai `lg` (1024px) — bukan `md`.
+          Di 768px tiga kolom menghasilkan kartu 214px, yaitu LEBIH SEMPIT dari
+          kartu carousel di layar ponsel (308–440px). Di lebar itu deskripsi
+          pecah jadi lima baris, dan setelah tag (23px) serta teks (196px) hanya
+          tersisa 27px untuk slot ordinal — angka 112px tidak mungkin muat di
+          sana. Carousel sampai `lg` membuat tablet selalu memakai kartu lebar.
+          `items-stretch` (bawaan flex) yang menyamakan tingginya: tiap `<li>`
+          mengambil lebar `flex-1` dengan aspek 3/4, jadi tingginya otomatis
+          identik. Tanpa skala bawaan apa pun — zoom hanya pada kartu yang
+          di-hover.
 
           `z-10` duduk di `<li>`, bukan di kartu. `Reveal` menulis `transform`
           inline untuk animasi masuknya, dan elemen yang punya transform
@@ -118,13 +124,13 @@ export default function Highlights({ content }: { content: SiteContent }) {
           Tiga kartu berarti kartu terakhir mulai pada 0.16s, masih di dalam
           durasi 0.6s — jadi barisnya masuk sebagai satu gelombang, bukan tiga
           kedipan terpisah. */}
-      <ul className="mt-14 hidden gap-6 md:flex">
+      <ul className="mt-14 hidden gap-6 lg:flex">
         {content.highlights.map((item, index) => (
           <Reveal
             as="li"
             key={item.title}
             delay={index * 0.08}
-            className="relative aspect-[3/4] flex-1 md:hover:z-10"
+            className="relative aspect-[3/4] flex-1 lg:hover:z-10"
           >
             <Card item={item} index={index} className="h-full" />
           </Reveal>
@@ -177,7 +183,7 @@ function Card({
     // atas terbaca sama dengan jarak teks ke tepi bawah di kedua aspek (4/5
     // dan 3/4).
     <div
-      className={`rounded-cards group relative flex origin-bottom flex-col justify-between overflow-hidden p-[9%] transition-transform duration-500 ease-out md:hover:scale-[1.04] ${className} ${
+      className={`rounded-cards group relative flex origin-bottom flex-col overflow-hidden p-[9%] transition-transform duration-500 ease-out lg:hover:scale-[1.04] ${className} ${
         accent ? "bg-blush-peach" : "bg-mist-gray"
       }`}
     >
@@ -189,34 +195,47 @@ function Card({
         {item.tag}
       </p>
 
-      {/* Ordinal serif: pengganti ilustrasi. Diletakkan absolut pada persentase
-          tinggi kartu, bukan di tengah sisa ruang flex. Alasannya terlihat saat
-          judul kartu berbeda panjang: "Scope before code" satu baris,
-          "Handover without handcuffs" dua baris, jadi ruang sisa di tengah tiap
-          kartu berbeda dan ordinalnya turun-naik sendiri. Dengan `top-[38%]`
-          ketiga angka duduk di garis yang sama, seperti slot ilustrasi di
-          referensi (`top-[35%]`). Nilai itu optis dan unik untuk kartu ini —
-          ia mengukur tinggi, bukan lebar, jadi tidak bisa ditokenkan bersama
-          padding persen di atas.
+      {/* Ordinal serif: pengganti ilustrasi, dan satu-satunya isi slot tengah.
 
-          Ukurannya tangga yang naik di setiap rezim tata letak, bukan empat
-          angka yang berdiri sendiri:
-          - carousel (<md): 28vw, berhenti di 10rem. Dulu `28vw` lalu `10rem`
+          Ia elemen flex di antara tag dan blok teks, bukan elemen absolut dengan
+          `top` persentase. Versi sebelumnya memakai `top-[34%]`: karena tinggi
+          kartu berbeda di tiap rezim (385px di carousel, 405px di 1024px, 484px
+          di 1280px) sementara tinggi blok teksnya juga berbeda (111px untuk
+          judul satu baris, 142px untuk dua baris), satu persentase tidak pernah
+          benar di semua tempat. Terukur di 1280px angka 34% pas (jarak 16px),
+          tapi di 1024px ordinal 8rem di 138px dari atas menabrak judul, dan di
+          768px menembus ketiganya. Karena ia harus bebas tabrakan di semua
+          lebar, ia masuk ke aliran flex dan `items-center` di sisa ruang yang
+          disediakan tag dan blok teks: ia bisa mendekati keduanya, tapi tidak
+          pernah melewatinya, berapa pun tinggi kartunya.
+
+          Ongkosnya pergeseran kecil antar kartu: titik tengahnya adalah
+          setengah tinggi blok teks, jadi kartu berjudul dua baris menaruh
+          angkanya ~15px lebih rendah dari kartu berjudul satu baris. Pada wash
+          12% itu tidak terlihat, dan itu harga yang pantas untuk jaminan tidak
+          ada tabrakan di locale mana pun — panjang judul berbeda di tiap
+          bahasa.
+
+          `min-h-0` wajib: tanpa itu tinggi minimum flex item adalah tinggi
+          isinya, jadi slot tidak pernah bisa menyusut dan blok teksnya yang
+          terdorong keluar kartu.
+
+          Ukurannya tangga yang naik di setiap rezim tata letak:
+          - carousel (<lg): 28vw, berhenti di 10rem. Dulu `28vw` lalu `10rem`
             pada breakpoint `sm`, jadi antara 571px dan 639px angkanya 160–179px
             lalu tiba-tiba menyusut ke 160px padahal kartunya tidak berubah.
             `min()` membuat batas itu mulus, bukan snap.
-          - baris tiga kolom (md+): 7rem lalu 8rem. Satu-satunya penurunan di
-            seluruh tangga terjadi di sini, tepat saat kartu sendiri berhenti
-            jadi selebar layar (440px) dan mengecil jadi ~219px — ordinalnya
-            turun bersama kartunya, dari 36% ke 51% lebar kartu. Itu perubahan
-            tata letak, bukan angka yang salah urut. Setelah itu 7rem → 8rem
-            naik seiring kartu melebar sampai 384px. */}
+          - baris tiga kolom (lg+): 8rem. Satu-satunya penurunan di seluruh
+            tangga terjadi di sini, tepat saat kartu berhenti jadi selebar layar
+            (440px di carousel 1023px) dan mengecil jadi 304px di 1024px —
+            ordinalnya turun bersama kartunya, dari 36% ke 42% lebar kartu.
+            Itu perubahan tata letak, bukan angka yang salah urut. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-[38%] flex justify-center"
+        className="pointer-events-none flex min-h-0 flex-1 items-center justify-center"
       >
         <span
-          className={`font-display text-center text-[length:min(28vw,10rem)] leading-none font-normal md:text-[7rem] lg:text-[8rem] ${ordinalColor}`}
+          className={`font-display text-center text-[length:min(28vw,10rem)] leading-none font-normal lg:text-[8rem] ${ordinalColor}`}
         >
           {String(index + 1).padStart(2, "0")}
         </span>

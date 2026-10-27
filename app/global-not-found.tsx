@@ -30,7 +30,12 @@ import { fontVariables } from "@/lib/fonts";
  */
 export default function GlobalNotFound() {
   return (
-    <html lang="en" dir="ltr" className={`${fontVariables} font-sans scroll-smooth`}>
+    <html
+      lang="en"
+      dir="ltr"
+      data-scroll-behavior="smooth"
+      className={`${fontVariables} font-sans scroll-smooth`}
+    >
       <body className="bg-paper-white text-ink-black antialiased">
         <main className="bg-paper-white flex min-h-dvh items-center justify-center px-5 py-20">
           <div className="max-w-md text-center">

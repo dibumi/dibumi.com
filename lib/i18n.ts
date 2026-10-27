@@ -53,6 +53,8 @@ export type SiteContent = {
     allServices: string;
   };
   common: {
+    /** Tautan lewati navigasi, terlihat hanya saat difokus. */
+    skipToContent: string;
     learnMore: string;
   };
   hero: {
@@ -112,11 +114,11 @@ export type SiteContent = {
      */
     retired: { title: string; note: string; description: string }[];
   };
-  services: { title: string; description: string; points: string[] }[];
+  services: { title: string; description: string }[];
   /**
-   * Label bersama halaman detail layanan. Judul, deskripsi, dan poin singkat
-   * tetap tinggal di `services` supaya beranda dan mega menu tidak punya dua
-   * sumber; di sini hanya kalimat yang khas halaman.
+   * Label bersama halaman detail layanan. Judul dan deskripsi tetap tinggal di
+   * `services` supaya beranda dan mega menu tidak punya dua sumber; yang khas
+   * halaman detail ada di sini.
    */
   servicePage: {
     included: string;
@@ -189,12 +191,16 @@ export type SiteContent = {
     eyebrow: string;
     title: string;
     description: string;
+    /** Label CTA section Process; tujuannya section Standards. */
+    ctaLabel: string;
     steps: { title: string; description: string }[];
   };
   standards: {
     eyebrow: string;
     title: string;
     description: string;
+    /** Label CTA section Standards; tujuannya section Contact. */
+    ctaLabel: string;
     items: { title: string; description: string }[];
     commitments: { title: string; description: string }[];
   };
@@ -232,6 +238,7 @@ export type SiteContent = {
 
 const en: SiteContent = {
   common: {
+    skipToContent: "Skip to content",
     learnMore: "Learn more",
   },
   nav: {
@@ -337,43 +344,36 @@ const en: SiteContent = {
       title: "Custom Software Development",
       description:
         "Custom software for your workflow, from internal automation to modular ERP and CRM platforms.",
-      points: ["API & payment gateway integration", "Secure, modular architecture"],
     },
     {
       title: "Custom Web Development",
       description:
         "Web applications built around your workflow: dashboards, portals, and integrations that fit the systems you already run.",
-      points: ["Laravel / Next.js, API-first", "Deployed on infrastructure we also maintain"],
     },
     {
       title: "Android WebView Services",
       description:
         "Turn your website into an official Android app ready for the Google Play Store.",
-      points: ["Play Store ready", "1-2 day delivery"],
     },
     {
       title: "Modern Company Profiles",
       description:
         "Corporate websites with on-page SEO, fast performance, and direct sales team connections.",
-      points: ["Optimized Core Web Vitals", "Dynamic schema & metadata"],
     },
     {
       title: "Custom Android Apps",
       description:
         "Native or cross-platform Android apps with stable performance and offline synchronization.",
-      points: ["MVVM / clean architecture", "Offline-first database"],
     },
     {
       title: "Server & DevOps Management",
       description:
         "Server setup, hardening, tuning, and maintenance to protect your business uptime.",
-      points: ["Hardening & Fail2ban", "Nginx, reverse proxy & backup"],
     },
     {
       title: "Maintenance & SLA",
       description:
         "Monitoring, security updates, encrypted backups, and long-term technical support.",
-      points: ["Regular monitoring", "Priority incident response"],
     },
   ],
   servicePage: {
@@ -583,6 +583,7 @@ const en: SiteContent = {
     title: "A structured way of working",
     description:
       "A transparent agile process lets you follow project progress at every stage.",
+    ctaLabel: "See our standards",
     steps: [
       {
         title: "Discovery & Requirements",
@@ -610,6 +611,7 @@ const en: SiteContent = {
     eyebrow: "Standards",
     title: "How we work",
     description: "Professional commitments applied to every project we deliver.",
+    ctaLabel: "Talk to us",
     items: [
       {
         title: "Non-Disclosure Agreement",
@@ -652,7 +654,7 @@ const en: SiteContent = {
     locationLabel: "Office location",
     location: companyAddress,
     locationNote: "Serving clients across Indonesia",
-    emailLabel: "Correspondence email",
+    emailLabel: "Email us",
     emailHint: "For briefs, documents, and anything long.",
     hoursLabel: "Business hours",
     hours: "Monday-Saturday (08:30-20:00 WIB)",
@@ -685,6 +687,7 @@ const en: SiteContent = {
 
 const id: SiteContent = {
   common: {
+    skipToContent: "Lompat ke konten",
     learnMore: "Pelajari lebih lanjut",
   },
   nav: {
@@ -790,43 +793,36 @@ const id: SiteContent = {
       title: "Custom Software Development",
       description:
         "Perangkat lunak kustom sesuai workflow bisnis Anda, dari automasi internal hingga ERP dan CRM modular.",
-      points: ["Integrasi API & payment gateway", "Arsitektur aman & modular"],
     },
     {
       title: "Custom Web Development",
       description:
         "Aplikasi web yang dibangun mengikuti alur kerja Anda: dasbor, portal, dan integrasi yang menyambung ke sistem yang sudah berjalan.",
-      points: ["Laravel / Next.js, API-first", "Deploy di infrastruktur yang kami rawat juga"],
     },
     {
       title: "Jasa WebView Android",
       description:
         "Konversi website menjadi aplikasi Android resmi yang siap rilis ke Google Play Store.",
-      points: ["Play Store ready", "Pengerjaan 1-2 hari"],
     },
     {
       title: "Company Profile Modern",
       description:
         "Website profil korporat dengan SEO on-page, performa cepat, dan koneksi langsung ke tim sales.",
-      points: ["Core Web Vitals optimal", "Schema markup & meta dinamis"],
     },
     {
       title: "Custom Android Apps",
       description:
         "Aplikasi Android native atau cross-platform dengan performa stabil dan sinkronisasi offline.",
-      points: ["MVVM / clean architecture", "Database offline-first"],
     },
     {
       title: "Kelola Server & DevOps",
       description:
         "Setup, hardening, tuning, dan pemeliharaan server untuk menjaga uptime bisnis Anda.",
-      points: ["Hardening & Fail2ban", "Nginx, reverse proxy & backup"],
     },
     {
       title: "Maintenance & SLA",
       description:
         "Monitoring, security update, backup terenkripsi, dan pendampingan teknis jangka panjang.",
-      points: ["Monitoring berkala", "Respons darurat prioritas"],
     },
   ],
   servicePage: {
@@ -1036,6 +1032,7 @@ const id: SiteContent = {
     title: "Alur kerja yang terstruktur",
     description:
       "Metode agile yang transparan, sehingga Anda dapat memantau progres proyek secara berkala.",
+    ctaLabel: "Lihat standar kami",
     steps: [
       {
         title: "Discovery & Analisis Kebutuhan",
@@ -1064,6 +1061,7 @@ const id: SiteContent = {
     title: "Cara kami bekerja",
     description:
       "Komitmen profesionalitas yang berlaku di setiap proyek yang kami kerjakan.",
+    ctaLabel: "Hubungi kami",
     items: [
       {
         title: "Perjanjian Kerahasiaan (NDA)",
@@ -1106,7 +1104,7 @@ const id: SiteContent = {
     locationLabel: "Domisili kantor",
     location: companyAddress,
     locationNote: "Melayani klien di seluruh Indonesia",
-    emailLabel: "Email korespondensi",
+    emailLabel: "Email kami",
     emailHint: "Untuk brief, dokumen, dan hal yang butuh penjelasan panjang.",
     hoursLabel: "Jam operasional",
     hours: "Senin-Sabtu (08.30-20.00 WIB)",
@@ -1139,6 +1137,7 @@ const id: SiteContent = {
 
 const ar: SiteContent = {
   common: {
+    skipToContent: "تخطَّ إلى المحتوى",
     learnMore: "اعرف المزيد",
   },
   nav: {
@@ -1244,43 +1243,36 @@ const ar: SiteContent = {
       title: "تطوير برمجيات مخصصة",
       description:
         "برمجيات مخصصة لسير عملك، من الأتمتة الداخلية إلى منصات ERP وCRM المرنة.",
-      points: ["تكامل API وبوابات الدفع", "بنية آمنة ومرنة"],
     },
     {
       title: "تطوير ويب مخصص",
       description:
         "تطبيقات ويب مبنية حول سير عملك: لوحات تحكم وبوابات وتكاملات تتصل بالأنظمة التي تستخدمها.",
-      points: ["Laravel / Next.js، واجهات API أولاً", "نشر على بنية تحتية نصونها أيضًا"],
     },
     {
       title: "خدمات Android WebView",
       description:
         "حوّل موقعك إلى تطبيق Android رسمي جاهز للنشر على Google Play.",
-      points: ["جاهز للمتجر", "تسليم خلال يوم أو يومين"],
     },
     {
       title: "موقع شركة عصري",
       description:
         "مواقع شركات سريعة مع تحسين SEO وربط مباشر بفريق المبيعات.",
-      points: ["أداء Core Web Vitals ممتاز", "بيانات وصفية ديناميكية"],
     },
     {
       title: "تطبيقات Android مخصصة",
       description:
         "تطبيقات أصلية أو متعددة المنصات بأداء مستقر ومزامنة دون اتصال.",
-      points: ["بنية MVVM نظيفة", "قاعدة بيانات تعمل دون اتصال"],
     },
     {
       title: "إدارة الخوادم وDevOps",
       description:
         "إعداد وتأمين وصيانة الخوادم للحفاظ على استمرارية أعمالك.",
-      points: ["تقوية وحماية Fail2ban", "Nginx والنسخ الاحتياطي"],
     },
     {
       title: "الصيانة وSLA",
       description:
         "مراقبة وتحديثات أمنية ونسخ احتياطية ودعم تقني طويل الأمد.",
-      points: ["مراقبة دورية", "استجابة أولوية للحوادث"],
     },
   ],
   servicePage: {
@@ -1489,6 +1481,7 @@ const ar: SiteContent = {
     title: "منهجية عمل منظمة",
     description:
       "منهجية Agile شفافة تتيح لك متابعة تقدم المشروع في كل مرحلة.",
+    ctaLabel: "اطّلع على معاييرنا",
     steps: [
       {
         title: "الاستكشاف والمتطلبات",
@@ -1515,6 +1508,7 @@ const ar: SiteContent = {
     eyebrow: "المعايير",
     title: "كيف نعمل",
     description: "التزامات مهنية نطبقها في كل مشروع نقدمه.",
+    ctaLabel: "تحدّث إلينا",
     items: [
       {
         title: "اتفاقية عدم الإفصاح",
@@ -1587,6 +1581,7 @@ const ar: SiteContent = {
 
 const zh: SiteContent = {
   common: {
+    skipToContent: "跳转到内容",
     learnMore: "了解更多",
   },
   nav: {
@@ -1686,40 +1681,33 @@ const zh: SiteContent = {
       title: "定制软件开发",
       description:
         "根据您的业务流程定制软件，从内部自动化到模块化 ERP 和 CRM 平台。",
-      points: ["API 与支付网关集成", "安全、模块化架构"],
     },
     {
       title: "定制 Web 开发",
       description:
         "围绕您的业务流程构建的 Web 应用：仪表盘、门户，以及与现有系统对接的集成。",
-      points: ["Laravel / Next.js，API 优先", "部署在我们同样维护的基础设施上"],
     },
     {
       title: "Android WebView 服务",
       description: "将网站转换为可发布到 Google Play 的官方 Android 应用。",
-      points: ["支持上架 Play Store", "1-2 天交付"],
     },
     {
       title: "现代企业官网",
       description:
         "拥有页面 SEO、快速性能和销售团队直连功能的企业网站。",
-      points: ["优化 Core Web Vitals", "动态 Schema 与元数据"],
     },
     {
       title: "定制 Android 应用",
       description: "原生或跨平台 Android 应用，性能稳定并支持离线同步。",
-      points: ["MVVM / 清晰架构", "离线优先数据库"],
     },
     {
       title: "服务器与 DevOps 管理",
       description:
         "服务器部署、安全加固、性能调优和维护，保障业务稳定运行。",
-      points: ["安全加固与 Fail2ban", "Nginx、反向代理与备份"],
     },
     {
       title: "维护与 SLA",
       description: "持续监控、安全更新、加密备份和长期技术支持。",
-      points: ["定期监控", "优先处理紧急事件"],
     },
   ],
   servicePage: {
@@ -1919,6 +1907,7 @@ const zh: SiteContent = {
     eyebrow: "流程",
     title: "结构化工作流程",
     description: "透明的敏捷流程，让您随时了解项目进展。",
+    ctaLabel: "查看我们的标准",
     steps: [
       {
         title: "需求发现与分析",
@@ -1942,6 +1931,7 @@ const zh: SiteContent = {
     eyebrow: "标准",
     title: "我们的工作方式",
     description: "我们在每个项目中坚持的专业承诺。",
+    ctaLabel: "联系我们",
     items: [
       {
         title: "保密协议（NDA）",
@@ -2010,6 +2000,7 @@ const zh: SiteContent = {
 
 const pl: SiteContent = {
   common: {
+    skipToContent: "Przejdź do treści",
     learnMore: "Dowiedz się więcej",
   },
   nav: {
@@ -2115,43 +2106,36 @@ const pl: SiteContent = {
       title: "Dedykowane oprogramowanie",
       description:
         "Oprogramowanie dopasowane do Twojego procesu, od automatyzacji po modułowe systemy ERP i CRM.",
-      points: ["Integracje API i płatności", "Bezpieczna, modułowa architektura"],
     },
     {
       title: "Dedykowane aplikacje webowe",
       description:
         "Aplikacje webowe dopasowane do Twojego procesu: pulpity, portale i integracje z systemami, których już używasz.",
-      points: ["Laravel / Next.js, API-first", "Wdrożenie na infrastrukturze, którą też utrzymujemy"],
     },
     {
       title: "Usługi Android WebView",
       description:
         "Zamieniamy stronę internetową w oficjalną aplikację Android gotową do publikacji w Google Play.",
-      points: ["Gotowe do Play Store", "Realizacja w 1-2 dni"],
     },
     {
       title: "Nowoczesne strony firmowe",
       description:
         "Strony korporacyjne z SEO, szybkim działaniem i bezpośrednim kontaktem z zespołem sprzedaży.",
-      points: ["Zoptymalizowane Core Web Vitals", "Dynamiczne schema i meta dane"],
     },
     {
       title: "Dedykowane aplikacje Android",
       description:
         "Natywne lub wieloplatformowe aplikacje Android ze stabilnym działaniem i synchronizacją offline.",
-      points: ["MVVM / clean architecture", "Baza danych offline-first"],
     },
     {
       title: "Serwery i DevOps",
       description:
         "Konfiguracja, zabezpieczenie, optymalizacja i utrzymanie serwerów dla ciągłości biznesu.",
-      points: ["Hardening i Fail2ban", "Nginx, reverse proxy i backup"],
     },
     {
       title: "Maintenance i SLA",
       description:
         "Monitoring, aktualizacje bezpieczeństwa, szyfrowane kopie i długoterminowe wsparcie.",
-      points: ["Regularny monitoring", "Priorytetowa reakcja na awarie"],
     },
   ],
   servicePage: {
@@ -2360,6 +2344,7 @@ const pl: SiteContent = {
     title: "Uporządkowany proces pracy",
     description:
       "Przejrzysta metodyka Agile pozwala śledzić postęp projektu na każdym etapie.",
+    ctaLabel: "Zobacz nasze standardy",
     steps: [
       {
         title: "Odkrywanie i wymagania",
@@ -2388,6 +2373,7 @@ const pl: SiteContent = {
     title: "Jak pracujemy",
     description:
       "Profesjonalne zobowiązania, których przestrzegamy w każdym projekcie.",
+    ctaLabel: "Napisz do nas",
     items: [
       {
         title: "Umowa poufności (NDA)",

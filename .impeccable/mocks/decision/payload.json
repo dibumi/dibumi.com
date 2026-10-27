@@ -1,0 +1,147 @@
+{
+  "title": "Choose the homepage composition",
+  "question": "Three page architectures for the homepage and the service/product detail templates. The visual world stays exactly as pinned: achromatic paper, one peach/sienna pair, serif display never bold, no icons, no card shadows. What changes is the skeleton. Lock one.",
+  "options": [
+    {
+      "id": "ledger",
+      "kind": "assigned",
+      "label": "The Ledger",
+      "kicker": "THE ROLL",
+      "lineage": "a bound project register",
+      "thesis": "The homepage is one continuous ruled register: every claim is an entry, and its evidence is cited in the margin beside it.",
+      "palette": ["#ffffff", "#17191c", "#585b63", "#fbe1d1", "#5d2a1a"],
+      "materials": ["hairline rules as structure", "serif display at 400", "one peach action row"],
+      "viewport": "A three-column register: running index at left, the claim and a peach action row in the main column, cited figures and client wordmarks in the right margin, and the first service entries already begun below the fold line.",
+      "risk": "A register can read as dry paperwork; it only works if the type is confident enough to carry a whole viewport with no image at all.",
+      "raised": [
+        {
+          "from": "challenger-boarding-pass",
+          "raise": "Every claim now carries a printed reference mark, the way a boarding pass segments a journey into labelled parts."
+        },
+        {
+          "from": "challenger-orizuru",
+          "raise": "Entries accumulate: each one keeps the cross-references of the ones before it, so the register reads as a record rather than a list."
+        }
+      ],
+      "html": ".impeccable/mocks/decision/ledger.html"
+    },
+    {
+      "id": "proof-spine",
+      "kind": "dealt",
+      "label": "The Proof Spine",
+      "lineage": "an annotated evidence file",
+      "thesis": "A permanent evidence column holds the twelve client marks, the three figures and the founder, while the right column argues beside it.",
+      "palette": ["#ffffff", "#17191c", "#585b63", "#fbe1d1", "#5d2a1a"],
+      "materials": ["pinned ruled column", "superscript reference marks", "serif display at 400"],
+      "viewport": "Asymmetric split: a peach-headed evidence register pinned at the left holding the figures, twelve client wordmarks and the founder, with the claim, the action and a compressed seven-line service list at the right.",
+      "risk": "The pinned rail is a familiar pattern, so the citation system has to do real work or this is a sidebar with a footnote drawn on it.",
+      "html": ".impeccable/mocks/decision/proof-spine.html"
+    },
+    {
+      "id": "chronology",
+      "kind": "dealt",
+      "label": "The Chronology",
+      "lineage": "a studio's own logbook",
+      "thesis": "The page is the studio's record read from 2013 to now along a single rule, with the current chapter carrying the colour.",
+      "palette": ["#ffffff", "#17191c", "#585b63", "#fbe1d1", "#5d2a1a"],
+      "materials": ["one vertical rule", "era labels in the margin", "a peach band for the live chapter"],
+      "viewport": "A rule at 300px with era labels in the left margin, a peach band carrying the claim and the action as the current chapter, and the first era entry opening below it.",
+      "risk": "The record has only one real date, 2013; era labels keep it honest, but inventing dates for clients or products would break the studio's truth rule.",
+      "html": ".impeccable/mocks/decision/chronology.html"
+    },
+    {
+      "id": "challenger-boarding-pass",
+      "kind": "challenger",
+      "catalogId": "vernacular-ephemera-boarding-pass-and-gate-board",
+      "label": "Segmented Pass",
+      "verdict": "competitive",
+      "lineage": "a boarding pass beside a gate board",
+      "thesis": "The page becomes a segmented document: scope, deliverables, ownership and warranty as labelled stubs, with a live board reranking what is current.",
+      "palette": ["#ffffff", "#17191c", "#585b63", "#fbe1d1", "#5d2a1a"],
+      "materials": ["segmented document panels", "tabular figures", "one reserved change colour"],
+      "viewport": "A pass-shaped document split into labelled stubs, with the primary action on the tear-off edge.",
+      "risk": "A boarding pass means travel, not procurement; it holds product clarity but not audience identification.",
+      "case": "Fuses cleanly and beats the grounded list on clarity, but a travel artifact identifies the buyer poorly. Its reference-mark discipline was donated to the Ledger.",
+      "kept": "Labelled segmentation and a printed reference mark per claim."
+    },
+    {
+      "id": "challenger-orizuru",
+      "kind": "challenger",
+      "catalogId": "paper-folds-pleats-deployable-orizuru-crane-sequence",
+      "label": "Fold Sequence",
+      "verdict": "declined",
+      "lineage": "one uncut sheet folded into a crane",
+      "thesis": "One continuous sheet that passes through thirty-two numbered states, each carrying every earlier crease.",
+      "palette": ["#ffffff", "#17191c", "#585b63", "#fbe1d1", "#5d2a1a"],
+      "materials": ["crease lines", "a numbered margin column", "one sheet, never cut"],
+      "viewport": "A single sheet with a numbered fold margin and the active state marked.",
+      "risk": "Its vermilion ground and diagrammatic subject would replace the pinned palette, and a fold diagram is a picture of a craft, not a studio page.",
+      "case": "Declined on identity: the world is a paper crane, not this studio. Loses on audience identification and on product clarity both.",
+      "kept": "Accumulated state: entries that keep the marks of the ones before them."
+    },
+    {
+      "id": "challenger-saul-bass",
+      "kind": "challenger",
+      "catalogId": "posters-covers-sleeves-saul-bass-title",
+      "label": "Title Sequence",
+      "verdict": "declined",
+      "lineage": "a cut-paper title sequence",
+      "thesis": "The page is a timed sequence of full-bleed cards, one idea per card, in hard asymmetry.",
+      "palette": ["#ffffff", "#17191c", "#585b63", "#fbe1d1", "#5d2a1a"],
+      "materials": ["flat colour fields", "cut-paper silhouettes", "off-baseline caps"],
+      "viewport": "One full-bleed field carrying a single cut shape and one line of type.",
+      "risk": "Cut-paper silhouettes are invented imagery, which this studio's own rules forbid, and a timed sequence makes a buyer wait for the facts.",
+      "case": "Declined on truth and clarity: the shapes would have to be authored from nothing, and the sequence hides the offer behind timing.",
+      "kept": "One dominant move per section instead of a balanced two-column."
+    },
+    {
+      "id": "challenger-drum-machine",
+      "kind": "challenger",
+      "catalogId": "signals-instruments-drum-machine-step-row",
+      "label": "Step Row",
+      "verdict": "declined",
+      "lineage": "an early-80s rhythm machine step row",
+      "thesis": "The whole page hangs off one unbroken horizontal line that never wraps, only scales.",
+      "palette": ["#ffffff", "#17191c", "#585b63", "#fbe1d1", "#5d2a1a"],
+      "materials": ["charcoal panel", "lit step keys", "silkscreen caps"],
+      "viewport": "A sixteen-step row as the page's single unbroken line under a readout.",
+      "risk": "Candy-coloured keys on charcoal would replace the pinned palette outright, and a step sequencer is a costume of a tool.",
+      "case": "Declined on identity: the palette is the opposite of the pinned achromatic paper, and the sequencer means nothing to a buyer.",
+      "kept": "One continuous element that holds the page together across its whole length."
+    },
+    {
+      "id": "challenger-gravity-rain",
+      "kind": "challenger",
+      "catalogId": "dream-surreal-impossible-worlds-gravity-rain-garden",
+      "label": "Gravity Rain",
+      "verdict": "declined",
+      "lineage": "a rain garden with local gravity",
+      "thesis": "Each region obeys a visible local rule, stated once and then never broken.",
+      "palette": ["#ffffff", "#17191c", "#585b63", "#fbe1d1", "#5d2a1a"],
+      "materials": ["dusk ground", "directional rain", "bending baselines"],
+      "viewport": "A garden field with rain bending toward each object and one level legend.",
+      "risk": "A dream world identifies nobody in this audience, and bending baselines would break the reading of a five-locale site.",
+      "case": "Declined on identification: no business buyer sees their own decision in a gravity garden.",
+      "kept": "A rule system stated once in the margin and obeyed by every entry after it."
+    },
+    {
+      "id": "challenger-ansi-bbs",
+      "kind": "challenger",
+      "catalogId": "medium-native-ansi-bbs-nightboard",
+      "label": "Nightboard",
+      "verdict": "declined",
+      "lineage": "a dial-up bulletin board at 2 a.m.",
+      "thesis": "The page is one character grid, and every element is a cell in it.",
+      "palette": ["#ffffff", "#17191c", "#585b63", "#fbe1d1", "#5d2a1a"],
+      "materials": ["sixteen ANSI colours", "block glyphs", "box-drawing rules"],
+      "viewport": "An 80 by 25 character grid with a centred title screen.",
+      "risk": "Terminal cyan and magenta would replace the pinned palette, and a monospace costume is exactly what the studio's serif restraint refuses.",
+      "case": "Declined on identity: the palette and the monospace costume both contradict the pinned world.",
+      "kept": "A strict column measure that nothing is allowed to exceed."
+    }
+  ],
+  "reroll": {
+    "registers": ["safer", "bolder"]
+  },
+  "steer": true
+}

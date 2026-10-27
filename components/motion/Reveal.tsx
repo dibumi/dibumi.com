@@ -19,6 +19,12 @@ import { motion, useReducedMotion } from "motion/react";
  * karena preferensi itu baru terbaca setelah mount — kalau hanya `initial`
  * yang dimatikan, elemen sudah sempat dirender pada opasitas 0 dan transisi
  * 0.6 detik tetap dijalankan saat masuk viewport.
+ *
+ * `data-reveal` adalah penanda untuk keadaan tanpa JavaScript: aturan
+ * `html:not(.js) [data-reveal]` di `app/globals.css` memaksa elemen ini terlihat
+ * saat skrip tidak jalan, karena `whileInView` tidak akan pernah terpicu dan
+ * opasitas 0 dari `initial` tidak akan pernah dihapus. Atribut ini wajib ada di
+ * setiap elemen yang menyembunyikan dirinya lewat `initial`.
  */
 /**
  * Easing untuk setiap reveal.
@@ -56,6 +62,7 @@ export default function Reveal({
   return (
     <Component
       className={className}
+      data-reveal
       initial={reduce ? false : { opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}

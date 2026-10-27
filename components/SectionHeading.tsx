@@ -5,8 +5,10 @@ import Link from "next/link";
  * Judul section yang konsisten di seluruh halaman.
  *
  * Tiga tingkat, semuanya tipografis:
- * - tag kategori 15px ash dengan chevron `›`, mengikuti pola "Product ›" di
- *   referensi. Chevron-nya bagian dari label, bukan ikon terpisah.
+ * - tag kategori 16px ash dengan chevron `›`, mengikuti pola "Product ›" di
+ *   referensi. Chevron-nya bagian dari label, bukan ikon terpisah. Beratnya 500,
+ *   satu tingkat di atas body: label ini dibaca cepat sebelum judul, dan 400
+ *   pada 16px terlalu dekat dengan paragraf 17px di bawahnya.
  * - judul serif weight 400. Tidak pernah bold: serif yang berbisik, bukan
  *   berteriak, adalah inti dari sistem ini.
  * - deskripsi 17px slate, dibatasi 52ch supaya baris tetap enak dibaca.
@@ -26,10 +28,15 @@ import Link from "next/link";
  * Konsekuensinya: batas dalam selalu menang untuk paragraf, dan itu
  * disengaja — bukan sisa dari nilai yang lupa dihapus.
  *
- * Opsi `cta` menambah pil abu "Learn more →" di bawah deskripsi, persis seperti
- * di referensi: setiap section punya satu pintu keluar, dan pintunya berupa
- * pil abu penuh, bukan ghost berborder. Tanpa prop ini, section tidak berubah —
- * dipakai hanya di section yang memang punya tujuan berikutnya.
+ * Opsi `cta` menambah pil abu di bawah deskripsi, persis seperti di referensi:
+ * setiap section punya satu pintu keluar, dan pintunya berupa pil abu penuh,
+ * bukan ghost berborder. Tanpa prop ini, section tidak berubah.
+ *
+ * Labelnya wajib datang dari pemanggil, bukan dari satu kunci bersama. Dulu
+ * keduanya memakai `common.learnMore`, dan karena dua section berurutan menuju
+ * tujuan yang berbeda, "Learn more" berarti dua hal dalam satu halaman. Label
+ * sekarang menyebut tujuannya: section Process menawarkan standar, section
+ * Standards menawarkan percakapan.
  *
  * Tidak ada ikon dekoratif di sini.
  */
@@ -49,7 +56,7 @@ export default function SectionHeading({
 }) {
   return (
     <div className={`max-w-[58ch] ${className}`}>
-      <p className="text-ash-gray flex items-center gap-1.5 text-caption">
+      <p className="text-ash-gray flex items-center gap-1.5 text-caption font-medium">
         {eyebrow}
         <span aria-hidden="true" className="rtl:-scale-x-100">
           ›

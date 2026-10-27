@@ -46,6 +46,27 @@ const localeFontClass: Record<Locale, string> = {
   zh: "font-zh",
 };
 
+/**
+ * Skrip penanda "JavaScript jalan", dikirim sebagai HTML mentah di dalam wadah
+ * tersembunyi, bukan sebagai elemen `<script>` di pohon React.
+ *
+ * Sebagai elemen React, React membangun node `<script>`-nya sendiri setiap kali
+ * layout ini dirender ulang di klien — yang terjadi tiap Fast Refresh — lalu
+ * memperingatkan "Encountered a script tag while rendering React component".
+ * Di dalam `dangerouslySetInnerHTML` browser tetap menjalankannya saat parsing
+ * HTML (script dieksekusi parser, bukan saat elemennya ditampilkan), jadi kelas
+ * `js` sudah ada sebelum isi body dirender dan tidak ada kedipan, sementara
+ * React tidak pernah membuat elemen script.
+ *
+ * Konsekuensi yang perlu diketahui: kelas `js` ditambahkan ke `<html>` sebelum
+ * hidrasi, sedangkan React merender `<html>` dengan prop `className`. Karena
+ * itu `<html>` memasang `suppressHydrationWarning` — pintu keluar resmi React
+ * untuk atribut yang memang berubah sebelum hidrasi. Tanpa keduanya, setiap
+ * load memunculkan peringatan hydration mismatch pada `<html className>`.
+ */
+const JS_ENABLED_MARKER =
+  "<script>document.documentElement.classList.add('js')</script>";
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
@@ -134,16 +155,54 @@ export default async function LocaleRootLayout({
   const basePath = `/${locale}`;
   const dir = getDirection(locale);
 
+  /* `suppressHydrationWarning` wajib ada bersama penanda `js` di bawah; alasan
+   * lengkapnya ada di komentar `JS_ENABLED_MARKER`. `data-scroll-behavior`
+   * memberi tahu router Next bahwa smooth scroll di sini disengaja, sehingga ia
+   * mematikannya sementara saat transisi rute (perilaku Next 15 ke bawah) alih-
+   * alih memperingatkan bahwa atributnya tidak ada. */
   return (
     <html
       lang={locale}
       dir={dir}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
       className={`${fontVariables} ${localeFontClass[locale]} scroll-smooth motion-reduce:scroll-auto`}
     >
       <body className="bg-paper-white text-ink-black antialiased">
+        {/* Menandai bahwa JavaScript jalan, sebelum isi body dirender.
+            Reveal, hero, dan panel produk menyembunyikan dirinya lewat gaya
+            inline yang di-render server; tanpa tanda ini, pengunjung yang
+            mematikan JavaScript atau memblokir skrip melihat halaman kosong.
+            Aturan `html:not(.js) [data-reveal]` di globals.css yang memakai
+            tanda ini. Wadah `hidden` di bawah ini yang menjalankannya: skripnya
+            sudah ada sebelum elemen pertama dirender, jadi tidak ada kedipan,
+            dan karena inline ia tidak memerlukan permintaan jaringan, yang
+            justru akan gagal persis pada kasus yang ingin ditangani. */}
+        <div hidden dangerouslySetInnerHTML={{ __html: JS_ENABLED_MARKER }} />
+        {/* Lewati navigasi. Sepuluh kontrol mendahului tautan pertama di hero — logo,
+            lima item nav, pemilih bahasa, dan tombol CTA — jadi pengguna
+            keyboard dan pembaca layar harus menekan Tab berkali-kali hanya untuk
+            sampai ke isi. Tautannya disembunyikan sampai ia difokus, lalu
+            muncul sebagai pil di sudut kiri atas, di atas navbar (`z-[60]` vs
+            `z-50` milik header).
+
+            Warnanya permukaan terang dengan cincin fokus gelap bawaan situs;
+            di sini tidak perlu `.on-dark` karena ia tidak pernah berada di dalam
+            band gelap. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:bg-paper-white focus:text-ink-black focus:rounded-buttons focus:fixed focus:start-5 focus:top-3 focus:z-[60] focus:px-4 focus:py-2 focus:text-caption"
+        >
+          {content.common.skipToContent}
+        </a>
         <div className="bg-paper-white flex min-h-dvh flex-col">
           <Navbar locale={locale} content={content} basePath={basePath} />
-          <main className="flex-grow">{children}</main>
+          {/* `tabIndex={-1}` supaya tautan tadi benar-benar memindahkan fokus ke
+              sini, bukan hanya menggulir. Tanpa itu fokus tetap di tautan, dan
+              Tab berikutnya kembali ke awal navbar. */}
+          <main id="main" tabIndex={-1} className="flex-grow">
+            {children}
+          </main>
           <Footer content={content} locale={locale} basePath={basePath} />
         </div>
       </body>

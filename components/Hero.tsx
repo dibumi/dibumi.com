@@ -76,9 +76,9 @@ export default function Hero({
         aria-hidden="true"
       />
 
-      <div className="mx-auto w-full max-w-page px-5 py-28 sm:px-8 lg:py-32">
+      <div className="hero-shell mx-auto w-full max-w-page px-5 py-28 sm:px-8 lg:py-32">
         <motion.div
-          className="mx-auto flex max-w-5xl flex-col items-center gap-7 text-center lg:gap-9"
+          className="hero-stack mx-auto flex max-w-5xl flex-col items-center gap-7 text-center lg:gap-9"
           style={reduce ? undefined : { y: titleY, opacity: titleOpacity }}
         >
           {/* 100px di xl adalah satu-satunya ukuran teks di halaman ini yang
@@ -125,6 +125,7 @@ export default function Hero({
 
           <motion.p
             className="text-slate-gray max-w-xl text-body-lg"
+            data-reveal
             initial={reduce ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: reduce ? 0 : 0.3, ease: EASE }}
@@ -134,6 +135,7 @@ export default function Hero({
 
           <motion.div
             className="mt-1 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:gap-3"
+            data-reveal
             initial={reduce ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: reduce ? 0 : 0.4, ease: EASE }}
@@ -162,6 +164,7 @@ export default function Hero({
               bagian dari blok CTA, bukan paragraf keempat. */}
           <motion.p
             className="text-ash-gray -mt-3 text-caption"
+            data-reveal
             initial={reduce ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: reduce ? 0 : 0.52, ease: EASE }}
@@ -181,6 +184,10 @@ export default function Hero({
  * sengaja lebih besar dari glyph box: huruf italic miring keluar dari kotak
  * baris di kedua ujung, dan Arab membawa harakat jauh di atas ascent. Tanpa
  * ruang itu, baris yang sudah "selesai" masih terpotong.
+ *
+ * Keadaan awalnya bukan opasitas tapi `clip-path` yang memotong seluruh baris,
+ * jadi baris judul hero hilang total tanpa JavaScript. `data-reveal` yang
+ * mengembalikannya, lewat aturan yang sama di `app/globals.css`.
  */
 function MaskLine({
   children,
@@ -194,6 +201,7 @@ function MaskLine({
   return (
     <motion.span
       className="block"
+      data-reveal
       initial={
         reduce ? false : { clipPath: "inset(0% 0% 100% 0%)", y: "16%" }
       }

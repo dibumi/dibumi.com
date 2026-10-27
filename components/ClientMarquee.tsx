@@ -47,12 +47,12 @@ import type { SiteContent } from "@/lib/i18n";
  * tengah di atas rel yang bergerak ke samping, jadi tanpa uppercase dan
  * tracking lebar ia terbaca sebagai kata yang tersisa, bukan sebagai judul
  * strip. Identitasnya datang dari huruf kapital dan `tracking-widest` (0.1em),
- * bukan dari ukuran: ukurannya `text-caption` 15px, anak tangga terkecil di
+ * bukan dari ukuran: ukurannya `text-caption` 16px, anak tangga terkecil di
  * skala. Versi sebelumnya memakai 13px dengan tracking 0.18em — keduanya nilai
  * di luar skala — supaya label ini lebih kecil dari baris kredensial hero di
  * atasnya. Itu merugikan locale Arab paling parah: di sana tracking dinolkan
  * (lihat di bawah), jadi labelnya tinggal 13px tanpa bantuan apa pun pada
- * aksara yang secara optis memang lebih kecil. 15px masih jauh di bawah tinggi
+ * aksara yang secara optis memang lebih kecil. 16px masih jauh di bawah tinggi
  * logo, jadi label ini tetap terbaca sebagai penanda, bukan sebagai isi.
  *
  * Tracking-nya dinolkan di locale Arab (`:lang(ar)`, dipasang di
@@ -100,7 +100,13 @@ export default function ClientMarquee({ content }: { content: SiteContent["clien
             kosong dipakai supaya label tetap di tengah optis ketika tombol
             muncul di kanan; `justify-between` akan menggeser label ke kiri
             sebesar lebar tombol. */}
-        <div className="flex w-full flex-col items-center gap-3 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center">
+        {/* Baris label dibatasi `max-w-page` dan diberi padding yang sama dengan
+            section lain, supaya tepi kanan tombol jeda sejajar dengan tepi kanan
+            isi halaman. Sebelumnya baris ini `w-full` tanpa batas, jadi tombolnya
+            berhenti tepat di tepi viewport — 112px lebih jauh ke kanan daripada
+            setiap tepi lain di halaman. Strip logonya sendiri tetap full-bleed;
+            yang dibatasi hanya baris labelnya. */}
+        <div className="max-w-page mx-auto flex w-full flex-col items-center gap-3 px-5 sm:px-8 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center">
           <span aria-hidden="true" className="hidden md:block" />
           <p className="text-ash-gray text-center text-caption uppercase tracking-widest [&:lang(ar)]:tracking-normal">
             {content.marqueeLabel}

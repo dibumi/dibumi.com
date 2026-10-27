@@ -33,13 +33,17 @@ export default function WorkflowMethodology({
 
   return (
     <section id="process" className="py-20 lg:py-28">
+      {/* `column-guides` menggambar tiga hairline di padding atas section, bukan
+          setinggi isi: grid empat kolom di bawah hanya menyelaraskan garis
+          dengan gutter pada lebar tertentu, dan di antaranya garisnya menembus
+          teks. Alasan lengkapnya di globals.css. */}
       <div className="column-guides mx-auto max-w-page px-5 sm:px-8">
         <Reveal>
           <SectionHeading
             eyebrow={content.workflow.eyebrow}
             title={content.workflow.title}
             description={content.workflow.description}
-            cta={{ label: content.common.learnMore, href: `${basePath}#standards` }}
+            cta={{ label: content.workflow.ctaLabel, href: `${basePath}#standards` }}
           />
         </Reveal>
 

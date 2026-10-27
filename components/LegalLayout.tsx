@@ -79,7 +79,7 @@ export default function LegalLayout({
               <h2 className="text-ink-black font-display text-subheading font-normal mb-3">
                 {section.heading}
               </h2>
-              {/* Jarak antar paragraf 16px: pada 17px/1.35 itu ~0.95em, cukup untuk
+              {/* Jarak antar paragraf 16px: pada 17px/1.5 itu ~0.94em, cukup untuk
                   memisahkan paragraf tanpa memutus alurnya. 12px sebelumnya hanya
                   setengah baris dan membuat blok panjang terbaca sebagai satu
                   dinding teks. Jarak antar section (36px) tetap lebih dari dua

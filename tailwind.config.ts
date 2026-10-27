@@ -66,8 +66,13 @@ export default {
         zh: ["var(--font-chinese)", "var(--font-sans)", "system-ui", "sans-serif"],
       },
       fontSize: {
-        caption: ["15px", { lineHeight: "1.5" }],
-        body: ["17px", { lineHeight: "1.35" }],
+        // caption adalah anak tangga terkecil dan lantai baca UI situs ini:
+        // 16px, bukan 15px — teks kontrol terkecil (nav, label, tombol sekunder)
+        // tetap mudah dibaca tanpa menembus ukuran body 17px.
+        caption: ["16px", { lineHeight: "1.5" }],
+        // Leading 1.5 untuk body: 1.35 membuat paragraf section (SectionHeading,
+        // daftar included, intro panjang) terasa rapat sebagai dinding teks.
+        body: ["17px", { lineHeight: "1.5" }],
         "body-lg": ["20px", { lineHeight: "1.35" }],
         subheading: ["22px", { lineHeight: "1.5" }],
         "heading-sm": ["26px", { lineHeight: "1.18", letterSpacing: "-0.23px" }],
