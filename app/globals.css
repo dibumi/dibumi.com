@@ -70,18 +70,18 @@
 
   /* Offset header untuk semua target anchor.
    *
-   * Satu-satunya sumber angka ini. Bar navbar setinggi 4rem (h-16) dan nilai di
-   * bawah menyisakan 1rem jarak di bawahnya, jadi judul section tidak tertutup
-   * saat sebuah anchor diklik.
+   * Satu-satunya sumber angka ini. Bar navbar setinggi 4.5rem (h-[4.5rem]) dan
+   * nilai di bawah menyisakan 1rem jarak di bawahnya, jadi judul section tidak
+   * tertutup saat sebuah anchor diklik.
    *
    * Dipakai oleh `scroll-padding-top` di bawah, oleh `top-header` di
-   * tailwind.config.ts (rail sticky di Services), dan dibaca lewat
+   * tailwind.config.ts, dan dibaca lewat
    * getComputedStyle oleh IntersectionObserver scroll-spy di Navbar. Sebelumnya
    * angka ini hidup di tiga tempat dan pernah menyimpang 8px tanpa ketahuan.
    *
    * Jangan menambahkan `scroll-margin-top` di section: browser menjumlahkan
-   * keduanya dan target mendarat 80px lebih rendah dari yang dimaksud. */
-  --header-offset: 5rem;
+   * keduanya dan target mendarat 88px lebih rendah dari yang dimaksud. */
+  --header-offset: 5.5rem;
 
   /* Named Radii */
   --radius-cards: 24px;
@@ -96,13 +96,13 @@
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Header fixed setinggi 4rem (h-16) di semua lebar. Nilai di bawah
+    /* Header fixed setinggi 4.5rem (h-[4.5rem]) di semua lebar. Nilai di bawah
        menyisakan jarak 1rem di bawah bar. Tanpa ini, judul section
        tertutup saat klik anchor. Ubah bersama tinggi bar di Navbar.
-       Angkanya hidup di --header-offset, bukan di sini, supaya rail sticky
-       dan scroll-spy membaca nilai yang sama.
+       Angkanya hidup di --header-offset, bukan di sini, supaya setiap target
+       sticky dan scroll-spy membaca nilai yang sama.
        Jangan menambahkan scroll-margin-top di section: keduanya dijumlahkan
-       dan target mendarat 80px lebih rendah dari yang dimaksud. */
+       dan target mendarat 88px lebih rendah dari yang dimaksud. */
     scroll-padding-top: var(--header-offset);
   }
 
@@ -317,9 +317,9 @@
  * - padding bawah, yang cuma menambah tinggi section tanpa menggerakkan apa pun
  *   ke atas.
  *
- * Padding ATAS tidak ikut dipotong. Navbar fixed setinggi 4rem dan hero-nya
- * `-mt-16`, jadi memotongnya sampai di bawah 5rem akan membuat baris pertama
- * judul masuk ke balik navbar.
+ * Padding ATAS tidak ikut dipotong. Navbar fixed setinggi 4.5rem dan hero-nya
+ * `-mt-[4.5rem]`, jadi memotongnya sampai di bawah 5.5rem akan membuat baris
+ * pertama judul masuk ke balik navbar.
  *
  * Ditulis sebagai CSS biasa dengan satu tingkat spesifisitas lebih, bukan varian
  * arbitrary Tailwind (`[@media(max-height:560px)]:`) maupun kelas tambahan.
@@ -343,6 +343,39 @@
   .hero-shell .hero-title {
     font-size: 44px;
     letter-spacing: -0.66px;
+  }
+}
+
+/*
+ * Panel scroll daftar Services.
+ *
+ * Daftar layanan dibatasi tingginya di `lg` (lihat components/Services.tsx),
+ * jadi ia menggulir sendiri di dalam kolomnya. Scrollbar bawaan di atas
+ * ink-black terbaca sebagai batang abu terang yang memotong kolom, jadi
+ * warnanya diturunkan ke 28% paper-white dan lebarnya dikecilkan.
+ *
+ * `scrollbar-gutter: stable` menahan ruang gutter sejak awal. Tanpa itu, saat
+ * scrollbar muncul, baris-baris yang punya border atas bergeser beberapa
+ * piksel, dan di RTL geseran itu jatuh di sisi yang salah.
+ */
+@media (min-width: 64rem) {
+  .services-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+    scrollbar-gutter: stable;
+  }
+
+  .services-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .services-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.28);
+    border-radius: 9999px;
+  }
+
+  .services-scroll::-webkit-scrollbar-track {
+    background-color: transparent;
   }
 }
 

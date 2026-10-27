@@ -57,6 +57,14 @@ const rowDelay = (index: number) => Math.min(index, ROW_STAGGER_STEPS) * ROW_STA
  * juga dilepas dari tiap baris dan diganti satu CTA di ujung daftar: tujuh
  * tautan ke satu tujuan yang sama bukan pilihan, hanya kebisingan.
  *
+ * Di layar lebar daftar itu dibatasi tingginya dan menggulir sendiri. Tanpa
+ * batas, sembilan barisnya (tujuh praktik + dua yang pensiun) membuat kolom
+ * kiri 500px lebih panjang dari diagram di kanannya, dan section-nya jadi
+ * hampir dua layar penuh di monitor besar. Batasnya `min(36rem, 100dvh - 12rem)`:
+ * 576px di layar biasa, menyusut di layar pendek, dan selalu lebih pendek dari
+ * isinya — jadi daftar ini selalu bisa digulir, bukan hanya di layar yang
+ * kebetulan kecil.
+ *
  * Ikon tetap tidak ada. Urutan ditandai ordinal 01–07.
  */
 export default function Services({
@@ -96,7 +104,18 @@ export default function Services({
               tujuan yang sama, dan bulletnya hanya mengulang apa yang sudah
               lebih lengkap ada di halaman detail tiap layanan. */}
           <div className="flex flex-col">
-            <ul className="flex flex-col">
+            {/* Panel gulir untuk daftar (alasannya di komentar atas file).
+
+                `overscroll-contain` menahan gulirannya supaya tidak merambat ke
+                halaman saat mencapai ujung. `pt-1 -mt-1` hanya ruang untuk cincin
+                fokus baris pertama: `overflow-y-auto` memotong apa pun di luar
+                padding box, dan judul layanan adalah tautan yang menerima fokus
+                keyboard. Margin negatifnya mengembalikan posisi daftar.
+
+                Di bawah `lg` semuanya dilepas: daftar mengalir normal, karena
+                panel gulir di dalam halaman yang juga menggulir menyiksa di
+                ponsel. */}
+            <ul className="services-scroll flex flex-col lg:-mt-1 lg:max-h-[min(36rem,calc(100dvh_-_12rem))] lg:overflow-y-auto lg:overscroll-contain lg:pt-1">
               {content.services.map((service, index) => {
                 const meta = serviceMeta[index];
 
@@ -193,12 +212,12 @@ export default function Services({
               kiri — dan hierarki dibawa oleh ukuran huruf serta konektor, bukan
               oleh kotak.
 
-              Diagram menempel saat daftar digulir: daftar layanan jauh lebih
-              panjang dari diagram, dan tanpa ini sisi kanan menyisakan rongga
-              kosong sepanjang sisa section. Jaraknya 5rem dari atas, sama dengan
-              `scroll-padding-top` di globals.css (bar 4rem + jarak 1rem), jadi
-              diagram duduk sejajar judul section yang dituju anchor. */}
-          <Reveal delay={DIAGRAM_DELAY} className="lg:sticky lg:top-header lg:self-start">
+              Diagram dulu menempel saat daftar digulir: daftarnya jauh lebih
+              panjang dari diagram, dan tanpa itu sisi kanan menyisakan rongga
+              kosong sepanjang sisa section. Sekarang daftarnya dibatasi
+              tingginya dan menggulir sendiri, jadi kedua kolom berhenti di
+              ketinggian yang hampir sama dan sticky tidak lagi membeli apa pun. */}
+          <Reveal delay={DIAGRAM_DELAY} className="lg:self-start">
             <figure className="border-paper-white/15 bg-ink-black/40 rounded-elevatedcards relative overflow-hidden border p-6 sm:p-10">
               <div className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
                 {content.services.map((service, index) => {
