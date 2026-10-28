@@ -48,7 +48,22 @@ const base = {
   strokeWidth: 1.25,
   strokeLinecap: "round",
   strokeLinejoin: "round",
+  /**
+   * `crispEdges` hanya untuk bentuk yang sumbunya jatuh tepat di tengah pixel
+   * (koordinat x.25/x.75). Tanpa itu, dua garis sejajar berjarak 1 unit saling
+   * memakan di 20px: rasterisasi 1,25 unit menjadi dua baris 0,6 dengan tepi
+   * abu, dan celah di antaranya hilang. Di 96px efeknya tidak terlihat, jadi
+   * ini murni soal ukuran terkecil yang benar-benar dipakai.
+   */
+  shapeRendering: "crispEdges",
 } as const;
+
+/**
+ * Bentuk teks tetap memakai `geometricPrecision`: sebuah diagonal tidak punya
+ * sisi pixel, dan `crispEdges` justru membuat tangga yang lebih kasar
+ * ketimbang antialias biasa.
+ */
+const lineArt = { ...base, shapeRendering: "geometricPrecision" } as const;
 
 /** Tiga node terhubung: otomasi proses, modul ERP/CRM. */
 function SoftwareGlyph({ className }: GlyphProps) {
@@ -96,15 +111,15 @@ function GamesGlyph({ className }: GlyphProps) {
   );
 }
 
-/** Fasad gedung: dua kolom jendela dan pintu di tengah. */
+/** Fasad gedung: dua kolom jendela, lantai, dan pintu di tengah. */
 function ProfileGlyph({ className }: GlyphProps) {
   return (
     <svg {...base} className={className} aria-hidden="true">
       <rect x="5" y="4.5" width="14" height="15" rx="1" />
-      <path d="M9.25 4.5v15" />
-      <path d="M14.75 4.5v15" />
+      <path d="M9.75 4.5v15" />
+      <path d="M14.25 4.5v15" />
       <path d="M5 9.5h14" />
-      <path d="M10.5 19.5v-4h3v4" />
+      <path d="M10.75 19.5v-4.5h2.5v4.5" />
     </svg>
   );
 }
@@ -115,8 +130,8 @@ function ServerGlyph({ className }: GlyphProps) {
     <svg {...base} className={className} aria-hidden="true">
       <rect x="4" y="4" width="16" height="6" rx="1.5" />
       <rect x="4" y="14" width="16" height="6" rx="1.5" />
-      <circle cx="16.5" cy="7" r="0.45" fill="currentColor" stroke="none" />
-      <circle cx="16.5" cy="17" r="0.45" fill="currentColor" stroke="none" />
+      <circle cx="16.5" cy="7" r="0.75" fill="currentColor" stroke="none" />
+      <circle cx="16.5" cy="17" r="0.75" fill="currentColor" stroke="none" />
     </svg>
   );
 }
@@ -124,8 +139,9 @@ function ServerGlyph({ className }: GlyphProps) {
 /** Garis pulse: pemantauan, patch, respons SLA. */
 function MaintenanceGlyph({ className }: GlyphProps) {
   return (
-    <svg {...base} className={className} aria-hidden="true">
-      <path d="M4 12h3.5l2.5-6 3.5 12 2-6h4.5" />    </svg>
+    <svg {...lineArt} className={className} aria-hidden="true">
+      <path d="M4 12h3.5l2.5-6 3.5 12 2-6h4.5" />
+    </svg>
   );
 }
 
