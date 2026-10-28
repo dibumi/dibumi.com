@@ -16,8 +16,10 @@ import type { SiteContent } from "@/lib/i18n";
  * di atas band gelap, tapi band gelap itu milik section lain; di sini bobotnya
  * dipindahkan ke tipografi dan hairline supaya tidak bersaing dengan band itu.
  *
- * Tidak ada ikon di sini. Ikon dekoratif sudah dihapus dari seluruh situs, jadi
- * judulnya yang memikul hierarki, bukan chip di atasnya.
+ * Tidak ada ikon di sini. Ikon dekoratif tetap tidak dipakai di permukaan isi;
+ * satu-satunya glyph di situs ini adalah penanda navigasi layanan di menu dan
+ * pita Services, dan keduanya tidak menyentuh section ini. Judulnya yang
+ * memikul hierarki, bukan chip di atasnya.
  */
 export default function Standards({
   content,

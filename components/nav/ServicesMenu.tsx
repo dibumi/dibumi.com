@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ServiceGlyph from "@/components/ServiceGlyph";
 import { servicePath, type ServiceSlug } from "@/lib/services";
 import type { SiteContent } from "@/lib/i18n";
 
@@ -9,16 +10,25 @@ import type { SiteContent } from "@/lib/i18n";
  * `ServicesMenu` dipakai mega panel desktop (tiga kolom), `ServicesMenuList`
  * dipakai lembar mobile (satu kolom).
  *
- * Barisnya sama tenangnya dengan panel Product: tanpa border, tanpa chip ikon,
- * hanya nama, deskripsi, dan latar mist saat hover. Sejak halaman layanan ada,
- * setiap baris menuju `/{locale}/services/{slug}` — bukan anchor beranda —
- * karena menu "Services" yang tidak membawa ke halamannya sendiri akan
- * menyembunyikan tujuh halaman itu dari pembaca.
+ * Barisnya tetap setenang panel Product: tanpa border, tanpa chip, tanpa
+ * lingkaran latar. Yang ada hanya glyph garis 20px di kiri judul, nama,
+ * deskripsi, dan latar mist saat hover. Glyph itu satu gambar per layanan dari
+ * `components/ServiceGlyph.tsx`, warnanya turun dari slate ke ink saat hover,
+ * dan selalu `aria-hidden` karena namanya sudah hadir sebagai teks di
+ * sebelahnya. Menu adalah tempat orang memindai tujuh pilihan, jadi satu tanda
+ * pengenal per baris membeli sesuatu di sini; di pita beranda glyph itu
+ * menggantikan ordinal yang sebelumnya memikul tugas yang sama.
+ *
+ * Sejak halaman layanan ada, setiap baris menuju
+ * `/{locale}/services/{slug}` — bukan anchor beranda — karena menu "Services"
+ * yang tidak membawa ke halamannya sendiri akan menyembunyikan tujuh halaman
+ * itu dari pembaca.
  *
  * Di kaki kedua varian ada `retired`: layanan yang sudah tidak ditawarkan.
  * Barisnya diam — bukan tautan, karena tidak ada anchor yang bisa dituju dan
  * tautan mati lebih buruk daripada baris tanpa affordance — dipisah hairline
- * dan diredupkan seperti baris pensiun di section Services.
+ * dan diredupkan seperti baris pensiun di section Services. Baris pensiun
+ * sengaja tanpa glyph: glyph menandai apa yang bisa dipilih.
  */
 
 export type ServiceItem = {
@@ -63,9 +73,16 @@ function ServiceRow({
     <Link
       href={`${basePath}${servicePath(item.slug)}`}
       onClick={onNavigate}
-      className="group hover:bg-mist-gray rounded-smallcards flex h-full items-start gap-3 px-4 py-3.5 transition"
+      className="group hover:bg-mist-gray focus-visible:bg-mist-gray rounded-smallcards flex h-full items-start gap-3 px-4 py-3.5 transition"
     >
-      <span className="min-w-0 flex-1">
+      {/* `mt-0.5` menyelaraskan garis tengah glyph 20px dengan garis tengah
+          baris judul 17px/1.5, bukan dengan kotak paddingnya. `group-focus-within`
+          bukan hiasan: baris ini adalah tautan utuh, jadi saat keyboard masuk,
+          latar dan glyph harus bereaksi bersama, seperti saat kursor masuk. */}
+      <ServiceGlyph
+        slug={item.slug}
+        className="text-slate-gray group-hover:text-ink-black group-focus-within:text-ink-black mt-0.5 h-5 w-5 shrink-0 transition-colors duration-150"
+      />      <span className="min-w-0 flex-1">
         <span className="text-ink-black text-body block font-medium">{item.title}</span>
         <span className="text-slate-gray text-caption line-clamp-2 mt-0.5 block">
           {item.description}

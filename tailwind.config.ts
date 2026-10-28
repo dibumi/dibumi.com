@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Token layer for the Steep system, transcribed from DESIGN.md.
+ * Token layer for the Steep system, transcribed from DESIGN.reference.md.
  *
  * The reference publishes these as Tailwind v4 `@theme` variables. This project
  * runs Tailwind 3, so the same values live here under `theme.extend` and mirror
@@ -27,7 +27,7 @@ export default {
         "paper-white": "#ffffff",
         "mist-gray": "#f2f2f3",
         "fog-white": "#fafafb",
-        // Tiga abu-abu ini lebih gelap dari DESIGN.md. Bukan selera: nilai asli
+        // Tiga abu-abu ini lebih gelap dari DESIGN.reference.md. Bukan selera: nilai asli
         // gagal WCAG AA untuk teks (slate 4.23:1, ash 2.92:1, smoke 2.43:1 di
         // atas putih; lebih buruk lagi di atas mist-gray). Yang diukur adalah
         // mist-gray, karena itu permukaan terang terburuk. Urutan ramp tetap:
@@ -37,7 +37,7 @@ export default {
         "smoke-gray": "#696d77",
         "blush-peach": "#fbe1d1",
         "sienna-brown": "#5d2a1a",
-        // Satu-satunya nilai di luar DESIGN.md: warna garis dari Quick Color
+        // Satu-satunya nilai di luar DESIGN.reference.md: warna garis dari Quick Color
         // Reference. Border saja, tidak pernah dipakai sebagai permukaan.
         hairline: "#ececec",
       },

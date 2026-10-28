@@ -12,7 +12,7 @@ import type { SiteContent } from "@/lib/i18n";
  * Tanpa state, jadi server component. `photo` di lib/team.ts masih null, dan
  * selama itu kolom kiri memakai tile monogram supaya halaman tetap utuh.
  *
- * Hierarki tipografinya mengikuti DESIGN.md: tag 16px ash, nama serif weight
+ * Hierarki tipografinya mengikuti DESIGN.reference.md: tag 16px ash, nama serif weight
  * 400 (serif tidak pernah bold di sistem ini), peran dan bio 17px. Tidak ada
  * ikon dekoratif di tautan kontak: ketiganya pill hantu, jadi bentuknya sendiri
  * yang menandakan bisa diklik. Yang tersisa hanya panah di CTA penutup, dan

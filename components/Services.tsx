@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import ServiceGlyph from "@/components/ServiceGlyph";
 import { serviceAnchor, serviceMeta, servicePath } from "@/lib/services";
 import Reveal from "@/components/motion/Reveal";
 import type { SiteContent } from "@/lib/i18n";
@@ -42,14 +43,14 @@ const rowDelay = (index: number) => Math.min(index, ROW_STAGGER_STEPS) * ROW_STA
  * bentuk kerja, bukan mengukur sesuatu.
  *
  * Di ujung daftar ada `retired`: layanan yang sudah tidak ditawarkan. Barisnya
- * redup, tanpa nomor, tanpa bullet, dan tanpa CTA, karena menawarkan jasa yang
+ * redup, tanpa glyph, tanpa bullet, dan tanpa CTA, karena menawarkan jasa yang
  * tidak ada lebih buruk daripada tidak menyebutnya sama sekali. Ia juga tidak
  * masuk diagram — diagram itu menggambarkan apa yang hari ini masuk ke satu
- * tim. Di mega menu navbar ia tetap muncul, tapi sebagai baris diam di kaki
- * panel, bukan tautan. Nomor 01–07 karena itu tetap hanya menghitung yang
- * masih bisa dibeli.
+ * tim, dan ordinal 01–07 di sana hanya menghitung yang masih bisa dibeli.
+ * Di mega menu navbar ia tetap muncul, tapi sebagai baris diam di kaki
+ * panel, bukan tautan.
  *
- * Satu baris layanan hanya memuat ordinal, judul, dan satu keterangan. Dua butir
+ * Satu baris layanan hanya memuat penanda, judul, dan satu keterangan. Dua butir
  * bullet yang dulu menempel di tiap baris sudah dilepas: teksnya hidup di
  * halaman detail tiap layanan dalam bentuk yang lebih lengkap (`servicePages`
  * punya empat poin "yang termasuk" per layanan), jadi yang tinggal di beranda
@@ -65,7 +66,17 @@ const rowDelay = (index: number) => Math.min(index, ROW_STAGGER_STEPS) * ROW_STA
  * isinya — jadi daftar ini selalu bisa digulir, bukan hanya di layar yang
  * kebetulan kecil.
  *
- * Ikon tetap tidak ada. Urutan ditandai ordinal 01–07.
+ * Tiap baris ditandai glyph navigasi dari `components/ServiceGlyph.tsx`, bukan
+ * ordinal lagi. Ordinal 01–07 sekarang hanya hidup di diagram kanan, tempat ia
+ * memang menghitung urutan alur; di daftar, angka yang sama dengan glyph
+ * menandai hal yang sama dua kali. Yang diuntungkan glyph: satu gambar per
+ * layanan terbaca sekilas tanpa membaca judulnya, dan karena glyph itu 20px
+ * dengan gap 12px, lebarnya 32px — persis `ps-8` yang dulu dipakai deskripsi,
+ * jadi teks tidak bergeser satu piksel pun.
+ *
+ * Glyph selalu `aria-hidden`: judulnya sudah tautan yang terbaca. Di atas ink ia
+ * memakai `paper-white/45` lalu penuh saat hover, karena slate tidak terbaca di
+ * pita gelap ini.
  */
 export default function Services({
   content,
@@ -132,10 +143,11 @@ export default function Services({
                         sini membuat browser menjumlahkan keduanya sehingga baris
                         mendarat jauh di bawah header. */}
                     <div id={meta ? serviceAnchor(meta.slug) : undefined}>
-                      <div className="flex items-baseline gap-3">
-                        <span className="text-paper-white/55 tabular text-caption">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
+                      <div className="group flex items-start gap-3">
+                        <ServiceGlyph
+                          slug={meta.slug}
+                          className="text-paper-white/45 group-hover:text-paper-white group-focus-within:text-paper-white mt-0.5 h-5 w-5 shrink-0 transition-colors duration-150"
+                        />
                         <h3 className="text-body font-medium">
                           {/* Judul sekaligus pintu masuk halaman detail: di pita
                               gelap ini tidak ada ruang untuk tautan kedua tanpa

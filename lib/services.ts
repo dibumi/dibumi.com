@@ -10,10 +10,12 @@
  * jadi `/en/services/custom-web-development` harus punya alamat yang sama di
  * semua locale.
  *
- * Ikon sengaja tidak lagi disimpan di sini. Sistem desain di DESIGN.md tidak
- * punya ikon dekoratif, jadi urutan layanan ditandai nomor 01–07 dan bukan
- * glyph. Kalau suatu saat ikon dibutuhkan lagi, tambahkan di sini dan di
- * komponen yang merendernya, bukan di lib/i18n.ts.
+ * Glyph sengaja tidak disimpan di sini. Slug tetap jadi satu-satunya isi file
+ * ini, dan glyph navigasi untuk tujuh layanan tinggal di
+ * `components/ServiceGlyph.tsx`, dipetakan lewat slug. Pemisahan itu disengaja:
+ * lib ini dibaca server dan klien untuk rute serta sitemap, sedangkan glyph
+ * hanya dibutuhkan komponen yang merendernya. Judul dan deskripsi tetap di
+ * lib/i18n.ts, bukan di sini.
  */
 
 export const serviceSlugs = [

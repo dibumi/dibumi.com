@@ -2,7 +2,7 @@
 
 Marketing site for **dibumi.com**, an app and software production studio based in Lamongan, Indonesia. The look is editorial: serif headlines on warm paper, a near-monochrome palette with a single peach accent, pill controls, and flat cards that sit quietly on the canvas.
 
-[DESIGN.md](./DESIGN.md) is the source of truth for tokens, type, and components. This project is a Tailwind v3 transcription of that reference, with a few documented substitutions.
+[DESIGN.reference.md](./DESIGN.reference.md) is the source of truth for tokens, type, and components. This project is a Tailwind v3 transcription of that reference, with a few documented substitutions.
 
 Built with **Next.js 16 (App Router)** and deployed as a **Cloudflare Worker** (Workers Static Assets) via **OpenNext**.
 
@@ -10,7 +10,7 @@ Built with **Next.js 16 (App Router)** and deployed as a **Cloudflare Worker** (
 
 ## Design system
 
-- `DESIGN.md` holds the reference: palette, type scale, radii, shadows, components, and the do's and don'ts. Its closing section records the seven places this build deliberately departs from it.
+- `DESIGN.reference.md` holds the reference: palette, type scale, radii, shadows, components, and the do's and don'ts. Its closing section records the nine places this build deliberately departs from it.
 - `tailwind.config.ts` and `app/globals.css` hold the implemented tokens. They mirror each other by hand, so a token change means changing both files.
 - The palette is intentionally achromatic, with `blush-peach` and `sienna-brown` reserved for one accent card per page. That card is the first one in Highlights.
 - The hero gradient wash lives in `app/globals.css` (`.hero-atmosphere`, `.hero-grain`, `.hero-fade`) rather than in a component, because it is seven stacked gradients plus a grain overlay, drifting on a 26-second loop. It is the only chromatic background on the site.
@@ -44,7 +44,7 @@ Legal documents are written in English and Indonesian. Other locales render the 
 3. **Products** — the reference's device: a vertical tab list of the six platform products plus the Ngambeg group on the left, the selected product in a framed window on the right with a browser chrome and a real `01 / 07` counter. A client component, server-fed. Below `lg` the tab list becomes a scrollable strip.
 4. **Highlights** — a centred serif heading, then the three phases as tall 3/4 cards fanned on desktop (the outer two at 90%, the middle at 110%, all rooted on the bottom edge) and a snap carousel below `md`. Each card is tag, oversized serif ordinal, title, description. The first is the page's single peach card; the reference's green third card is dropped, since the palette has no functional colour beyond peach/sienna.
 5. **Clients** — the peach band: the copy and three fixed facts on the left (100+ clients, 10+ countries, since 2013), a fifteen-cell wall on the right with 1px gaps showing the band through as hairlines. Fourteen cells are brands: eleven carry a logo, three are text wordmarks with an optional tagline, and each closes with a flag and the ISO country code — or "Global" for brands without a jurisdiction. The fifteenth cell is not a client; it reads "Other" and "and 100+ more", so the wall never reads as a complete list, and on phones it spans both columns to keep the last row full. Everything in sienna on blush.
-6. **Services** — the dark band: the seven practices as a hairline-separated list on the left, a diagram of the delivery model on the right (seven inputs, one team, three outputs) built from the same data. From `lg` the list caps its height and scrolls in place, so the section never runs past the diagram. The list closes with two dimmed retired rows — Digital Marketing (no longer offered) and Cyber Security, Red Team & Blue Team (no longer offered) — which are neither numbered nor fed into the diagram; the same two appear as non-clickable rows at the foot of the Services mega menu.
+6. **Services** — the dark band: the seven practices as a hairline-separated list on the left, each row led by its hand-drawn glyph from `components/ServiceGlyph.tsx` instead of an ordinal, and a diagram of the delivery model on the right (seven inputs, one team, three outputs) built from the same data and still numbered 01–07. From `lg` the list caps its height and scrolls in place, so the section never runs past the diagram. The list closes with two dimmed retired rows — Digital Marketing (no longer offered) and Cyber Security, Red Team & Blue Team (no longer offered) — which are neither numbered nor fed into the diagram; the same two appear as non-clickable rows at the foot of the Services mega menu.
 7. **Process** — four steps on an achromatic rail.
 8. **Standards** — three standards as hairline rows, then three commitments.
 9. **Contact** — the closing peach band: the serif statement on the left, the description and two text actions (WhatsApp, email) on the right, everything in sienna on blush. No pills and no printed contact values; hours, address, phone, and email live in the footer, so the closing screen asks for one decision instead of repeating a contact directory.
@@ -64,7 +64,7 @@ The 404 page is styled in the same system.
 
 - `lib/i18n.ts` — every visible string, for all five locales.
 - `lib/products.ts` — product catalogue used by the navbar dropdown, the Products section, and the footer. Two levels: groups (`platforms`, `ngambeg`) and the items inside them. Games and apps share the `ngambeg` group because they are presented as one list pointing at ngambeg.com. Fill in `href` for a product once its site exists; `null` renders a `Soon` badge instead of a link.
-- `lib/services.ts` — service slugs shared by the navbar Services panel and the Services section. Its order must match the `services` array in `lib/i18n.ts`; titles and descriptions stay there because they are translated. The file carries no icons: the design system has none, so the section numbers the services instead.
+- `lib/services.ts` — service slugs shared by the navbar Services panel and the Services section. Its order must match the `services` array in `lib/i18n.ts`; titles and descriptions stay there because they are translated. Slugs stay here and each slug's hand-drawn glyph lives in `components/ServiceGlyph.tsx`, keyed by slug. The home Services list shows that glyph in place of its ordinal, while the delivery diagram beside it keeps the 01–07 numbering.
 - `lib/team.ts` — the one team member: name, optional photo, and contact links. Set `photo` to a path under `public/` once the portrait exists; until then the page renders a monogram tile.
 - `lib/clients.ts` — the client list: name, logo path, ISO country code (or `null` for a global brand), optional tagline, and native image size. Logos live in `public/clients/`, flags in `public/flags/`. A `null` logo renders the name as a text wordmark instead of an image.
 - `lib/legal.ts` — terms and privacy content, keyed by locale.
@@ -91,8 +91,8 @@ The wordmark inside the lockup is outlined from Geist Mono at weight 600, so the
 - **Framework:** Next.js 16 (App Router, static generation per locale)
 - **Styling:** Tailwind CSS 3 with design tokens in `tailwind.config.ts`, mirroring the CSS custom properties in `app/globals.css`
 - **Motion:** `motion` (formerly Framer Motion) for entrance choreography and scroll reveals, plus CSS keyframes for the marquee, the hero wash drift, and the nav panel. Everything collapses to static under `prefers-reduced-motion`
-- **Icons:** Lucide React, kept for functional glyphs only (chevrons, arrows, the language icon), not for decorative icons
-- **Fonts:** Source Serif 4 (display) and Inter (body), both via `next/font`; IBM Plex Sans Arabic and Noto Sans SC as the Arabic and Chinese companions. Source Serif 4 and Inter stand in for the commercial Signifier and Sohne faces named in DESIGN.md
+- **Icons:** Lucide React stays for functional chrome only (chevrons, arrows, the language icon), not for decorative icons. The seven service glyphs are not Lucide: they are hand-drawn in `components/ServiceGlyph.tsx` on a 24px grid at 1.25 stroke, and they exist as navigation aids for the service menu and the home service list, not as illustration.
+- **Fonts:** Source Serif 4 (display) and Inter (body), both via `next/font`; IBM Plex Sans Arabic and Noto Sans SC as the Arabic and Chinese companions. Source Serif 4 and Inter stand in for the commercial Signifier and Sohne faces named in DESIGN.reference.md
 - **Cloudflare:** `@opennextjs/cloudflare` + `wrangler` (Workers Static Assets)
 
 ---

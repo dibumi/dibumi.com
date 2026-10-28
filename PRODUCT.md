@@ -133,8 +133,13 @@ instruction:
 1. **Never invent a metric, testimonial, client count, quote, or image.** "no testimonials or
    invented metrics" (`README.md:55`); "what is not certainly true is not written"
    (`components/ServicePage.tsx:15`); "Do not invent an image for it" (`lib/clients.ts:12`).
-2. **No decorative icons anywhere** — "decorative icons have been removed from the entire
-   site" (`components/Standards.tsx:19`, `components/Services.tsx:32`).
+2. **No decorative icons in content surfaces** — "decorative icons have been removed from the
+   entire site" (`components/Standards.tsx:19`, `components/Services.tsx:32`). The one
+   exception is a navigation glyph per service, hand-drawn in `components/ServiceGlyph.tsx` on
+   a 24px grid at 1.25 stroke with no fill, `currentColor`, always `aria-hidden`. It is a
+   scanning aid for the service menu of `components/nav/ServicesMenu.tsx` and the home service
+   list of `components/Services.tsx`, never an illustration, never in body content, and never
+   on a retired service.
 3. **The serif is never bold** (`components/TeamPage.tsx:15`, `components/SectionHeading.tsx:10`).
 4. **No photography of people or product screenshots that do not exist**
    (`components/Clients.tsx:10`).
@@ -229,7 +234,7 @@ work must preserve:
   and the language switcher, and a focus trap in the mobile sheet (`components/Navbar.tsx:223`).
 - **RTL** is implemented with logical properties throughout (`ms/me/ps/pe/start/end`), flipped
   glyphs, disabled letter-spacing in Arabic, and loosened hero leading for diacritics.
-- **Screen-reader hygiene**: decorative gradients, connectors, ordinals, and chrome dots are
+- **Screen-reader hygiene**: decorative gradients, connectors, ordinals, service glyphs, and chrome dots are
   `aria-hidden`; the marquee's duplicate list is hidden so names are announced once; retired
   services state their status as text, not colour alone.
 
