@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { relatedServices, serviceMeta, type ServiceSlug } from "@/lib/services";
 import type { SiteContent } from "@/lib/i18n";
@@ -10,11 +11,12 @@ import type { SiteContent } from "@/lib/i18n";
  * tidak ada parallax — wash itu milik beranda, dan mengulangnya di tujuh
  * halaman anak akan membuat setiap halaman terasa seperti mengulang pembuka.
  *
- * Isinya sengaja pendek: satu paragraf pengantar, empat poin "yang termasuk",
- * proses empat langkah yang sama dengan section Process, tiga layanan lain,
- * lalu CTA. Tidak ada testimoni, angka klien, atau sertifikasi di sini — yang
- * belum tentu benar tidak ditulis, dan klaim yang sudah ada di beranda tetap
- * jadi satu-satunya sumbernya.
+ * Isinya sengaja pendek: satu paragraf pengantar, alur tiga node yang
+ * menjelaskan mekanisme layanan, empat poin "yang termasuk", proses empat
+ * langkah yang sama dengan section Process, tiga layanan lain, lalu CTA. Tidak
+ * ada testimoni, angka klien, atau sertifikasi di sini — yang belum tentu benar
+ * tidak ditulis, dan klaim yang sudah ada di beranda tetap jadi satu-satunya
+ * sumbernya.
  *
  * Proses memakai `workflow.steps` alih-alih daftar baru: kalau cara kerja
  * studio berubah, halaman ini ikut berubah tanpa satu string pun disunting.
@@ -76,6 +78,41 @@ export default function ServicePage({
           </Link>
         </div>
       </div>
+
+      {/* Alur mekanisme: tiga node yang menjelaskan cara layanan ini bekerja,
+          bukan hiasan. Isinya berasal dari `flow` pada entri layanan yang sama
+          dengan intro dan poin "yang termasuk", jadi tidak ada klaim baru di
+          sini. Dua hairline membentang selebar kontainer menutup pita ini;
+          node-nya sendiri tanpa kotak dan tanpa latar, sama seperti tabel
+          di bawahnya.
+
+          Di layar sempit pita ini menumpuk dan panah berganti garis tegak,
+          karena glyph yang diputar 90 derajat di RTL kehilangan arah baca.
+          Ordinal tetap 01–03 supaya urutannya terbaca walau konektornya
+          dilepas oleh pembaca layar. */}
+      <section className="mt-14 lg:mt-16">
+        <h2 className="text-ash-gray text-caption">{labels.flow}</h2>
+        <div className="border-hairline mt-4 grid gap-5 border-y py-6 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-start sm:gap-6">
+          {page.flow.map((label, index) => (
+            <Fragment key={label}>
+              {index > 0 ? (
+                <span aria-hidden="true" className="flex sm:self-start sm:justify-center">
+                  <span className="bg-hairline ms-1 h-4 w-px sm:hidden" />
+                  <span className="text-slate-gray hidden text-body rtl:-scale-x-100 sm:inline">
+                    →
+                  </span>
+                </span>
+              ) : null}
+              <div>
+                <p className="text-ash-gray tabular text-caption">
+                  {String(index + 1).padStart(2, "0")}
+                </p>
+                <p className="text-ink-black mt-1 text-body-lg">{label}</p>
+              </div>
+            </Fragment>
+          ))}
+        </div>
+      </section>
 
       {/* Yang termasuk. Baris hairline, bukan kartu: di halaman ini tidak ada
           satu pun permukaan yang perlu diangkat dari latar. */}

@@ -47,7 +47,8 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
 
 /**
  * Urutan section mengikuti ritme halaman referensi: pita terang dan gelap
- * bergantian, dengan satu pita berwarna sebagai jeda editorial.
+ * bergantian, dengan dua pita peach: satu sebagai jeda editorial di tengah,
+ * satu sebagai penutup halaman.
  *
  *   hero (putih + wash)  -> marquee klien
  *   produk (fog)         -> showcase artifact
@@ -56,7 +57,7 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
  *   layanan (ink)        -> pita gelap
  *   proses (putih)       -> rail empat langkah
  *   standar (putih)      -> baris hairline
- *   kontak (putih+wash)  -> penutup
+ *   kontak (peach)       -> penutup
  *
  * Tanpa pita gelap dan pita peach, halaman jadi satu warna dari atas ke bawah
  * dan tidak punya titik henti untuk mata.

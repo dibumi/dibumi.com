@@ -22,7 +22,22 @@ const nextConfig: NextConfig = {
   // karena berjalan di lapisan routing ia tetap berlaku sebelum segmen mana pun
   // dirender.
   async redirects() {
-    return [{ source: "/", destination: "/en", permanent: false }];
+    return [
+      { source: "/", destination: "/en", permanent: false },
+      // Dua layanan Android lama (android-webview dan android-apps) sudah
+      // digabung menjadi satu layanan mobile. Redirect permanen ini menjaga URL
+      // yang terlanjur terindeks tetap resolve ke halaman barunya di semua locale.
+      {
+        source: "/:locale(en|id|ar|zh|pl)/services/android-webview",
+        destination: "/:locale/services/custom-mobile-apps",
+        permanent: true,
+      },
+      {
+        source: "/:locale(en|id|ar|zh|pl)/services/android-apps",
+        destination: "/:locale/services/custom-mobile-apps",
+        permanent: true,
+      },
+    ];
   },
 };
 

@@ -19,9 +19,9 @@
 export const serviceSlugs = [
   "custom-software",
   "custom-web-development",
-  "android-webview",
+  "custom-mobile-apps",
+  "custom-games",
   "company-profile",
-  "android-apps",
   "server-devops",
   "maintenance-sla",
 ] as const;

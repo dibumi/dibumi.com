@@ -33,8 +33,8 @@ Java, operating since 2013, trading as **Dibumi Technology Indonesia** (`lib/leg
 
 It exists to turn an unfamiliar visitor into a qualified enquiry. Every call to action is a
 sales CTA — `Start a project` (`lib/i18n.ts:241`), `Discuss a project` (`lib/i18n.ts:309`),
-`Start building your system` (`lib/i18n.ts:641`) — and every contact path is direct:
-WhatsApp and `mailto:` (`components/ContactSection.tsx:88`). There is no form, no signup, no
+`Start building your system` (`lib/i18n.ts:663`) — and every contact path is direct:
+WhatsApp and `mailto:` (`components/ContactSection.tsx:109`). There is no form, no signup, no
 account.
 
 Success means the visitor contacts the studio. No conversion instrumentation exists in the
@@ -87,12 +87,15 @@ Indonesia (`lib/i18n.ts:646`); stated reach worldwide (`lib/i18n.ts:668`).
 ## Capabilities and Constraints
 
 **Seven sellable services** (`lib/services.ts:19`), each with a detail page: custom software,
-custom web development, Android WebView, modern company profiles, custom Android apps, server
-& DevOps, maintenance & SLA.
+custom web development, custom mobile apps (Android and iOS, native or cross-platform, with
+WebView as one option), custom games development, modern company profiles, server & DevOps,
+maintenance & SLA (including legacy code update/upgrade). Every detail page opens with a
+three-node service flow (what is mapped, what is built, what is handed over) before listing the
+four included points.
 
 **Two retired practices**, rendered dimmed and unnumbered and explicitly not for sale:
-Digital Marketing ("No longer offered") and Penetration Testing ("Currently inactive")
-(`lib/i18n.ts:314`).
+Digital Marketing ("No longer offered") and Cyber Security, Red Team & Blue Team ("No longer
+offered") (`lib/i18n.ts:336`).
 
 **Six own-platform products, all unreleased** (`lib/products.ts:69`): AI Gateway, Payment
 Orchestration, Adserver Exchange, Cloud Hosting Billing, Traffic Analytics, Self Hosted Online
@@ -115,9 +118,9 @@ between `tailwind.config.ts` and `app/globals.css`), `motion`, `lucide-react`, f
 documents exist in `en` and `id` only; other locales render English with a notice
 (`lib/legal.ts:436`).
 
-**Stated limits that constrain copy**: Android WebView is sold as 1–2 day delivery
-(`lib/i18n.ts:346`); SLA response time is "agreed in writing before the first ticket"
-(`lib/i18n.ts:441`); 24/7 emergency server cover is for SLA clients only (`lib/i18n.ts:651`).
+**Stated limits that constrain copy**: SLA response time is "agreed in writing before the first
+ticket" (`lib/i18n.ts:456`). The site promises no delivery timeframes, prices, or uptime
+percentages.
 
 ## Brand Commitments
 
@@ -183,6 +186,10 @@ never by an agent session. Allowed: `npm run typecheck`, reading files, `git dif
   `lib/legal.ts:257`) but no form exists.
 - `footer.builtFor` / `footer.description` and `hero.chips` are defined in `lib/i18n.ts` but
   never rendered (`components/Footer.tsx:134`, `components/Hero.tsx`).
+- `contact.hours`, `contact.hoursNote`, `contact.location`, `contact.locationNote`,
+  `contact.emailHint`, and `contact.whatsappHint` survive in `lib/i18n.ts` but are no longer
+  rendered anywhere: the closing band dropped its printed contact values in favour of the
+  footer. Business hours and the 24/7 SLA note therefore appear nowhere on the site.
 - `public/brand/*` exports still carry pre-migration colours (teal `#0a7668`, ink `#16332d`)
   and need regenerating before external use (`README.md:82`).
 - `public/images/software-workspace.jpg` is referenced by nothing.

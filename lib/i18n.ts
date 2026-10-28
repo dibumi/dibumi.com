@@ -109,8 +109,8 @@ export type SiteContent = {
      * Dirender redup di ujung daftar, tanpa nomor, tanpa bullet, dan tanpa CTA,
      * supaya diagram "praktik yang masuk ke satu tim" tetap jujur dan mega menu
      * navbar tetap hanya berisi yang bisa dibeli. Tiap entri membawa
-     * keterangannya sendiri karena statusnya berbeda: ada yang benar-benar
-     * ditarik, ada yang hanya sedang tidak aktif.
+     * keterangannya sendiri supaya status tiap praktik bisa berbeda tanpa
+     * mengubah komponen; hari ini keduanya berstatus tidak ditawarkan lagi.
      */
     retired: { title: string; note: string; description: string }[];
   };
@@ -124,14 +124,23 @@ export type SiteContent = {
     included: string;
     approach: string;
     related: string;
+    /** Judul blok alur mekanisme di halaman detail layanan. */
+    flow: string;
   };
   /**
    * Isi panjang per layanan untuk halaman `/[locale]/services/[slug]`.
    *
    * Kuncinya slug dari lib/services.ts, jadi urutan `services` tidak lagi
    * menentukan — dua array itu boleh bergeser tanpa memutus halaman.
+   *
+   * `flow` adalah tiga node alur mekanisme layanan: apa yang dipetakan, apa
+   * yang dibangun, dan apa yang diserahkan. Selalu tiga, bukan daftar bebas,
+   * karena diagramnya satu baris; node keempat akan memaksa bentuk baru.
    */
-  servicePages: Record<ServiceSlug, { intro: string; included: string[] }>;
+  servicePages: Record<
+    ServiceSlug,
+    { intro: string; included: string[]; flow: [string, string, string] }
+  >;
   products: {
     eyebrow: string;
     title: string;
@@ -341,10 +350,10 @@ const en: SiteContent = {
           "Campaigns, social media, and paid search we ran for clients in the studio's early years.",
       },
       {
-        title: "Penetration Testing",
-        note: "Currently inactive",
+        title: "Cyber Security (Red Team & Blue Team)",
+        note: "No longer offered",
         description:
-          "Penetration testing of web apps, APIs, and servers, reported with fix priorities.",
+          "Red team testing of web apps, APIs, and servers, and blue team hardening, monitoring, and incident response, reported with fix priorities.",
       },
     ],
   },
@@ -360,19 +369,19 @@ const en: SiteContent = {
         "Web applications built around your workflow: dashboards, portals, and integrations that fit the systems you already run.",
     },
     {
-      title: "Android WebView Services",
+      title: "Custom Mobile Apps Development",
       description:
-        "Turn your website into an official Android app ready for the Google Play Store.",
+        "Android and iOS apps, native or cross-platform, with offline sync and a release build ready for the store.",
+    },
+    {
+      title: "Custom Games Development",
+      description:
+        "Games designed for phones and the web, built to ship, publish, and keep running after launch.",
     },
     {
       title: "Modern Company Profiles",
       description:
         "Corporate websites with on-page SEO, fast performance, and direct sales team connections.",
-    },
-    {
-      title: "Custom Android Apps",
-      description:
-        "Native or cross-platform Android apps with stable performance and offline synchronization.",
     },
     {
       title: "Server & DevOps Management",
@@ -382,13 +391,14 @@ const en: SiteContent = {
     {
       title: "Maintenance & SLA",
       description:
-        "Monitoring, security updates, encrypted backups, and long-term technical support.",
+        "Monitoring, security patches, encrypted backups, and long-term support, including updates and upgrades for legacy code.",
     },
   ],
   servicePage: {
     included: "What's included",
     approach: "How it runs",
     related: "Other services",
+    flow: "Service flow",
   },
   servicePages: {
     "custom-software": {
@@ -400,6 +410,11 @@ const en: SiteContent = {
         "API and payment gateway integration",
         "Source code and documentation handed over",
       ],
+      flow: [
+        "Process mapped",
+        "Modules and integrations",
+        "Code handed over",
+      ],
     },
     "custom-web-development": {
       intro:
@@ -410,15 +425,40 @@ const en: SiteContent = {
         "Integration with existing services",
         "Deployment on infrastructure we also maintain",
       ],
+      flow: [
+        "Workflow mapped",
+        "API, roles, audit trail",
+        "Deployed and monitored",
+      ],
     },
-    "android-webview": {
+    "custom-mobile-apps": {
       intro:
-        "If the service already lives on the web, a WebView build puts it on Google Play without a second codebase to maintain. We handle the shell, the store listing, and the release.",
+        "When the work needs the device: Android and iOS apps, native or cross-platform, plus a WebView build when the product already lives on the web and a second codebase is not worth it.",
       included: [
-        "Play Store ready package",
-        "1–2 day delivery",
-        "Push, deep links, and an offline fallback",
-        "Store listing assets and signing",
+        "Native or cross-platform, one codebase where it fits",
+        "Offline-first storage and background sync",
+        "Push, deep links, and store-ready builds",
+        "Play Store and App Store release, signed and handed over",
+      ],
+      flow: [
+        "Native or WebView",
+        "Offline sync",
+        "Store release",
+      ],
+    },
+    "custom-games": {
+      intro:
+        "Games built to ship: the loop, the build, and the store listing handled by one team. We design for phones and the web, publish, and hand over the source and the assets.",
+      included: [
+        "Game design and the core loop before production",
+        "Mobile and web builds",
+        "Store listing, signing, and release",
+        "Source code and art assets handed over",
+      ],
+      flow: [
+        "Core loop designed",
+        "Phone and web builds",
+        "Published and handed over",
       ],
     },
     "company-profile": {
@@ -430,15 +470,10 @@ const en: SiteContent = {
         "Contact and WhatsApp routing",
         "Editing guidance for your team",
       ],
-    },
-    "android-apps": {
-      intro:
-        "Native or cross-platform Android apps for work that needs the device: offline data, background sync, and an interface that stays responsive on cheap hardware.",
-      included: [
-        "MVVM and clean architecture",
-        "Offline-first database",
-        "Background sync and notifications",
-        "Release build and Play Console handover",
+      flow: [
+        "Content and structure",
+        "SEO and performance",
+        "Release and editing guide",
       ],
     },
     "server-devops": {
@@ -450,15 +485,25 @@ const en: SiteContent = {
         "Encrypted off-site backups",
         "Runbook and access handover",
       ],
+      flow: [
+        "Audit and hardening",
+        "Proxy, TLS, backups",
+        "Runbook and access",
+      ],
     },
     "maintenance-sla": {
       intro:
-        "After launch, someone has to watch it. We monitor, patch, and answer, with a response time agreed in writing before the first ticket.",
+        "After launch, someone has to watch it. We monitor, patch, and answer, with a response time agreed in writing before the first ticket, including updating and upgrading legacy code that no longer gets patches on its own.",
       included: [
         "Uptime and error monitoring",
-        "Security patches and updates",
-        "Restore drills on backups",
-        "Priority incident response",
+        "Security patches, dependency and framework upgrades",
+        "Legacy code audit and phased migration",
+        "Priority incident response, with restore drills on backups",
+      ],
+      flow: [
+        "Monitoring",
+        "Patches and upgrades",
+        "SLA escalation",
       ],
     },
   },
@@ -793,10 +838,10 @@ const id: SiteContent = {
           "Kampanye, media sosial, dan iklan berbayar yang kami jalankan untuk klien pada tahun-tahun awal studio.",
       },
       {
-        title: "Pengujian Penetrasi",
-        note: "Tidak aktif",
+        title: "Cyber Security (Red Team & Blue Team)",
+        note: "Tidak tersedia lagi",
         description:
-          "Uji penetrasi aplikasi web, API, dan server, lengkap dengan laporan prioritas perbaikan.",
+          "Uji red team pada aplikasi web, API, dan server, serta hardening, monitoring, dan penanganan insiden dari sisi blue team, dilaporkan dengan prioritas perbaikan.",
       },
     ],
   },
@@ -812,19 +857,19 @@ const id: SiteContent = {
         "Aplikasi web yang dibangun mengikuti alur kerja Anda: dasbor, portal, dan integrasi yang menyambung ke sistem yang sudah berjalan.",
     },
     {
-      title: "Jasa WebView Android",
+      title: "Custom Mobile Apps Development",
       description:
-        "Konversi website menjadi aplikasi Android resmi yang siap rilis ke Google Play Store.",
+        "Aplikasi Android dan iOS, native atau cross-platform, dengan sinkronisasi offline dan build rilis yang siap masuk ke toko aplikasi.",
+    },
+    {
+      title: "Custom Games Development",
+      description:
+        "Game untuk ponsel dan web, dirancang untuk rilis, terbit di toko, dan tetap berjalan setelah peluncuran.",
     },
     {
       title: "Company Profile Modern",
       description:
         "Website profil korporat dengan SEO on-page, performa cepat, dan koneksi langsung ke tim sales.",
-    },
-    {
-      title: "Custom Android Apps",
-      description:
-        "Aplikasi Android native atau cross-platform dengan performa stabil dan sinkronisasi offline.",
     },
     {
       title: "Kelola Server & DevOps",
@@ -834,13 +879,14 @@ const id: SiteContent = {
     {
       title: "Maintenance & SLA",
       description:
-        "Monitoring, security update, backup terenkripsi, dan pendampingan teknis jangka panjang.",
+        "Monitoring, security update, backup terenkripsi, dan pendampingan teknis jangka panjang, termasuk pembaruan dan peningkatan kode legacy.",
     },
   ],
   servicePage: {
     included: "Yang termasuk",
     approach: "Cara kerjanya",
     related: "Layanan lain",
+    flow: "Alur layanan",
   },
   servicePages: {
     "custom-software": {
@@ -852,6 +898,11 @@ const id: SiteContent = {
         "Integrasi API dan payment gateway",
         "Kode sumber dan dokumentasi diserahkan",
       ],
+      flow: [
+        "Pemetaan proses",
+        "Modul dan integrasi",
+        "Serah terima kode",
+      ],
     },
     "custom-web-development": {
       intro:
@@ -862,15 +913,40 @@ const id: SiteContent = {
         "Integrasi dengan layanan yang sudah ada",
         "Deploy di infrastruktur yang kami rawat juga",
       ],
+      flow: [
+        "Alur kerja dipetakan",
+        "API, peran, audit",
+        "Deploy dan dipantau",
+      ],
     },
-    "android-webview": {
+    "custom-mobile-apps": {
       intro:
-        "Kalau layanannya sudah hidup di web, build WebView menaruhnya di Google Play tanpa codebase kedua yang harus dirawat. Kami urus shell, listing, dan rilisnya.",
+        "Saat pekerjaan memang butuh perangkatnya: aplikasi Android dan iOS, native atau cross-platform, plus build WebView kalau produknya sudah hidup di web dan codebase kedua tidak sepadan untuk dirawat.",
       included: [
-        "Paket siap Play Store",
-        "Pengerjaan 1–2 hari",
-        "Push, deep link, dan fallback offline",
-        "Aset listing dan signing",
+        "Native atau cross-platform, satu codebase bila cocok",
+        "Penyimpanan offline-first dan sinkronisasi latar",
+        "Push, deep link, dan build siap rilis",
+        "Rilis ke Play Store dan App Store, ditandatangani dan diserahkan",
+      ],
+      flow: [
+        "Native atau WebView",
+        "Sinkronisasi offline",
+        "Rilis ke toko",
+      ],
+    },
+    "custom-games": {
+      intro:
+        "Game yang dibangun sampai rilis: loop, build, dan listing di toko dikerjakan satu tim. Kami rancang untuk ponsel dan web, terbitkan, lalu serahkan kode sumber dan asetnya.",
+      included: [
+        "Desain game dan core loop sebelum produksi",
+        "Build untuk ponsel dan web",
+        "Listing di toko, signing, dan rilis",
+        "Kode sumber dan aset seni diserahkan",
+      ],
+      flow: [
+        "Desain loop inti",
+        "Build ponsel dan web",
+        "Rilis dan serah aset",
       ],
     },
     "company-profile": {
@@ -882,15 +958,10 @@ const id: SiteContent = {
         "Rute kontak dan WhatsApp",
         "Panduan penyuntingan untuk tim Anda",
       ],
-    },
-    "android-apps": {
-      intro:
-        "Aplikasi Android native atau cross-platform untuk pekerjaan yang butuh perangkatnya: data offline, sinkronisasi latar, dan antarmuka yang tetap responsif di perangkat murah.",
-      included: [
-        "MVVM dan clean architecture",
-        "Database offline-first",
-        "Sinkronisasi latar dan notifikasi",
-        "Build rilis dan serah terima Play Console",
+      flow: [
+        "Konten dan struktur",
+        "SEO dan performa",
+        "Rilis dan panduan edit",
       ],
     },
     "server-devops": {
@@ -902,15 +973,25 @@ const id: SiteContent = {
         "Backup terenkripsi di luar server",
         "Runbook dan serah terima akses",
       ],
+      flow: [
+        "Audit dan hardening",
+        "Proksi, TLS, backup",
+        "Runbook dan akses",
+      ],
     },
     "maintenance-sla": {
       intro:
-        "Setelah rilis, harus ada yang mengawasi. Kami memantau, menambal, dan menjawab, dengan waktu respons yang disepakati tertulis sebelum tiket pertama.",
+        "Setelah rilis, harus ada yang mengawasi. Kami memantau, menambal, dan menjawab, dengan waktu respons yang disepakati tertulis sebelum tiket pertama, termasuk pembaruan dan peningkatan kode legacy yang tidak lagi mendapat patch sendiri.",
       included: [
         "Monitoring uptime dan error",
-        "Patch keamanan dan pembaruan",
-        "Uji restore dari backup",
-        "Respons insiden prioritas",
+        "Patch keamanan, pembaruan dependensi dan framework",
+        "Audit kode legacy dan migrasi bertahap",
+        "Respons insiden prioritas, dengan uji restore dari backup",
+      ],
+      flow: [
+        "Pemantauan",
+        "Patch dan upgrade",
+        "Eskalasi SLA",
       ],
     },
   },
@@ -1246,10 +1327,10 @@ const ar: SiteContent = {
           "حملات ووسائل تواصل اجتماعي وإعلانات مدفوعة نفّذناها لعملاء في سنوات الاستوديو الأولى.",
       },
       {
-        title: "اختبار الاختراق",
-        note: "غير مُفعّل حالياً",
+        title: "الأمن السيبراني (الفريق الأحمر والفريق الأزرق)",
+        note: "لم يعد متاحاً",
         description:
-          "اختبار اختراق تطبيقات الويب وواجهات API والخوادم، مع تقرير بأولويات الإصلاح.",
+          "اختبار الفريق الأحمر لتطبيقات الويب وواجهات API والخوادم، وتقوية الفريق الأزرق والمراقبة والاستجابة للحوادث، مع تقرير بأولويات الإصلاح.",
       },
     ],
   },
@@ -1265,19 +1346,19 @@ const ar: SiteContent = {
         "تطبيقات ويب مبنية حول سير عملك: لوحات تحكم وبوابات وتكاملات تتصل بالأنظمة التي تستخدمها.",
     },
     {
-      title: "خدمات Android WebView",
+      title: "تطوير تطبيقات الجوال",
       description:
-        "حوّل موقعك إلى تطبيق Android رسمي جاهز للنشر على Google Play.",
+        "تطبيقات Android وiOS، أصلية أو متعددة المنصات، بمزامنة دون اتصال وبناء إصدار موقّع جاهز للمتجر.",
+    },
+    {
+      title: "تطوير الألعاب",
+      description:
+        "ألعاب مصممة للهواتف والويب، مبنية للنشر والتشغيل بعد الإطلاق.",
     },
     {
       title: "موقع شركة عصري",
       description:
         "مواقع شركات سريعة مع تحسين SEO وربط مباشر بفريق المبيعات.",
-    },
-    {
-      title: "تطبيقات Android مخصصة",
-      description:
-        "تطبيقات أصلية أو متعددة المنصات بأداء مستقر ومزامنة دون اتصال.",
     },
     {
       title: "إدارة الخوادم وDevOps",
@@ -1287,13 +1368,14 @@ const ar: SiteContent = {
     {
       title: "الصيانة وSLA",
       description:
-        "مراقبة وتحديثات أمنية ونسخ احتياطية ودعم تقني طويل الأمد.",
+        "مراقبة وتحديثات أمنية ونسخ احتياطية ودعم تقني طويل الأمد، بما في ذلك تحديث وترقية الشيفرة القديمة.",
     },
   ],
   servicePage: {
     included: "ما يشمله",
     approach: "كيف يسير العمل",
     related: "خدمات أخرى",
+    flow: "مسار الخدمة",
   },
   servicePages: {
     "custom-software": {
@@ -1303,6 +1385,11 @@ const ar: SiteContent = {
         "رسم سير العمل قبل أول سطر شيفرة",
         "بنية مرنة مع اختبارات",
         "تكامل API وبوابات الدفع",
+        "تسليم الشيفرة والتوثيق",
+      ],
+      flow: [
+        "رسم سير العمل",
+        "وحدات ERP وCRM والتكاملات",
         "تسليم الشيفرة والتوثيق",
       ],
     },
@@ -1315,15 +1402,40 @@ const ar: SiteContent = {
         "تكامل مع الخدمات القائمة",
         "نشر على بنية تحتية نصونها أيضًا",
       ],
+      flow: [
+        "رسم سير العمل",
+        "API والأدوار وسجل التدقيق",
+        "نشر ومراقبة مستمرة",
+      ],
     },
-    "android-webview": {
+    "custom-mobile-apps": {
       intro:
-        "إذا كانت خدمتك تعمل على الويب، فبناء WebView يضعها على Google Play دون قاعدة شيفرة ثانية للصيانة. نتولى الغلاف والمتجر والإصدار.",
+        "حين يحتاج العمل إلى الجهاز: تطبيقات Android وiOS، أصلية أو متعددة المنصات، مع بناء WebView عندما يكون المنتج على الويب أصلاً ولا يستحق قاعدة شيفرة ثانية.",
       included: [
-        "حزمة جاهزة لمتجر Play",
-        "تسليم خلال يوم أو يومين",
-        "إشعارات وروابط عميقة ووضع دون اتصال",
-        "أصول المتجر والتوقيع",
+        "أصلية أو متعددة المنصات، بقاعدة شيفرة واحدة حيث تناسب",
+        "تخزين يعمل دون اتصال ومزامنة في الخلفية",
+        "إشعارات وروابط عميقة وبناء جاهز للمتاجر",
+        "إصدار على Play Store وApp Store، موقّع ومسلّم",
+      ],
+      flow: [
+        "أصلية أو WebView",
+        "مزامنة دون اتصال",
+        "إصدار إلى المتاجر",
+      ],
+    },
+    "custom-games": {
+      intro:
+        "ألعاب مبنية للنشر: التصميم وحلقة اللعب والبناء وقائمة المتجر يتولاها فريق واحد. نصمم للهواتف والويب، ننشر، ونسلّم الشيفرة والأصول.",
+      included: [
+        "تصميم اللعبة وحلقة اللعب الأساسية قبل الإنتاج",
+        "بناء للهواتف والويب",
+        "قائمة المتجر والتوقيع والإصدار",
+        "تسليم الشيفرة والأصول الفنية",
+      ],
+      flow: [
+        "تصميم حلقة اللعب",
+        "بناء للهواتف والويب",
+        "نشر وتسليم الأصول",
       ],
     },
     "company-profile": {
@@ -1335,15 +1447,10 @@ const ar: SiteContent = {
         "مسارات التواصل وWhatsApp",
         "إرشادات التحرير لفريقك",
       ],
-    },
-    "android-apps": {
-      intro:
-        "تطبيقات Android أصلية أو متعددة المنصات للعمل الذي يحتاج الجهاز: بيانات دون اتصال ومزامنة في الخلفية وواجهة تبقى سريعة على الأجهزة الرخيصة.",
-      included: [
-        "بنية MVVM نظيفة",
-        "قاعدة بيانات تعمل دون اتصال",
-        "مزامنة خلفية وإشعارات",
-        "بناء الإصدار وتسليم Play Console",
+      flow: [
+        "بنية المحتوى والصفحات",
+        "تحسين SEO والأداء",
+        "الإطلاق ودليل التحرير",
       ],
     },
     "server-devops": {
@@ -1355,15 +1462,25 @@ const ar: SiteContent = {
         "نسخ احتياطي مشفّر خارج الخادم",
         "دليل تشغيل وتسليم الوصول",
       ],
+      flow: [
+        "تدقيق وتقوية الخادم",
+        "وكيل عكسي وTLS ونسخ احتياطي",
+        "دليل التشغيل وتسليم الوصول",
+      ],
     },
     "maintenance-sla": {
       intro:
-        "بعد الإطلاق لا بد من يراقبه. نراقب ونحدّث ونستجيب، بزمن استجابة متفق عليه كتابةً قبل أول تذكرة.",
+        "بعد الإطلاق لا بد من يراقبه. نراقب ونحدّث ونستجيب، بزمن استجابة متفق عليه كتابةً قبل أول تذكرة، بما في ذلك تحديث وترقية الشيفرة القديمة التي لم تعد تتلقى تحديثات بنفسها.",
       included: [
         "مراقبة التوفر والأخطاء",
-        "تحديثات أمنية دورية",
-        "اختبار الاستعادة من النسخ",
-        "استجابة أولوية للحوادث",
+        "تحديثات أمنية وترقية الاعتماديات والأطر",
+        "تدقيق الشيفرة القديمة وترحيل تدريجي",
+        "استجابة أولوية للحوادث مع اختبارات استعادة من النسخ",
+      ],
+      flow: [
+        "مراقبة التوفر والأخطاء",
+        "تحديثات أمنية وترقية الاعتماديات",
+        "تصعيد وفق اتفاقية SLA",
       ],
     },
   },
@@ -1685,12 +1802,14 @@ const zh: SiteContent = {
       {
         title: "数字营销",
         note: "已不再提供",
-        description: "工作室早期为客户执行的广告投放、社交媒体与付费搜索。",
+        description:
+          "工作室早期为客户执行的广告投放、社交媒体与付费搜索。",
       },
       {
-        title: "渗透测试",
-        note: "暂未开放",
-        description: "针对 Web 应用、API 与服务器的渗透测试，并附修复优先级报告。",
+        title: "网络安全（红队与蓝队）",
+        note: "已不再提供",
+        description:
+          "曾对 Web 应用、API 与服务器做红队测试，也做过蓝队加固、监控与事件响应，报告附修复优先级。",
       },
     ],
   },
@@ -1706,17 +1825,19 @@ const zh: SiteContent = {
         "围绕您的业务流程构建的 Web 应用：仪表盘、门户，以及与现有系统对接的集成。",
     },
     {
-      title: "Android WebView 服务",
-      description: "将网站转换为可发布到 Google Play 的官方 Android 应用。",
+      title: "定制移动应用开发",
+      description:
+        "Android 与 iOS 应用，原生或跨平台，支持离线同步，并提供可直接上架的发布版本。",
+    },
+    {
+      title: "定制游戏开发",
+      description:
+        "为手机与 Web 设计的游戏，从构建到发布，上线之后还能继续运行。",
     },
     {
       title: "现代企业官网",
       description:
         "拥有页面 SEO、快速性能和销售团队直连功能的企业网站。",
-    },
-    {
-      title: "定制 Android 应用",
-      description: "原生或跨平台 Android 应用，性能稳定并支持离线同步。",
     },
     {
       title: "服务器与 DevOps 管理",
@@ -1725,13 +1846,15 @@ const zh: SiteContent = {
     },
     {
       title: "维护与 SLA",
-      description: "持续监控、安全更新、加密备份和长期技术支持。",
+      description:
+        "持续监控、安全补丁、加密备份与长期支持，也包括对旧代码的更新与升级。",
     },
   ],
   servicePage: {
     included: "包含内容",
     approach: "如何推进",
     related: "其他服务",
+    flow: "服务流程",
   },
   servicePages: {
     "custom-software": {
@@ -1743,6 +1866,11 @@ const zh: SiteContent = {
         "API 与支付网关集成",
         "交付源码与文档",
       ],
+      flow: [
+        "流程梳理",
+        "模块与集成",
+        "代码交付",
+      ],
     },
     "custom-web-development": {
       intro:
@@ -1753,15 +1881,40 @@ const zh: SiteContent = {
         "与现有服务集成",
         "部署在我们同样维护的基础设施上",
       ],
+      flow: [
+        "业务流程梳理",
+        "API、角色、审计日志",
+        "部署与监控",
+      ],
     },
-    "android-webview": {
+    "custom-mobile-apps": {
       intro:
-        "如果服务已经跑在 Web 上，WebView 封装可以直接上架 Google Play，无需维护第二套代码。外壳、商店资料和发布由我们处理。",
+        "当工作需要用到设备本身：Android 与 iOS 应用，原生或跨平台；如果产品已经跑在 Web 上，也可以用 WebView 封装，省去维护第二套代码。",
       included: [
-        "可直接上架 Play Store",
-        "1–2 天交付",
-        "推送、深度链接与离线兜底",
-        "商店资料与签名",
+        "原生或跨平台，一套代码够用就只用一套",
+        "离线优先存储与后台同步",
+        "推送、深度链接与可上架的发布构建",
+        "Google Play Store 与 App Store 发布，签名后交付",
+      ],
+      flow: [
+        "原生或 WebView",
+        "离线同步",
+        "应用商店发布",
+      ],
+    },
+    "custom-games": {
+      intro:
+        "为上线而做的游戏：玩法、构建与商店资料由同一个团队负责。我们面向手机与 Web 设计，完成发布，并交付源码与素材。",
+      included: [
+        "进入制作前先完成游戏设计与核心循环",
+        "手机与 Web 构建",
+        "商店资料、签名与发布",
+        "交付源码与美术素材",
+      ],
+      flow: [
+        "核心循环设计",
+        "手机与 Web 构建",
+        "发布与交付",
       ],
     },
     "company-profile": {
@@ -1773,15 +1926,10 @@ const zh: SiteContent = {
         "联系与 WhatsApp 路由",
         "给团队的编辑指引",
       ],
-    },
-    "android-apps": {
-      intro:
-        "需要用到设备的场景：离线数据、后台同步，以及在低端机上依然流畅的界面。原生或跨平台皆可。",
-      included: [
-        "MVVM 与清晰架构",
-        "离线优先数据库",
-        "后台同步与通知",
-        "发布构建与 Play Console 交付",
+      flow: [
+        "内容与结构",
+        "SEO 与性能",
+        "发布与编辑指引",
       ],
     },
     "server-devops": {
@@ -1793,15 +1941,25 @@ const zh: SiteContent = {
         "加密的异地备份",
         "运行手册与权限交接",
       ],
+      flow: [
+        "审计与加固",
+        "反向代理、TLS 与备份",
+        "运行手册与权限交接",
+      ],
     },
     "maintenance-sla": {
       intro:
-        "上线之后总得有人盯着。我们负责监控、补丁与响应，响应时间在第一个工单之前以书面约定。",
+        "上线之后总得有人盯着。我们负责监控、补丁与响应，响应时间在第一个工单之前以书面约定；也包括对已经没人维护的旧代码做更新与升级。",
       included: [
         "可用性与错误监控",
-        "安全补丁与更新",
-        "备份恢复演练",
-        "优先处理紧急事件",
+        "安全补丁、依赖与框架升级",
+        "旧代码审计与分阶段迁移",
+        "优先处理紧急事件，并定期演练备份恢复",
+      ],
+      flow: [
+        "可用性监控",
+        "补丁与升级",
+        "SLA 分级响应",
       ],
     },
   },
@@ -2115,10 +2273,10 @@ const pl: SiteContent = {
           "Kampanie, media społecznościowe i płatne wyszukiwanie, które prowadziliśmy dla klientów w pierwszych latach studia.",
       },
       {
-        title: "Testy penetracyjne",
-        note: "Obecnie nieaktywne",
+        title: "Cyberbezpieczeństwo (Red Team i Blue Team)",
+        note: "Nie jest już oferowane",
         description:
-          "Testy penetracyjne aplikacji webowych, API i serwerów wraz z raportem priorytetów napraw.",
+          "Prowadziliśmy testy red team aplikacji webowych, API i serwerów oraz utwardzanie, monitoring i reakcję na incydenty po stronie blue team, z raportem priorytetów napraw.",
       },
     ],
   },
@@ -2134,19 +2292,19 @@ const pl: SiteContent = {
         "Aplikacje webowe dopasowane do Twojego procesu: pulpity, portale i integracje z systemami, których już używasz.",
     },
     {
-      title: "Usługi Android WebView",
+      title: "Dedykowane aplikacje mobilne",
       description:
-        "Zamieniamy stronę internetową w oficjalną aplikację Android gotową do publikacji w Google Play.",
+        "Aplikacje na Androida i iOS, natywne lub wieloplatformowe, z synchronizacją offline i buildem wydania gotowym do sklepu.",
+    },
+    {
+      title: "Dedykowane gry",
+      description:
+        "Gry na telefony i web: projekt, build i publikacja, a potem utrzymanie po premierze.",
     },
     {
       title: "Nowoczesne strony firmowe",
       description:
         "Strony korporacyjne z SEO, szybkim działaniem i bezpośrednim kontaktem z zespołem sprzedaży.",
-    },
-    {
-      title: "Dedykowane aplikacje Android",
-      description:
-        "Natywne lub wieloplatformowe aplikacje Android ze stabilnym działaniem i synchronizacją offline.",
     },
     {
       title: "Serwery i DevOps",
@@ -2156,13 +2314,14 @@ const pl: SiteContent = {
     {
       title: "Maintenance i SLA",
       description:
-        "Monitoring, aktualizacje bezpieczeństwa, szyfrowane kopie i długoterminowe wsparcie.",
+        "Monitoring, aktualizacje bezpieczeństwa, szyfrowane kopie i długoterminowe wsparcie, wraz z aktualizacją i modernizacją starego kodu.",
     },
   ],
   servicePage: {
     included: "Co obejmuje",
     approach: "Jak przebiega praca",
     related: "Inne usługi",
+    flow: "Przebieg usługi",
   },
   servicePages: {
     "custom-software": {
@@ -2174,6 +2333,11 @@ const pl: SiteContent = {
         "Integracje API i płatności",
         "Przekazanie kodu i dokumentacji",
       ],
+      flow: [
+        "Mapowanie procesu",
+        "Moduły i integracje",
+        "Przekazanie kodu",
+      ],
     },
     "custom-web-development": {
       intro:
@@ -2184,15 +2348,40 @@ const pl: SiteContent = {
         "Integracja z istniejącymi usługami",
         "Wdrożenie na infrastrukturze, którą też utrzymujemy",
       ],
+      flow: [
+        "Mapowanie procesu pracy",
+        "API, role, dziennik zmian",
+        "Wdrożenie i monitoring",
+      ],
     },
-    "android-webview": {
+    "custom-mobile-apps": {
       intro:
-        "Jeśli usługa działa już w sieci, opakowanie WebView trafia do Google Play bez drugiej bazy kodu do utrzymania. Zajmujemy się powłoką, sklepem i wydaniem.",
+        "Gdy praca potrzebuje urządzenia: aplikacje na Androida i iOS, natywne lub wieloplatformowe, a także wersja WebView, gdy produkt działa już w sieci i druga baza kodu się nie opłaca.",
       included: [
-        "Pakiet gotowy do Play Store",
-        "Realizacja w 1–2 dni",
-        "Powiadomienia, deep linki i tryb offline",
-        "Materiały do sklepu i podpis",
+        "Natywne lub wieloplatformowe, jedna baza kodu, gdy to wystarcza",
+        "Dane offline-first i synchronizacja w tle",
+        "Powiadomienia push, deep linki i build gotowy do sklepu",
+        "Wydanie w Play Store i App Store, podpisane i przekazane",
+      ],
+      flow: [
+        "Natywna lub WebView",
+        "Synchronizacja offline",
+        "Wydanie w sklepach",
+      ],
+    },
+    "custom-games": {
+      intro:
+        "Gry dowiezione do końca: pętla rozgrywki, build i karta w sklepie w jednych rękach. Projektujemy na telefony i web, wydajemy i przekazujemy kod źródłowy oraz materiały.",
+      included: [
+        "Projekt gry i pętla rozgrywki przed produkcją",
+        "Buildy na telefony i web",
+        "Karta w sklepie, podpis i wydanie",
+        "Kod źródłowy i materiały graficzne przekazane",
+      ],
+      flow: [
+        "Projekt pętli rozgrywki",
+        "Buildy na telefony i web",
+        "Wydane i przekazane",
       ],
     },
     "company-profile": {
@@ -2204,15 +2393,10 @@ const pl: SiteContent = {
         "Ścieżki kontaktu i WhatsApp",
         "Wskazówki edycyjne dla Twojego zespołu",
       ],
-    },
-    "android-apps": {
-      intro:
-        "Natywne lub wieloplatformowe aplikacje Android do pracy, która potrzebuje urządzenia: dane offline, synchronizacja w tle i interfejs, który pozostaje płynny na tanim sprzęcie.",
-      included: [
-        "MVVM i clean architecture",
-        "Baza offline-first",
-        "Synchronizacja w tle i powiadomienia",
-        "Build wydania i przekazanie Play Console",
+      flow: [
+        "Treść i struktura",
+        "SEO i wydajność",
+        "Wdrożenie i wskazówki edycyjne",
       ],
     },
     "server-devops": {
@@ -2224,15 +2408,25 @@ const pl: SiteContent = {
         "Szyfrowane kopie poza serwerem",
         "Runbook i przekazanie dostępu",
       ],
+      flow: [
+        "Audyt i hardening",
+        "Proxy, TLS, kopie zapasowe",
+        "Runbook i dostęp",
+      ],
     },
     "maintenance-sla": {
       intro:
-        "Po wdrożeniu ktoś musi tego pilnować. Monitorujemy, łatajemy i odpowiadamy, w czasie reakcji uzgodnionym na piśmie przed pierwszym zgłoszeniem.",
+        "Po wdrożeniu ktoś musi tego pilnować. Monitorujemy, łatajemy i odpowiadamy, w czasie reakcji uzgodnionym na piśmie przed pierwszym zgłoszeniem. Obejmuje to aktualizację i modernizację starego kodu, który nie dostaje już poprawek sam z siebie.",
       included: [
         "Monitoring dostępności i błędów",
-        "Łatki bezpieczeństwa i aktualizacje",
-        "Próby odtworzenia z kopii",
-        "Priorytetowa reakcja na awarie",
+        "Łatki bezpieczeństwa, aktualizacje zależności i frameworków",
+        "Audyt starego kodu i migracja etapami",
+        "Priorytetowa reakcja na awarie i próby odtworzenia z kopii",
+      ],
+      flow: [
+        "Monitoring dostępności i błędów",
+        "Łatki i aktualizacje",
+        "Eskalacja zgłoszeń SLA",
       ],
     },
   },

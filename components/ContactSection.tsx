@@ -4,30 +4,35 @@ import { contactEmail, contactWhatsapp, whatsappLink } from "@/lib/contact";
 import type { SiteContent } from "@/lib/i18n";
 
 /**
- * Section penutup: satu blok terpusat, bukan dua kolom.
+ * Section penutup: satu pernyataan, dua jalan keluar.
  *
- * Referensinya menutup halaman dengan CTA besar di tengah, di atas bidang yang
- * sedikit berbeda dari section sebelumnya. Di sini bentuknya sama: judul serif,
- * satu paragraf, sepasang pill, lalu fakta operasional sebagai catatan kecil.
- * Semua terpusat supaya mata berhenti di satu titik — penutup halaman tidak
- * perlu lagi dibagi kiri/kanan seperti section yang menjelaskan sesuatu.
+ * Sebelumnya section ini adalah blok terpusat di atas fog: judul, deskripsi,
+ * dua pill, lalu jam operasional, alamat, nomor telepon, dan email sebagai
+ * caption. Tiga masalah membuatnya dirombak. Pertama, footer tepat di bawahnya
+ * mengulang nomor, email, dan alamat yang sama, jadi satu layar memuat dua
+ * salinan daftar kontak. Kedua, siluet judul-tengah + dua pill adalah bentuk
+ * paling umum untuk penutup halaman, sementara seluruh section lain di halaman
+ * ini punya komposisi sendiri. Ketiga, nilai kontak yang dicetak itu tidak
+ * menambah jalan keluar apa pun: yang bisa diklik tetap dua tautan.
  *
- * Latar memakai fog (satu langkah di atas putih) plus satu radial peach tipis di
- * belakang judul. Ini gema dari wash hero, bukan pengulangannya: wash hero
- * penuh lima gradient, di sini hanya satu bercak lembut supaya halaman terasa
- * kembali ke tempat awalnya tanpa mengulang pertunjukan yang sama. Bercak itu
- * memakai var(--color-blush-peach), bukan hex yang ditulis ulang di sini.
+ * Sekarang section ini adalah pita peach penuh, sejajar dengan pita Clients di
+ * tengah halaman, dan hanya membawa judul, deskripsi, dan dua aksi teks. Nilai
+ * kontak (jam, alamat, nomor, email) hidup di footer, tempat orang mencarinya
+ * setelah selesai membaca. Yang tersisa di sini adalah keputusan, bukan
+ * direktori.
  *
- * Padding-nya py-20 lg:py-28, sama dengan section sebelumnya (Standards). Dua
- * pita terakhir halaman jadi satu irama; sebelumnya section ini memakai
- * py-24 lg:py-32 dan terasa seperti lompatan tepat di penutup.
+ * Semua teks memakai sienna, termasuk deskripsi dan aksi. Di atas peach, abu-abu
+ * dingin memutus efek kertas dan membuat pita ini terbaca sebagai panel abu-abu
+ * yang kebetulan berwarna. Aturan yang sama dipakai pita Clients, dan karena
+ * itu SectionHeading tidak dipakai di sini: ia membawa slate dan ash.
  *
- * Hierarki dua jalur tetap: WhatsApp adalah pill terisi ink, email adalah pill
- * bergaris. Yang membedakan tingkat, bukan warna — peach tetap tidak dipakai
- * sebagai permukaan komponen di section ini.
+ * Tidak ada pill. Dua aksi yang sejajar dan setara tidak butuh bentuk tombol
+ * untuk dibedakan tingkatnya; garis bawah hairline sudah cukup sebagai
+ * penanda tautan, dan panah tipografis menanggung afordansinya. Hover
+ * menggeser panah, bukan mengubah latar.
  *
- * Nomor, email, dan URL wa.me dibaca dari lib/contact.ts, jadi tidak ada nilai
- * kontak yang ditulis ulang di komponen ini.
+ * Nomor WhatsApp dan alamat surel tetap dibaca dari lib/contact.ts, jadi tidak
+ * ada nilai kontak yang ditulis ulang di komponen ini.
  *
  * Tanpa state, jadi server component; gerak masuknya dititipkan ke Reveal.
  */
@@ -46,82 +51,68 @@ export default function ContactSection({
   // markup dua locale pernah hidup berdampingan.
   const titleId = `${basePath.replace(/\//g, "") || "home"}-contact-title`;
 
-  /* Dua pill dengan geometri sama supaya terbaca sebagai pasangan, bukan dua
-     tombol berbeda tingkat. Yang membedakan hanya isi dan garisnya. */
-  const filledPill =
-    "bg-ink-black text-paper-white rounded-buttons hover:bg-ink-black/90 inline-flex h-12 w-full items-center justify-center gap-2 px-6 text-body transition sm:w-auto";
-  const ghostPill =
-    "border-ink-black text-ink-black rounded-buttons hover:bg-mist-gray inline-flex h-12 w-full items-center justify-center gap-2 border px-6 text-body transition sm:w-auto";
+  /* Satu geometri untuk kedua aksi: tinggi 48px (batas tap target), label
+     sejajar, panah di ujung baris. Di ponsel barisnya melebar penuh, dipisah
+     hairline, dan panah didorong ke tepi kanan; di `sm` ke atas keduanya kembali
+     selebar isinya, duduk berdampingan, dan garis bawah pindah ke label supaya
+     menempel di huruf alih-alih menggantung di dasar kotak 48px. */
+  const actionLink =
+    "group text-sienna-brown border-sienna-brown/40 inline-flex min-h-12 items-center justify-between gap-4 border-b text-body-lg transition-colors sm:justify-start sm:gap-3 sm:border-b-0";
+  const actionLabel =
+    "transition-colors sm:border-sienna-brown/40 sm:border-b sm:pb-0.5 sm:group-hover:border-sienna-brown";
 
   return (
     <section
       id="contact"
       aria-labelledby={titleId}
-      className="bg-fog-white relative isolate overflow-hidden py-20 lg:py-28"
+      className="bg-blush-peach py-24 lg:py-32"
     >
-      {/* Satu radial peach di belakang judul. -z-10 masih di atas latar section
-          karena section ini isolate, jadi bercaknya tidak bocor ke section lain
-          dan tidak menutupi teks. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_20%,var(--color-blush-peach)_0%,rgba(251,225,209,0)_70%)]"
-      />
-
       <div className="mx-auto max-w-page px-5 sm:px-8">
-        <div className="flex flex-col items-center text-center">
-          {/* Judul serif weight 400. Sama seperti SectionHeading: serif tidak
-              pernah bold di sistem ini. Lebar dibatasi 24ch supaya barisnya
-              pecah di titik yang enak dibaca, bukan mengikuti lebar container. */}
-          <Reveal className="w-full">
+        {/* Dua kolom, bukan tumpukan tengah: judul memegang sisi kiri selebar
+            matanya, deskripsi dan aksi mengisi sisi kanan. Di layar sempit
+            urutannya kembali satu kolom. */}
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-20">
+          <Reveal>
+            <p className="text-sienna-brown/80 flex items-center gap-1.5 text-caption">
+              {content.nav.contact}
+              <span aria-hidden="true" className="rtl:-scale-x-100">
+                ›
+              </span>
+            </p>
+            {/* Judul serif weight 400, seperti seluruh sistem ini: serif tidak
+                pernah bold. `16ch` memaksa pecah dua baris di desktop tanpa
+                mengikat titik pecahnya ke satu locale. */}
             <h2
               id={titleId}
-              className="text-ink-black font-display text-heading mx-auto max-w-[24ch] font-normal sm:text-heading-lg"
+              className="text-sienna-brown font-display mt-4 max-w-[16ch] text-heading font-normal sm:text-heading-lg"
             >
               {contact.title}
             </h2>
-            <p className="text-slate-gray text-body-lg mx-auto mt-6 max-w-[46ch] text-center">
+          </Reveal>
+
+          {/* `lg:pt-10` menyelaraskan baris pertama deskripsi dengan judul,
+              bukan dengan overline di kolom kiri: 24px tinggi baris overline
+              ditambah 16px jarak ke judul. */}
+          <Reveal delay={0.08} className="lg:pt-10">
+            <p className="text-sienna-brown/80 max-w-[42ch] text-body-lg">
               {contact.description}
             </p>
-          </Reveal>
 
-          {/* Jalur aksi. Di ponsel keduanya melebar penuh dan ditumpuk, karena
-              dua pill sebaris di layar sempit memaksa label terpotong. */}
-          <Reveal
-            delay={0.08}
-            className="mt-10 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row"
-          >
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={filledPill}
-            >
-              <span>WhatsApp</span>
-              <Arrow />
-            </a>
-            <a href={`mailto:${contactEmail}`} className={ghostPill}>
-              <span>{contact.emailLabel}</span>
-              <Arrow />
-            </a>
-          </Reveal>
-
-          {/* Fakta operasional dan nilai kontak: tidak bisa diklik, jadi turun
-              jadi caption abu-abu di bawah aksi, dipisah titik tengah. Nilai
-              kontak dikunci ltr supaya tidak terbalik di locale Arab; tabular
-              menjaga angka nomor tetap rata. */}
-          <Reveal delay={0.16} className="mt-8 flex flex-col items-center gap-2">
-            <p className="text-slate-gray text-caption flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
-              <span>{contact.hours}</span>
-              <span aria-hidden="true">·</span>
-              <span>{contact.location}</span>
-            </p>
-            <p className="text-slate-gray text-caption flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
-              <span className="tabular" dir="ltr">
-                {contactWhatsapp.display}
-              </span>
-              <span aria-hidden="true">·</span>
-              <span dir="ltr">{contactEmail}</span>
-            </p>
+            <div className="mt-10 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-10">
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={actionLink}
+              >
+                <span className={actionLabel}>WhatsApp</span>
+                <Arrow />
+              </a>
+              <a href={`mailto:${contactEmail}`} className={actionLink}>
+                <span className={actionLabel}>{contact.emailLabel}</span>
+                <Arrow />
+              </a>
+            </div>
           </Reveal>
         </div>
       </div>
@@ -129,10 +120,19 @@ export default function ContactSection({
   );
 }
 
-/** Panah teks untuk affordance tautan. Dibalik di RTL supaya tetap menunjuk maju. */
+/**
+ * Panah teks untuk affordance tautan.
+ *
+ * `-scale-x-100` di RTL membalik glyph sekaligus sistem koordinat elemen, jadi
+ * geseran `translate-x-1` saat hover tetap terbaca sebagai gerak ke arah baca:
+ * ke kanan di LTR, ke kiri di RTL. Tidak perlu override arah terpisah.
+ */
 function Arrow() {
   return (
-    <span aria-hidden="true" className="inline-block rtl:-scale-x-100">
+    <span
+      aria-hidden="true"
+      className="inline-block transition-transform duration-300 group-hover:translate-x-1 rtl:-scale-x-100"
+    >
       →
     </span>
   );
